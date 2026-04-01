@@ -10,8 +10,22 @@ export interface ClaudeCliOptions {
 }
 
 /**
+ * Build a clean env that strips Claude Code session markers.
+ * This allows vibe-init to spawn Claude CLI as a child process
+ * even when vibe-init itself is running inside a Claude Code session.
+ */
+function cleanEnv(): NodeJS.ProcessEnv {
+  const env = { ...process.env };
+  // Remove markers that prevent nested Claude Code launches
+  delete env.CLAUDECODE;
+  delete env.CLAUDE_CODE_SESSION;
+  delete env.CLAUDE_CODE_ENTRYPOINT;
+  return env;
+}
+
+/**
  * Calls Claude CLI with --print flag and returns the full text response.
- * Uses `claude -p` for single-shot prompt → response.
+ * Pipes the prompt via stdin for reliable handling of long prompts.
  */
 export async function callClaudeCli(
   prompt: string,
@@ -21,11 +35,11 @@ export async function callClaudeCli(
   const claudePath = checkClaudeCli();
 
   return new Promise<string>((resolve, reject) => {
-    // Pass prompt as positional argument to `claude -p <prompt>`
-    const args = ['--print', '--output-format', 'text', prompt];
+    const args = ['--print', '--output-format', 'text'];
     const child = spawn(claudePath, args, {
-      stdio: ['ignore', 'pipe', 'pipe'],
+      stdio: ['pipe', 'pipe', 'pipe'],
       timeout,
+      env: cleanEnv(),
     });
 
     let stdout = '';
@@ -60,6 +74,10 @@ export async function callClaudeCli(
       }
       resolve(stdout.trim());
     });
+
+    // Pipe prompt via stdin (supports long prompts without arg length limits)
+    child.stdin.write(prompt);
+    child.stdin.end();
   });
 }
 
@@ -76,11 +94,11 @@ export async function streamClaudeCli(
   const claudePath = checkClaudeCli();
 
   return new Promise<string>((resolve, reject) => {
-    // Pass prompt as positional argument
-    const args = ['--print', '--output-format', 'stream-json', prompt];
+    const args = ['--print', '--output-format', 'stream-json'];
     const child = spawn(claudePath, args, {
-      stdio: ['ignore', 'pipe', 'pipe'],
+      stdio: ['pipe', 'pipe', 'pipe'],
       timeout,
+      env: cleanEnv(),
     });
 
     let fullResponse = '';
@@ -140,6 +158,10 @@ export async function streamClaudeCli(
       }
       resolve(fullResponse.trim());
     });
+
+    // Pipe prompt via stdin
+    child.stdin.write(prompt);
+    child.stdin.end();
   });
 }
 
@@ -163,7 +185,8 @@ export function spawnInteractiveClaude(
     }
 
     const child = spawn(claudePath, args, {
-      stdio: 'inherit', // Attach to user's terminal
+      stdio: 'inherit',
+      env: cleanEnv(),
     });
 
     child.on('error', (err) => {
