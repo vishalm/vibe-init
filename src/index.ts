@@ -98,9 +98,9 @@ ${theme.heading('EXAMPLES')}
 
 ${theme.heading('LEARN MORE')}
 
-  Documentation:  ${theme.info('https://vishalmishra.github.io/vibe-init')}
-  GitHub:         ${theme.info('https://github.com/vishalmishra/vibe-init')}
-  Report issues:  ${theme.info('https://github.com/vishalmishra/vibe-init/issues')}
+  Documentation:  ${theme.info('https://vishalm.github.io/vibe-init')}
+  GitHub:         ${theme.info('https://github.com/vishalm/vibe-init')}
+  Report issues:  ${theme.info('https://github.com/vishalm/vibe-init/issues')}
 `;
 
 const INIT_HELP = `
