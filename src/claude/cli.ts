@@ -21,9 +21,10 @@ export async function callClaudeCli(
   const claudePath = checkClaudeCli();
 
   return new Promise<string>((resolve, reject) => {
-    const args = ['--print', '--output-format', 'text'];
+    // Pass prompt as positional argument to `claude -p <prompt>`
+    const args = ['--print', '--output-format', 'text', prompt];
     const child = spawn(claudePath, args, {
-      stdio: ['pipe', 'pipe', 'pipe'],
+      stdio: ['ignore', 'pipe', 'pipe'],
       timeout,
     });
 
@@ -59,10 +60,6 @@ export async function callClaudeCli(
       }
       resolve(stdout.trim());
     });
-
-    // Send the prompt via stdin
-    child.stdin.write(prompt);
-    child.stdin.end();
   });
 }
 
@@ -79,9 +76,10 @@ export async function streamClaudeCli(
   const claudePath = checkClaudeCli();
 
   return new Promise<string>((resolve, reject) => {
-    const args = ['--print', '--output-format', 'stream-json'];
+    // Pass prompt as positional argument
+    const args = ['--print', '--output-format', 'stream-json', prompt];
     const child = spawn(claudePath, args, {
-      stdio: ['pipe', 'pipe', 'pipe'],
+      stdio: ['ignore', 'pipe', 'pipe'],
       timeout,
     });
 
@@ -94,7 +92,6 @@ export async function streamClaudeCli(
         try {
           const event = JSON.parse(line);
           if (event.type === 'assistant' && event.message) {
-            // Handle text content blocks
             for (const block of event.message.content || []) {
               if (block.type === 'text') {
                 onChunk(block.text);
@@ -107,13 +104,11 @@ export async function streamClaudeCli(
               fullResponse += event.delta.text;
             }
           } else if (event.type === 'result') {
-            // Final result event
             if (event.result) {
               fullResponse = event.result;
             }
           }
         } catch {
-          // Not JSON or unexpected format — accumulate as raw text
           onChunk(line);
           fullResponse += line;
         }
@@ -145,9 +140,6 @@ export async function streamClaudeCli(
       }
       resolve(fullResponse.trim());
     });
-
-    child.stdin.write(prompt);
-    child.stdin.end();
   });
 }
 
