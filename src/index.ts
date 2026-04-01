@@ -7,8 +7,7 @@ import { addCommand } from './commands/add.js';
 import { doctorCommand } from './commands/doctor.js';
 import { theme } from './ui/theme.js';
 import type { CLIConfig } from './types/config.js';
-
-const VERSION = '0.2.1';
+import { VERSION } from './version.js';
 
 const MAIN_HELP = `
 ${theme.brand('╔══════════════════════════════════════════════════════════╗')}

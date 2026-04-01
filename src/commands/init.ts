@@ -23,7 +23,8 @@ export async function initCommand(config: CLIConfig): Promise<void> {
     }
 
     // Phase 0: Ignition
-    const { idea, projectName, projectSlug } = await runIgnition('0.1.0');
+    const { VERSION } = await import('../version.js');
+    const { idea, projectName, projectSlug } = await runIgnition(VERSION);
 
     if (config.verbose) {
       console.log(theme.dim(`\nIdea: "${idea}"`));
@@ -56,8 +57,8 @@ export async function initCommand(config: CLIConfig): Promise<void> {
   } catch (error) {
     if (error instanceof VibeError) {
       console.error(theme.error(`\n❌ ${error.userMessage}`));
-      if (config.verbose && error.debugInfo) {
-        console.error(theme.dim(`\nDebug: ${error.debugInfo}`));
+      if (error.debugInfo) {
+        console.error(theme.dim(`\n${error.debugInfo}`));
       }
       process.exit(1);
     }
