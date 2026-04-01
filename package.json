@@ -1,5 +1,5 @@
 {
-  "name": "vibe-init",
+  "name": "vibe-init-cli",
   "version": "0.1.0",
   "description": "The last CLI you'll ever need — scaffolds production-ready full-stack projects using Claude",
   "type": "module",

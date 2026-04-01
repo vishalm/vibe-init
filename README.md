@@ -1,111 +1,132 @@
-# vibe-init
+# vibe-init-cli
 
 [![CI](https://github.com/vishalm/vibe-init/actions/workflows/ci.yml/badge.svg)](https://github.com/vishalm/vibe-init/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/vibe-init.svg)](https://www.npmjs.com/package/vibe-init)
+[![npm version](https://img.shields.io/npm/v/vibe-init-cli.svg)](https://www.npmjs.com/package/vibe-init-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org)
+[![Downloads](https://img.shields.io/npm/dm/vibe-init-cli.svg)](https://www.npmjs.com/package/vibe-init-cli)
 
-**Your entire engineering team in one CLI.** Scaffold new projects. Analyze existing ones. Inject features. Score health. Powered by Claude AI.
+> **Your entire engineering team in one CLI.** Scaffold new projects. Analyze existing ones. Inject features. Score health. Ship with confidence. Powered by Claude AI.
 
-[Documentation](https://vishalm.github.io/vibe-init) | [npm](https://www.npmjs.com/package/vibe-init) | [GitHub](https://github.com/vishalm/vibe-init)
+[Documentation](https://vishalm.github.io/vibe-init) · [GitHub](https://github.com/vishalm/vibe-init) · [Report Bug](https://github.com/vishalm/vibe-init/issues) · [Request Feature](https://github.com/vishalm/vibe-init/issues)
 
 ---
 
-## What is vibe-init?
+## Why vibe-init?
 
-vibe-init is a project intelligence CLI that works on **any codebase** — greenfield or brownfield. It uses Claude AI for intelligent scaffolding and generation, and pure filesystem analysis for detection and scoring.
+Most scaffolding tools generate a starter template and leave you alone. **vibe-init is different** — it's a project intelligence platform that works on **any codebase** (greenfield or brownfield) across the entire project lifecycle:
 
-```
-$ vibe init          # Scaffold a new project from an idea
-$ vibe scan          # Analyze any existing project
-$ vibe add docker    # Inject features into any project
-$ vibe doctor        # Score project health (A+ through F)
-$ vibe run "task"    # Code with Claude + project context
-$ vibe ask "question" # Ask Claude about your project
-```
+| Phase | Command | What it does |
+|-------|---------|-------------|
+| **Create** | `vibe init` | Scaffold a production-ready project from a plain-English idea |
+| **Analyze** | `vibe scan` | Detect stack, framework, and missing best practices |
+| **Enhance** | `vibe add <feature>` | Inject features (Docker, CI, tests, logging, etc.) |
+| **Score** | `vibe doctor` | Grade project health A+ through F with fix suggestions |
+| **Code** | `vibe run <task>` | Execute coding tasks with Claude + full project context |
+| **Advise** | `vibe ask <question>` | Ask Claude about your project (read-only) |
+
+---
 
 ## Install
 
 ```bash
-npm install -g vibe-init
+npm install -g vibe-init-cli
+```
+
+After installation, the `vibe` command is available globally:
+
+```bash
+vibe --help
+vibe --version
 ```
 
 ### Prerequisites
 
-| Requirement | Purpose | Install |
-|------------|---------|---------|
-| Node.js 20+ | Runtime | [nodejs.org](https://nodejs.org) |
-| Claude CLI | AI commands (init, run, ask) | `npm install -g @anthropic-ai/claude-code` |
-| ANTHROPIC_API_KEY | ADR + doc generation | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
-| Docker | Local dev (optional) | [docker.com](https://docker.com) |
+| Requirement | Purpose | Required? | Install |
+|------------|---------|-----------|---------|
+| **Node.js 20+** | Runtime | Yes | [nodejs.org](https://nodejs.org) |
+| **Claude CLI** | AI commands (`init`, `run`, `ask`) | For AI features | `npm i -g @anthropic-ai/claude-code` |
+| **ANTHROPIC_API_KEY** | ADR + doc generation | For AI features | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
+| **Docker** | Local dev stack | Optional | [docker.com](https://docker.com) |
 
-> **Note:** `vibe scan` and `vibe doctor` work without any API key — they use pure filesystem analysis.
+> **Zero API keys needed** for `vibe scan`, `vibe add`, and `vibe doctor` — they use pure filesystem analysis.
+
+---
 
 ## Quick Start
 
 ### New Project (Greenfield)
 
 ```bash
+# 1. Scaffold a project from an idea
 vibe init
-# Describe your idea → Claude enriches it → scaffolds 25+ production files
-cd my-project && make setup && make dev
+# → Describe your idea → Claude enriches it → 25+ production files generated
+
+# 2. Enter the project and start developing
+cd my-project
+make setup    # Install deps, start Docker, run migrations
+make dev      # Start Next.js dev server
 ```
 
 ### Existing Project (Brownfield)
 
 ```bash
 cd my-existing-app
-vibe scan                    # Detect stack + find gaps
-vibe add docker              # Add Dockerfile + docker-compose
-vibe add ci                  # Add GitHub Actions CI
-vibe add testing             # Add Vitest + sample tests
-vibe doctor                  # Check your score
+
+# 1. Scan to understand what you have and what's missing
+vibe scan
+
+# 2. Add missing features one-by-one
+vibe add docker          # Dockerfile + docker-compose
+vibe add ci              # GitHub Actions pipeline
+vibe add testing         # Vitest + sample tests
+vibe add logging         # Pino structured logging
+
+# 3. Check your project health score
+vibe doctor              # Get a letter grade (A+ through F)
 ```
+
+---
 
 ## Commands
 
-### `vibe init`
+### `vibe init` — Scaffold from an Idea
 
-Scaffold a new full-stack project from a plain-English idea.
+Walks you through an interactive 4-phase flow:
+
+1. **Ignition** — Describe your idea in 1-5 sentences
+2. **Enrichment** — Claude generates personas, prioritized features (P0/P1/P2), architecture
+3. **ADR** — Architecture Decision Record auto-generated
+4. **Scaffold** — 25+ production files written to a new directory
 
 ```bash
-vibe init                    # Interactive enrichment flow
-vibe --dry-run init          # Preview without writing files
+vibe init                    # Interactive flow
+vibe --dry-run init          # Preview files without writing
+vibe --verbose init          # Debug output
 ```
 
-**What gets generated:**
-- Next.js 15 (App Router) + TypeScript (strict mode)
-- Prisma ORM + PostgreSQL schema + seed script
-- Docker Compose (Postgres + Redis)
-- Multi-stage Dockerfile
-- GitHub Actions CI pipeline
-- Vitest test suite + health check test
-- Pino structured JSON logging
-- Zod input + environment validation
-- Security middleware (headers, request IDs)
-- Husky pre-commit hooks + Commitlint
-- CLAUDE.md + Architecture Decision Record
-- Makefile for developer ergonomics
+**Generated stack:** Next.js 15 (App Router) · TypeScript (strict) · Prisma · PostgreSQL · Redis · Docker · GitHub Actions CI · Vitest · Pino logging · Zod validation · Husky hooks · Commitlint
 
-### `vibe scan [dir]`
+### `vibe scan [dir]` — Analyze Any Project
 
-Analyze any existing project — detect stack, framework, and missing best practices.
+Pure filesystem detection — no API calls, no external dependencies.
 
 ```bash
 vibe scan                        # Scan current directory
 vibe scan /path/to/project       # Scan specific directory
-vibe scan --generate-claude-md   # Generate a CLAUDE.md from analysis
+vibe scan --generate-claude-md   # Also generate a CLAUDE.md
 ```
 
-**Detects:**
-- **Stacks:** Next.js, FastAPI, Go, Node.js (Express, Fastify, NestJS, etc.)
-- **Practices:** Docker, CI/CD, Testing, Linting, Env Validation, Logging, Health Checks, Git Hooks, Security, Documentation
+**Detects stacks:** Next.js, FastAPI, Go (Gin/Echo/Fiber/Chi), Node.js (Express/Fastify/NestJS/Hono)
 
-### `vibe add <feature>`
+**Checks 10 practices:** Docker · CI/CD · Testing · Linting · Env Validation · Logging · Health Checks · Git Hooks · Security · Documentation
 
-Inject production features into any project. Idempotent — safe to run twice.
+### `vibe add <feature>` — Inject Features
+
+Idempotent and stack-aware. Safe to run multiple times.
 
 ```bash
-# Template-based (instant, no API needed)
+# Template-based features (instant, no API key needed)
 vibe add docker          # Dockerfile + docker-compose.yml
 vibe add ci              # GitHub Actions CI pipeline
 vibe add testing         # Vitest config + sample test
@@ -116,71 +137,97 @@ vibe add hooks           # Husky + commitlint + lint-staged
 vibe add auth            # Authentication setup guidance
 vibe add db              # Prisma schema + client
 
-# Claude-powered generators
-vibe add api users       # Generate API endpoint + test
+# Claude-powered generators (require Claude CLI)
+vibe add api users       # Generate REST API endpoint + test
 vibe add component Card  # Generate React component + test
 vibe add model Order     # Generate Prisma model + migration
 ```
 
-### `vibe doctor`
+### `vibe doctor` — Health Score
 
-Score your project against 17 engineering best practices across 7 categories.
+17 weighted checks across 7 categories. Suggests `vibe add` commands to fix gaps.
 
 ```bash
 vibe doctor              # Run health checks
 vibe --verbose doctor    # Show detailed results
 ```
 
-**Categories:** Testing (20pts), Security (20pts), CI/CD (15pts), Code Quality (15pts), Containerization (10pts), Documentation (10pts), Observability (10pts)
+| Category | Weight | Checks |
+|----------|--------|--------|
+| Testing | 20 pts | Framework config, test files, coverage |
+| Security | 20 pts | .gitignore, no leaked secrets, env validation |
+| CI/CD | 15 pts | Pipeline config, runs tests |
+| Code Quality | 15 pts | Linter, TypeScript strict, git hooks |
+| Containerization | 10 pts | Dockerfile, Docker Compose |
+| Documentation | 10 pts | README, CLAUDE.md |
+| Observability | 10 pts | Structured logging, health endpoint |
 
-**Grades:** A+ (95+) → A → A- → B+ → B → B- → C+ → C → C- → D → F (0-39)
+**Grades:** A+ (95+) · A (90-94) · A- (85-89) · B+ (80-84) · B (75-79) · B- (70-74) · C+ (65-69) · C (60-64) · C- (55-59) · D (40-54) · F (0-39)
 
-### `vibe run <task>`
+### `vibe run <task>` — Code with Context
 
-Execute a coding task with Claude Code, enriched with your project's CLAUDE.md context.
+Spawns Claude Code with your project's CLAUDE.md as system context.
 
 ```bash
 vibe run "add pagination to the users API endpoint"
-vibe run "refactor auth middleware for RBAC"
+vibe run "refactor auth middleware for role-based access control"
 vibe run "write integration tests for the checkout flow"
+vibe run "add Redis caching to the product listing with 5-minute TTL"
 ```
 
-### `vibe ask <question>`
+### `vibe ask <question>` — Advisory Mode
 
-Ask Claude about your project in read-only advisory mode. No files are changed.
+Read-only — Claude analyzes but makes no changes.
 
 ```bash
-vibe ask "should I use Redis for session storage or JWT?"
-vibe ask "what are the security risks in the current auth implementation?"
-vibe ask "which endpoints are likely to have N+1 query problems?"
+vibe ask "should I use Redis for sessions or stick with JWT?"
+vibe ask "what are the security risks in the current auth setup?"
+vibe ask "which endpoints might have N+1 query problems?"
+vibe ask "what's the best approach to add multi-tenancy?"
 ```
 
-## Architecture
+---
+
+## Project Architecture
 
 ```
 vibe-init/
 ├── src/
-│   ├── index.ts                    # CLI entry (Commander.js)
-│   ├── commands/                   # 6 command handlers
-│   ├── phases/                     # Init phases (ignition, enrichment, ADR, scaffold, scan)
-│   ├── analyzers/                  # 14 filesystem detectors
+│   ├── index.ts                    # CLI entry (Commander.js) + extensive help
+│   ├── commands/                   # 6 command handlers (init, scan, add, doctor, run, ask)
+│   ├── phases/                     # Init phases (ignition → enrichment → ADR → scaffold)
+│   ├── analyzers/                  # 14 pure filesystem detectors
 │   │   ├── stack-detectors/        # Next.js, FastAPI, Go, Node.js
-│   │   └── practice-detectors/     # Docker, CI, testing, security, etc.
+│   │   └── practice-detectors/     # Docker, CI, testing, linting, security, etc.
 │   ├── features/                   # 12 pluggable feature modules
-│   │   ├── docker/                 # vibe add docker
-│   │   ├── ci/                     # vibe add ci
-│   │   ├── testing/                # vibe add testing
-│   │   └── ...                     # logging, validation, health, hooks, auth, db, api, component, model
+│   │   ├── docker/ci/testing/...   # 9 template-based
+│   │   └── api/component/model/    # 3 Claude-powered generators
 │   ├── scoring/                    # Doctor health scoring engine
 │   ├── claude/                     # Claude CLI + API wrappers + prompt builders
-│   ├── templates/stacks/           # EJS templates per stack
+│   ├── templates/stacks/           # EJS templates organized by stack
 │   ├── types/                      # TypeScript interfaces
 │   ├── ui/                         # Terminal UI (banner, spinner, prompts, reports)
-│   └── utils/                      # Errors, filesystem, validation
+│   └── utils/                      # Errors, filesystem, Zod validation
 ├── tests/                          # 43 unit tests (Vitest)
-├── docs/                           # GitHub Pages site
-└── build/                          # Compiled output
+├── docs/                           # GitHub Pages documentation site
+└── scripts/build.js                # esbuild bundler + template copier
 ```
+
+## Tech Stack
+
+| Component | Technology |
+|-----------|-----------|
+| CLI Framework | [Commander.js](https://github.com/tj/commander.js) |
+| Interactive Prompts | [Inquirer](https://github.com/SBoudrias/Inquirer.js) |
+| Template Engine | [EJS](https://ejs.co) |
+| Validation | [Zod](https://zod.dev) |
+| AI (Interactive) | [Claude CLI](https://docs.anthropic.com/en/docs/claude-code) |
+| AI (Batch) | [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-node) |
+| Build | [esbuild](https://esbuild.github.io) |
+| Tests | [Vitest](https://vitest.dev) |
+| UI | [Chalk](https://github.com/chalk/chalk) + [Ora](https://github.com/sindresorhus/ora) |
+
+---
 
 ## Development
 
@@ -188,52 +235,37 @@ vibe-init/
 git clone https://github.com/vishalm/vibe-init.git
 cd vibe-init
 npm install
+
 npm run build        # Build with esbuild
 npm run lint         # TypeScript type check
-npm run test         # Run all tests
-npm run dev          # Watch mode
+npm run test         # Run all 43 tests
+npm run dev          # Watch mode for development
+
+# Run locally without installing globally
+node build/index.js --help
+node build/index.js init
+node build/index.js scan .
+node build/index.js doctor
 ```
-
-## How It Works
-
-### Greenfield (`vibe init`)
-
-1. **Ignition** — You describe your idea in plain English
-2. **Enrichment** — Claude generates personas, features (P0/P1/P2), architecture
-3. **ADR** — Architecture Decision Record auto-generated
-4. **Scaffold** — 25+ production files written from EJS templates + Claude docs
-
-### Brownfield (`vibe scan` + `vibe add` + `vibe doctor`)
-
-1. **Scan** — Pure filesystem detection: stack, framework, missing practices
-2. **Add** — Inject features one by one, idempotent and stack-aware
-3. **Doctor** — Score against 17 checks, get a letter grade and fix suggestions
-
-## Tech Stack
-
-| Component | Technology |
-|-----------|-----------|
-| CLI Framework | Commander.js |
-| Interactive Prompts | Inquirer |
-| Template Engine | EJS |
-| Validation | Zod |
-| AI (Interactive) | Claude CLI |
-| AI (Batch) | Anthropic SDK |
-| Build | esbuild |
-| Tests | Vitest |
-| UI | Chalk + Ora |
 
 ## Contributing
 
-1. Fork the repo
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
 2. Create a feature branch (`git checkout -b feat/amazing-feature`)
-3. Commit with conventional commits (`feat:`, `fix:`, `docs:`, etc.)
-4. Push and open a PR
+3. Commit with [conventional commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.)
+4. Push to your branch and open a Pull Request
+
+See the [GitHub Issues](https://github.com/vishalm/vibe-init/issues) for planned features and known bugs.
 
 ## License
 
-MIT - see [LICENSE](LICENSE)
+[MIT](LICENSE) — free for personal and commercial use.
 
 ---
 
-Built by [Vishal Mishra](https://github.com/vishalm) with Claude.
+<p align="center">
+  Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with <a href="https://claude.ai">Claude</a><br>
+  <sub>The last CLI you'll ever need.</sub>
+</p>
