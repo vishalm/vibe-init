@@ -1,0 +1,34 @@
+export default function Home() {
+  return (
+    <main style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+      <h1><%= projectName %></h1>
+      <p><%= brief.vision %></p>
+
+      <section style={{ marginTop: '2rem' }}>
+        <h2>Getting Started</h2>
+        <p>
+          This project was scaffolded by{' '}
+          <a href="https://github.com/vishalmishra/vibe-init">Vibe Init</a>.
+          Edit <code>src/app/page.tsx</code> to start building.
+        </p>
+      </section>
+
+      <section style={{ marginTop: '2rem' }}>
+        <h2>API Health Check</h2>
+        <p>
+          Visit <a href="/api/health">/api/health</a> to verify the API is
+          running.
+        </p>
+      </section>
+
+      <section style={{ marginTop: '2rem' }}>
+        <h2>Key Features (MVP)</h2>
+        <ul>
+<% for (const feature of brief.features.p0) { -%>
+          <li><strong><%= feature.name %></strong> — <%= feature.description %></li>
+<% } -%>
+        </ul>
+      </section>
+    </main>
+  );
+}

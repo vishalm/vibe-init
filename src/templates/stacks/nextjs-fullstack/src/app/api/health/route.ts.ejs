@@ -1,0 +1,36 @@
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { logger } from '@/lib/logger';
+
+interface HealthStatus {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  timestamp: string;
+  version: string;
+  checks: {
+    database: 'connected' | 'disconnected';
+  };
+}
+
+export async function GET(): Promise<NextResponse<HealthStatus>> {
+  const timestamp = new Date().toISOString();
+  let dbStatus: 'connected' | 'disconnected' = 'disconnected';
+
+  try {
+    await db.$queryRaw`SELECT 1`;
+    dbStatus = 'connected';
+  } catch (error) {
+    logger.error({ error }, 'Health check: database connection failed');
+  }
+
+  const status: HealthStatus = {
+    status: dbStatus === 'connected' ? 'healthy' : 'degraded',
+    timestamp,
+    version: process.env.npm_package_version ?? '0.1.0',
+    checks: {
+      database: dbStatus,
+    },
+  };
+
+  const httpStatus = status.status === 'healthy' ? 200 : 503;
+  return NextResponse.json(status, { status: httpStatus });
+}

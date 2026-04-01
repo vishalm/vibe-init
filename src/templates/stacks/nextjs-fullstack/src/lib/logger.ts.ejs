@@ -1,0 +1,18 @@
+import pino from 'pino';
+
+/**
+ * Structured JSON logger.
+ * Logs to stdout only (12-Factor: Factor XI).
+ */
+export const logger = pino({
+  level: process.env.LOG_LEVEL ?? 'info',
+  transport:
+    process.env.NODE_ENV === 'development'
+      ? { target: 'pino-pretty', options: { colorize: true } }
+      : undefined,
+  base: {
+    service: '<%= projectSlug %>',
+    env: process.env.NODE_ENV ?? 'development',
+  },
+  timestamp: pino.stdTimeFunctions.isoTime,
+});

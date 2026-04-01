@@ -1,0 +1,26 @@
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+/**
+ * Next.js middleware — runs on every request.
+ * Add auth checks, rate limiting, or request logging here.
+ */
+export function middleware(request: NextRequest) {
+  // Add request ID header for tracing
+  const requestId = crypto.randomUUID();
+  const response = NextResponse.next();
+
+  response.headers.set('x-request-id', requestId);
+  response.headers.set('x-frame-options', 'DENY');
+  response.headers.set('x-content-type-options', 'nosniff');
+  response.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
+
+  return response;
+}
+
+export const config = {
+  matcher: [
+    // Match all paths except static files and _next
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ],
+};

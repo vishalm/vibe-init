@@ -1,0 +1,7 @@
+// Global test setup
+// Add any test environment configuration here
+
+// Set test environment variables
+process.env.NODE_ENV = 'test';
+process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/<%= dbName %>_test?schema=public';
+process.env.LOG_LEVEL = 'silent';
