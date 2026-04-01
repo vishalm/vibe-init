@@ -20,7 +20,8 @@
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
     "test:coverage": "vitest run --coverage",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "keywords": [
     "cli",
@@ -30,10 +31,23 @@
     "fullstack",
     "nextjs",
     "typescript",
-    "vibe-coding"
+    "vibe-coding",
+    "project-generator",
+    "code-quality",
+    "developer-tools",
+    "brownfield",
+    "greenfield"
   ],
   "author": "Vishal Mishra",
   "license": "MIT",
+  "homepage": "https://vishalm.github.io/vibe-init",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vishalm/vibe-init.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vishalm/vibe-init/issues"
+  },
   "engines": {
     "node": ">=20.0.0"
   },
