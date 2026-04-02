@@ -1,6 +1,6 @@
 {
   "name": "vibe-init-cli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The last CLI you'll ever need — scaffolds production-ready full-stack projects using Claude",
   "type": "module",
   "main": "build/index.js",
@@ -21,6 +21,7 @@
     "test:integration": "vitest run tests/integration",
     "test:coverage": "vitest run --coverage",
     "start": "node build/index.js",
+    "prerelease": "bash scripts/pre-release.sh",
     "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "keywords": [
