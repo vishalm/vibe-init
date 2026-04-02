@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commands Reference — Vibe Init</title>
+  <meta name="description" content="Complete reference for all vibe-init CLI commands: init, scan, add, doctor, run, and ask.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand)"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      vibe init
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links">
+      <a href="getting-started.html">Get Started</a>
+      <a href="commands.html" class="active">Commands</a>
+      <a href="features.html">Features</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a>
+      <a href="https://github.com/vishalm/vibe-init" class="nav-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="doc-page">
+  <div class="breadcrumb">
+    <a href="../index.html">Home</a> <span>/</span> Commands Reference
+  </div>
+
+  <h1>Commands Reference</h1>
+  <p class="subtitle">Complete reference for all six vibe-init CLI commands.</p>
+
+  <!-- ─── vibe init ────────────────────────────────── -->
+  <h2 id="init">vibe init</h2>
+
+  <p>Scaffold a production-ready full-stack project from a plain-English idea. Runs an interactive 4-phase flow: Ignition, Enrichment, ADR, and Scaffold.</p>
+
+  <pre><code>vibe init
+vibe --dry-run init          # Preview files without writing
+vibe --verbose init          # Show debug output</code></pre>
+
+  <h3>How it works</h3>
+
+  <ol>
+    <li><strong>Ignition</strong> — You describe your idea in 1-5 sentences. Prompts you for a project name.</li>
+    <li><strong>Enrichment</strong> — Claude analyzes your idea and generates a structured brief containing:
+      <ul>
+        <li>Product vision and overview</li>
+        <li>User personas (2-3)</li>
+        <li>Prioritized features (P0/P1/P2)</li>
+        <li>Tech stack recommendation</li>
+        <li>Architecture overview</li>
+      </ul>
+      You can <strong>accept</strong>, <strong>edit</strong> (refine with feedback), or <strong>restart</strong> the enrichment.
+    </li>
+    <li><strong>ADR</strong> — An Architecture Decision Record is auto-generated via the Anthropic API, documenting decisions, alternatives, trade-offs, and 12-Factor compliance.</li>
+    <li><strong>Scaffold</strong> — 25+ production files are rendered from EJS templates and written to a new project directory. Includes app code, API routes, database schema, tests, Docker, CI/CD, and documentation (README.md + CLAUDE.md).</li>
+  </ol>
+
+  <h3>Requirements</h3>
+
+  <ul>
+    <li><strong>Claude CLI</strong> — Required for the enrichment phase</li>
+    <li><strong>ANTHROPIC_API_KEY</strong> — Required for ADR and documentation generation (skipped with a warning if missing)</li>
+  </ul>
+
+  <h3>Generated stack (V1)</h3>
+
+  <p>Currently scaffolds a Next.js 15 full-stack application: TypeScript (strict), Prisma ORM, PostgreSQL, Redis, Docker (multi-stage), GitHub Actions CI, Vitest, Pino logging, Zod validation, Husky + Commitlint.</p>
+
+  <div class="callout callout-info">
+    <p>Additional stack templates (FastAPI, Go) are planned for future releases. The template system is extensible via the stack registry.</p>
+  </div>
+
+  <!-- ─── vibe scan ────────────────────────────────── -->
+  <h2 id="scan">vibe scan [dir]</h2>
+
+  <p>Analyze any existing project using pure filesystem detection. No API keys, no external calls.</p>
+
+  <pre><code>vibe scan                        # Scan current directory
+vibe scan /path/to/project       # Scan a specific directory
+vibe scan --generate-claude-md   # Also generate a CLAUDE.md file</code></pre>
+
+  <h3>Stack detection</h3>
+
+  <p>Detectors run in specificity-first order (first match wins):</p>
+
+  <table>
+    <thead><tr><th>Stack</th><th>Detection method</th></tr></thead>
+    <tbody>
+      <tr><td>Next.js</td><td><code>next.config.ts</code> / <code>next.config.js</code> / <code>next.config.mjs</code> + <code>package.json</code></td></tr>
+      <tr><td>Python / FastAPI</td><td><code>requirements.txt</code> / <code>pyproject.toml</code> / <code>setup.py</code></td></tr>
+      <tr><td>Go</td><td><code>go.mod</code></td></tr>
+      <tr><td>Node.js (generic)</td><td><code>package.json</code> (fallback after framework-specific checks)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Practice detection</h3>
+
+  <p>10 practice detectors run in parallel, checking for:</p>
+
+  <table>
+    <thead><tr><th>Practice</th><th>What it looks for</th></tr></thead>
+    <tbody>
+      <tr><td>Docker</td><td><code>Dockerfile</code>, <code>docker-compose.yml</code></td></tr>
+      <tr><td>CI/CD</td><td><code>.github/workflows/</code>, <code>.gitlab-ci.yml</code>, <code>.circleci/</code></td></tr>
+      <tr><td>Testing</td><td>Test config files (Vitest, Jest, pytest, Go test) + test directories</td></tr>
+      <tr><td>Linting</td><td>ESLint, Biome, flake8, golangci-lint configs</td></tr>
+      <tr><td>Env Validation</td><td>Zod schema, dotenv-safe, Pydantic settings</td></tr>
+      <tr><td>Logging</td><td>Pino, Winston, structlog, slog imports/configs</td></tr>
+      <tr><td>Health Checks</td><td><code>/health</code> or <code>/api/health</code> route files</td></tr>
+      <tr><td>Git Hooks</td><td><code>.husky/</code>, <code>.pre-commit-config.yml</code>, lefthook config</td></tr>
+      <tr><td>Security</td><td><code>.gitignore</code> exists and excludes <code>.env</code></td></tr>
+      <tr><td>Documentation</td><td><code>README.md</code>, <code>CLAUDE.md</code>, <code>docs/adr/</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Flags</h3>
+
+  <table>
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--generate-claude-md</code></td><td>Generate a CLAUDE.md file with project context. Requires <code>ANTHROPIC_API_KEY</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ─── vibe add ─────────────────────────────────── -->
+  <h2 id="add">vibe add &lt;feature&gt; [args...]</h2>
+
+  <p>Inject production features into any existing project. Idempotent and stack-aware — safe to run multiple times.</p>
+
+  <pre><code># Template-based features (instant, no API key needed)
+vibe add docker          # Dockerfile + docker-compose.yml
+vibe add ci              # GitHub Actions CI pipeline
+vibe add testing         # Vitest config + sample test
+vibe add logging         # Pino (Node) or structlog (Python)
+vibe add validation      # Zod environment validation
+vibe add health          # /api/health endpoint
+vibe add hooks           # Husky + commitlint + lint-staged
+vibe add auth            # Authentication setup guidance
+vibe add db              # Prisma schema + client
+
+# Claude-powered generators (require Claude CLI)
+vibe add api users       # Generate REST API endpoint + test
+vibe add component Card  # Generate React component + test
+vibe add model Order     # Generate Prisma model + migration</code></pre>
+
+  <h3>How it works</h3>
+
+  <ol>
+    <li>Looks up the feature in the registry</li>
+    <li>Detects your project's stack (Next.js, Go, Python, Node.js)</li>
+    <li>Checks if the feature is already installed (skips with a warning unless <code>--force</code>)</li>
+    <li>Applies the feature: renders templates or calls Claude for generation</li>
+    <li>Prints created/modified files and next-step instructions</li>
+  </ol>
+
+  <h3>Flags</h3>
+
+  <table>
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--force</code></td><td>Overwrite existing files (skip the "already installed" check)</td></tr>
+      <tr><td><code>--verbose</code></td><td>Show debug output</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warning">
+    <p>Claude-powered generators (<code>api</code>, <code>component</code>, <code>model</code>) require the Claude CLI to be installed and available in your PATH.</p>
+  </div>
+
+  <p>See <a href="features.html">Features</a> for a detailed breakdown of each feature module.</p>
+
+  <!-- ─── vibe doctor ──────────────────────────────── -->
+  <h2 id="doctor">vibe doctor</h2>
+
+  <p>Score your project against engineering best practices. Runs 17 weighted checks across 7 categories and returns a letter grade.</p>
+
+  <pre><code>vibe doctor              # Run health checks
+vibe --verbose doctor    # Show detailed check results</code></pre>
+
+  <h3>Scoring categories</h3>
+
+  <table>
+    <thead><tr><th>Category</th><th>Weight</th><th>Checks</th></tr></thead>
+    <tbody>
+      <tr><td>Testing</td><td>20 pts</td><td>Test framework config (8), test files exist (7), coverage config (5)</td></tr>
+      <tr><td>Security</td><td>20 pts</td><td>Env validation (8), auth setup (7), .gitignore with .env (4)</td></tr>
+      <tr><td>CI/CD</td><td>15 pts</td><td>Pipeline config file (10), additional CI checks (5)</td></tr>
+      <tr><td>Code Quality</td><td>15 pts</td><td>TypeScript strict (7), linter config (6), git hooks (6)</td></tr>
+      <tr><td>Containerization</td><td>10 pts</td><td>Dockerfile (6), docker-compose.yml (5)</td></tr>
+      <tr><td>Documentation</td><td>10 pts</td><td>README.md (5), CLAUDE.md (4)</td></tr>
+      <tr><td>Observability</td><td>10 pts</td><td>Health endpoint (7), structured logging (6), database setup (5)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Grade scale</h3>
+
+  <table>
+    <thead><tr><th>Grade</th><th>Score range</th></tr></thead>
+    <tbody>
+      <tr><td>A+</td><td>95-100</td></tr>
+      <tr><td>A</td><td>90-94</td></tr>
+      <tr><td>A-</td><td>85-89</td></tr>
+      <tr><td>B+</td><td>80-84</td></tr>
+      <tr><td>B</td><td>75-79</td></tr>
+      <tr><td>B-</td><td>70-74</td></tr>
+      <tr><td>C+</td><td>65-69</td></tr>
+      <tr><td>C</td><td>60-64</td></tr>
+      <tr><td>C-</td><td>55-59</td></tr>
+      <tr><td>D</td><td>40-54</td></tr>
+      <tr><td>F</td><td>0-39</td></tr>
+    </tbody>
+  </table>
+
+  <p>Each failed check includes a suggestion pointing to the relevant <code>vibe add</code> command to fix it.</p>
+
+  <!-- ─── vibe run ─────────────────────────────────── -->
+  <h2 id="run">vibe run &lt;task&gt;</h2>
+
+  <p>Spawn an interactive Claude Code session with your project's <code>CLAUDE.md</code> injected as system context. Claude understands your architecture, conventions, and patterns before writing any code.</p>
+
+  <pre><code>vibe run "add pagination to the users API endpoint"
+vibe run "refactor auth middleware for role-based access control"
+vibe run "write integration tests for the checkout flow"
+vibe run "add Redis caching to the product listing with 5-minute TTL"</code></pre>
+
+  <h3>Requirements</h3>
+
+  <ul>
+    <li><strong>Claude CLI</strong> — Must be installed and in your PATH</li>
+    <li><strong>CLAUDE.md</strong> — Must exist in your project root (generate one with <code>vibe scan --generate-claude-md</code>)</li>
+  </ul>
+
+  <h3>How it works</h3>
+
+  <ol>
+    <li>Reads your project's <code>CLAUDE.md</code> from the current directory</li>
+    <li>Builds a system prompt with the CLAUDE.md as project context</li>
+    <li>Spawns Claude Code in interactive mode with your task</li>
+    <li>You interact directly with Claude Code — it can edit files, run commands, and ask clarifications</li>
+  </ol>
+
+  <!-- ─── vibe ask ─────────────────────────────────── -->
+  <h2 id="ask">vibe ask &lt;question&gt;</h2>
+
+  <p>Ask Claude about your project in read-only advisory mode. No files are modified.</p>
+
+  <pre><code>vibe ask "should I use Redis for sessions or stick with JWT?"
+vibe ask "what are the security risks in the current auth setup?"
+vibe ask "which endpoints might have N+1 query problems?"
+vibe ask "what's the best approach to add multi-tenancy?"</code></pre>
+
+  <h3>Requirements</h3>
+
+  <ul>
+    <li><strong>Claude CLI</strong> — Must be installed and in your PATH</li>
+    <li><strong>CLAUDE.md</strong> — Must exist in your project root for context</li>
+  </ul>
+
+  <p>Unlike <code>vibe run</code>, this command is non-interactive — it sends your question, prints Claude's response, and exits. No file modifications are possible.</p>
+
+  <!-- ─── Global flags ─────────────────────────────── -->
+  <h2 id="global-flags">Global flags</h2>
+
+  <p>These flags work with any command:</p>
+
+  <table>
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--verbose, -v</code></td><td>Show detailed debug output and full error stack traces</td></tr>
+      <tr><td><code>--dry-run</code></td><td>Preview changes without writing files to disk</td></tr>
+      <tr><td><code>--version, -V</code></td><td>Print the installed version</td></tr>
+      <tr><td><code>--help, -h</code></td><td>Show help text (works on any command: <code>vibe add --help</code>)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-nav">
+    <a href="getting-started.html">
+      <span class="label">Previous</span>
+      <span class="title">Getting Started</span>
+    </a>
+    <a href="features.html" class="next">
+      <span class="label">Next</span>
+      <span class="title">Features</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
+    <br>
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.2.2
+  </p>
+</footer>
+
+</body>
+</html>

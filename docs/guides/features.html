@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features — Vibe Init</title>
+  <meta name="description" content="Detailed breakdown of all 12 injectable feature modules in vibe-init.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand)"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      vibe init
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links">
+      <a href="getting-started.html">Get Started</a>
+      <a href="commands.html">Commands</a>
+      <a href="features.html" class="active">Features</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a>
+      <a href="https://github.com/vishalm/vibe-init" class="nav-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="doc-page">
+  <div class="breadcrumb">
+    <a href="../index.html">Home</a> <span>/</span> Features
+  </div>
+
+  <h1>Feature Modules</h1>
+  <p class="subtitle">12 pluggable feature modules — 9 template-based (instant) and 3 Claude-powered (AI-generated).</p>
+
+  <div class="callout callout-info">
+    <p>All features are <strong>idempotent</strong> and <strong>stack-aware</strong>. They detect your project's stack (Next.js, Go, Python, Node.js) and generate appropriate files. Running a feature twice skips it unless you pass <code>--force</code>.</p>
+  </div>
+
+  <h2>Template-based features</h2>
+  <p>These features render from EJS templates instantly, with no API key required.</p>
+
+  <!-- Docker -->
+  <h3 id="docker">docker</h3>
+  <pre><code>vibe add docker</code></pre>
+  <p>Generates a stack-aware <code>Dockerfile</code> and <code>docker-compose.yml</code>.</p>
+  <ul>
+    <li><strong>Next.js:</strong> Multi-stage Node.js build with standalone output, plus PostgreSQL and Redis services in Compose</li>
+    <li><strong>Python:</strong> Slim Python image with pip install, plus PostgreSQL service</li>
+    <li><strong>Go:</strong> Multi-stage build with scratch final image</li>
+  </ul>
+  <p><strong>Files created:</strong> <code>Dockerfile</code>, <code>docker-compose.yml</code>, <code>.dockerignore</code></p>
+
+  <!-- CI -->
+  <h3 id="ci">ci</h3>
+  <pre><code>vibe add ci</code></pre>
+  <p>Generates a GitHub Actions CI pipeline that runs on push to main and pull requests.</p>
+  <ul>
+    <li>Checks out code, sets up the runtime (Node/Python/Go)</li>
+    <li>Installs dependencies</li>
+    <li>Runs linting and type checking</li>
+    <li>Runs tests</li>
+    <li>Builds the project</li>
+  </ul>
+  <p><strong>Files created:</strong> <code>.github/workflows/ci.yml</code></p>
+
+  <!-- Testing -->
+  <h3 id="testing">testing</h3>
+  <pre><code>vibe add testing</code></pre>
+  <p>Sets up a test framework with a sample test file.</p>
+  <ul>
+    <li><strong>Next.js / Node.js:</strong> Vitest configuration with globals enabled and a sample test</li>
+    <li><strong>Python:</strong> pytest configuration and sample test</li>
+    <li><strong>Go:</strong> Sample <code>_test.go</code> file</li>
+  </ul>
+  <p><strong>Files created:</strong> <code>vitest.config.ts</code> (or equivalent), <code>__tests__/sample.test.ts</code></p>
+
+  <!-- Logging -->
+  <h3 id="logging">logging</h3>
+  <pre><code>vibe add logging</code></pre>
+  <p>Adds structured logging to your project.</p>
+  <ul>
+    <li><strong>Node.js:</strong> Pino with JSON output, log levels, and a <code>src/lib/logger.ts</code> module</li>
+    <li><strong>Python:</strong> structlog with processors and a <code>logger.py</code> module</li>
+    <li><strong>Go:</strong> slog with JSON handler</li>
+  </ul>
+  <p><strong>Files created:</strong> <code>src/lib/logger.ts</code> (or equivalent for your stack)</p>
+
+  <!-- Validation -->
+  <h3 id="validation">validation</h3>
+  <pre><code>vibe add validation</code></pre>
+  <p>Adds environment variable validation so your app fails fast on misconfiguration.</p>
+  <ul>
+    <li><strong>Node.js:</strong> Zod schema that validates <code>process.env</code> at startup</li>
+    <li><strong>Python:</strong> Pydantic <code>BaseSettings</code> model</li>
+  </ul>
+  <p><strong>Files created:</strong> <code>src/lib/env.ts</code> (or equivalent)</p>
+
+  <!-- Health -->
+  <h3 id="health">health</h3>
+  <pre><code>vibe add health</code></pre>
+  <p>Adds a <code>/api/health</code> endpoint that returns service status, useful for load balancers and monitoring.</p>
+  <ul>
+    <li><strong>Next.js:</strong> App Router API route at <code>src/app/api/health/route.ts</code></li>
+    <li><strong>Express / Fastify:</strong> Route handler</li>
+    <li><strong>Go:</strong> HTTP handler</li>
+  </ul>
+  <p><strong>Files created:</strong> <code>src/app/api/health/route.ts</code> (or equivalent), plus a health check test</p>
+
+  <!-- Hooks -->
+  <h3 id="hooks">hooks</h3>
+  <pre><code>vibe add hooks</code></pre>
+  <p>Sets up git hooks for code quality enforcement on every commit.</p>
+  <ul>
+    <li><strong>Husky</strong> — Pre-commit hook that runs lint-staged</li>
+    <li><strong>lint-staged</strong> — Runs linter on staged files only</li>
+    <li><strong>Commitlint</strong> — Enforces <a href="https://www.conventionalcommits.org/">conventional commit</a> messages</li>
+  </ul>
+  <p><strong>Files created:</strong> <code>.husky/pre-commit</code>, <code>.husky/commit-msg</code>, <code>commitlint.config.js</code></p>
+
+  <!-- Auth -->
+  <h3 id="auth">auth</h3>
+  <pre><code>vibe add auth</code></pre>
+  <p>Provides authentication setup guidance and starter files for your stack. Includes middleware patterns, session handling recommendations, and integration points.</p>
+
+  <!-- DB -->
+  <h3 id="db">db</h3>
+  <pre><code>vibe add db</code></pre>
+  <p>Sets up Prisma ORM with a base schema and database client.</p>
+  <p><strong>Files created:</strong> <code>prisma/schema.prisma</code>, <code>src/lib/db.ts</code></p>
+
+  <h2>Claude-powered generators</h2>
+  <p>These features use Claude CLI to generate custom code based on your arguments. They require the Claude CLI to be installed.</p>
+
+  <!-- API -->
+  <h3 id="api">api</h3>
+  <pre><code>vibe add api users
+vibe add api products
+vibe add api orders</code></pre>
+  <p>Generates a complete REST API endpoint with CRUD operations and a corresponding test file. Claude generates the implementation based on your entity name and detected stack.</p>
+  <p><strong>Files created:</strong> API route file + test file (paths depend on your framework)</p>
+
+  <!-- Component -->
+  <h3 id="component">component</h3>
+  <pre><code>vibe add component Card
+vibe add component UserProfile
+vibe add component DataTable</code></pre>
+  <p>Generates a React component with TypeScript props interface, styling, and a test file.</p>
+  <p><strong>Files created:</strong> Component file + test file</p>
+
+  <!-- Model -->
+  <h3 id="model">model</h3>
+  <pre><code>vibe add model Order
+vibe add model Product
+vibe add model User</code></pre>
+  <p>Generates a Prisma model definition with appropriate fields, relations, and a migration.</p>
+  <p><strong>Files created:</strong> Updated <code>prisma/schema.prisma</code> + migration file</p>
+
+  <h2>Feature detection</h2>
+  <p>Each feature module includes a <code>detect()</code> method that checks whether the feature is already present in your project. This is used by:</p>
+  <ul>
+    <li><code>vibe add</code> — to skip already-installed features (unless <code>--force</code>)</li>
+    <li><code>vibe scan</code> — to report which practices are present/missing</li>
+    <li><code>vibe doctor</code> — to score health checks</li>
+  </ul>
+
+  <p>Detection is pure filesystem analysis — it checks for config files, directory structures, and package.json entries without making any external calls.</p>
+
+  <div class="page-nav">
+    <a href="commands.html">
+      <span class="label">Previous</span>
+      <span class="title">Commands Reference</span>
+    </a>
+    <a href="architecture.html" class="next">
+      <span class="label">Next</span>
+      <span class="title">Architecture</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
+    <br>
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.2.2
+  </p>
+</footer>
+
+</body>
+</html>

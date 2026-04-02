@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started — Vibe Init</title>
+  <meta name="description" content="Install vibe-init and scaffold your first project in under 60 seconds.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand)"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      vibe init
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links">
+      <a href="getting-started.html" class="active">Get Started</a>
+      <a href="commands.html">Commands</a>
+      <a href="features.html">Features</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a>
+      <a href="https://github.com/vishalm/vibe-init" class="nav-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="doc-page">
+  <div class="breadcrumb">
+    <a href="../index.html">Home</a> <span>/</span> Getting Started
+  </div>
+
+  <h1>Getting Started</h1>
+  <p class="subtitle">Install vibe-init and scaffold your first project in under 60 seconds.</p>
+
+  <h2>Installation</h2>
+
+  <p>Install the CLI globally via npm:</p>
+
+  <pre><code>npm install -g vibe-init-cli</code></pre>
+
+  <p>Verify the installation:</p>
+
+  <pre><code>vibe --version
+vibe --help</code></pre>
+
+  <h2>Prerequisites</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Requirement</th>
+        <th>Purpose</th>
+        <th>Required?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Node.js 20+</strong></td>
+        <td>Runtime environment</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Claude CLI</strong></td>
+        <td>AI-powered commands (<code>init</code>, <code>run</code>, <code>ask</code>)</td>
+        <td>For AI features</td>
+      </tr>
+      <tr>
+        <td><strong>ANTHROPIC_API_KEY</strong></td>
+        <td>ADR + doc generation via Anthropic SDK</td>
+        <td>For AI features</td>
+      </tr>
+      <tr>
+        <td><strong>Docker</strong></td>
+        <td>Local dev stack (PostgreSQL, Redis)</td>
+        <td>Optional</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <p><strong>No API keys needed</strong> for <code>vibe scan</code>, <code>vibe add</code>, and <code>vibe doctor</code> — they use pure filesystem analysis with zero external calls.</p>
+  </div>
+
+  <h3>Installing Claude CLI</h3>
+
+  <p>The Claude CLI is required for AI-powered commands. Install it globally:</p>
+
+  <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+
+  <h3>Setting up your API key</h3>
+
+  <p>Get your key from <a href="https://console.anthropic.com/settings/keys">console.anthropic.com</a> and set it as an environment variable:</p>
+
+  <pre><code># Add to your shell profile (~/.zshrc, ~/.bashrc, etc.)
+export ANTHROPIC_API_KEY="sk-ant-..."</code></pre>
+
+  <h2>Greenfield: Create a new project</h2>
+
+  <p>Scaffold a production-ready project from a plain-English idea:</p>
+
+  <pre><code>vibe init</code></pre>
+
+  <p>This walks you through an interactive 4-phase flow:</p>
+
+  <ol>
+    <li><strong>Ignition</strong> — Describe your idea in 1-5 sentences</li>
+    <li><strong>Enrichment</strong> — Claude generates personas, features (P0/P1/P2), tech stack, and architecture</li>
+    <li><strong>ADR</strong> — Architecture Decision Record is auto-generated</li>
+    <li><strong>Scaffold</strong> — 25+ production files are written to a new directory</li>
+  </ol>
+
+  <p>After scaffolding, start your project:</p>
+
+  <pre><code>cd my-project
+make setup    # Install deps, start Docker, run migrations
+make dev      # Start Next.js dev server</code></pre>
+
+  <div class="callout callout-success">
+    <p><strong>Tip:</strong> Use <code>vibe --dry-run init</code> to preview generated files without writing anything to disk.</p>
+  </div>
+
+  <h2>Brownfield: Analyze an existing project</h2>
+
+  <p>Already have a codebase? Run a scan to understand what you have and what's missing:</p>
+
+  <pre><code>cd my-existing-app
+vibe scan</code></pre>
+
+  <p>The scan detects your stack (Next.js, FastAPI, Go, Node.js) and checks for 10 engineering practices: Docker, CI/CD, testing, linting, env validation, logging, health checks, git hooks, security, and documentation.</p>
+
+  <h3>Fix the gaps</h3>
+
+  <p>For each missing practice, inject it with <code>vibe add</code>:</p>
+
+  <pre><code>vibe add docker          # Dockerfile + docker-compose.yml
+vibe add ci              # GitHub Actions CI pipeline
+vibe add testing         # Vitest config + sample test
+vibe add logging         # Pino structured logging
+vibe add validation      # Zod environment validation
+vibe add health          # /api/health endpoint
+vibe add hooks           # Husky + commitlint + lint-staged</code></pre>
+
+  <h3>Check your health score</h3>
+
+  <pre><code>vibe doctor</code></pre>
+
+  <p>This runs 17 weighted checks across 7 categories and gives you a letter grade (A+ through F) with specific fix suggestions.</p>
+
+  <h2>AI-powered commands</h2>
+
+  <h3>Code with context</h3>
+
+  <p>Spawn Claude Code with your CLAUDE.md injected as system context:</p>
+
+  <pre><code>vibe run "add pagination to the users API endpoint"
+vibe run "refactor auth middleware for role-based access"
+vibe run "write integration tests for the checkout flow"</code></pre>
+
+  <h3>Ask without changing files</h3>
+
+  <p>Get read-only advice from Claude about your project:</p>
+
+  <pre><code>vibe ask "should I use Redis for sessions or stick with JWT?"
+vibe ask "what are the security risks in the current auth setup?"
+vibe ask "which endpoints might have N+1 query problems?"</code></pre>
+
+  <h2>Generate a CLAUDE.md</h2>
+
+  <p>A <code>CLAUDE.md</code> file gives Claude context about your project's architecture, conventions, and patterns. Generate one from a scan:</p>
+
+  <pre><code>vibe scan --generate-claude-md</code></pre>
+
+  <div class="callout callout-info">
+    <p>This requires an <code>ANTHROPIC_API_KEY</code>. The generated file is written to your project root and used by <code>vibe run</code> and <code>vibe ask</code> for context injection.</p>
+  </div>
+
+  <h2>Global flags</h2>
+
+  <p>These flags work with any command:</p>
+
+  <table>
+    <thead>
+      <tr><th>Flag</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--verbose</code></td><td>Show detailed debug output and full error stack traces</td></tr>
+      <tr><td><code>--dry-run</code></td><td>Preview changes without writing files to disk</td></tr>
+      <tr><td><code>--version</code></td><td>Print the installed version</td></tr>
+      <tr><td><code>--help</code></td><td>Show help text for any command</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Page navigation -->
+  <div class="page-nav">
+    <a href="../index.html">
+      <span class="label">Previous</span>
+      <span class="title">Home</span>
+    </a>
+    <a href="commands.html" class="next">
+      <span class="label">Next</span>
+      <span class="title">Commands Reference</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
+    <br>
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.2.2
+  </p>
+</footer>
+
+</body>
+</html>

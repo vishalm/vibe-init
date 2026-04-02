@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecture — Vibe Init</title>
+  <meta name="description" content="How vibe-init is built: module structure, data flow, design decisions, and extension points.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand)"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      vibe init
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links">
+      <a href="getting-started.html">Get Started</a>
+      <a href="commands.html">Commands</a>
+      <a href="features.html">Features</a>
+      <a href="architecture.html" class="active">Architecture</a>
+      <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a>
+      <a href="https://github.com/vishalm/vibe-init" class="nav-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="doc-page">
+  <div class="breadcrumb">
+    <a href="../index.html">Home</a> <span>/</span> Architecture
+  </div>
+
+  <h1>Architecture</h1>
+  <p class="subtitle">How vibe-init is built: module structure, data flow, design decisions, and extension points.</p>
+
+  <h2>Project structure</h2>
+
+  <pre><code>src/
+├── index.ts                    # CLI entry point (Commander.js)
+├── version.ts                  # Single source of version truth
+├── commands/                   # 6 command handlers
+│   ├── init.ts                 # Orchestrates 4-phase init flow
+│   ├── scan.ts                 # Filesystem analysis + CLAUDE.md generation
+│   ├── add.ts                  # Feature injection
+│   ├── doctor.ts               # Health scoring
+│   ├── run.ts                  # Interactive Claude Code sessions
+│   └── ask.ts                  # Read-only Claude advisory
+├── phases/                     # Init command sub-workflows
+│   ├── ignition.ts             # Phase 0: Capture idea
+│   ├── enrichment.ts           # Phase 1: Claude enrichment loop
+│   ├── adr.ts                  # Phase 2: Architecture Decision Record
+│   ├── scaffold.ts             # Phase 3: Template rendering + file writing
+│   └── scan.ts                 # Scan workflow (shared with scan command)
+├── analyzers/                  # Pure filesystem detection
+│   ├── detector.ts             # Detection orchestrator
+│   ├── stack-detectors/        # 4 framework detectors
+│   │   ├── nextjs.ts
+│   │   ├── python-fastapi.ts
+│   │   ├── go.ts
+│   │   ├── generic-node.ts
+│   │   └── utils.ts
+│   └── practice-detectors/     # 10 practice detectors
+│       ├── docker.ts
+│       ├── ci.ts
+│       ├── testing.ts
+│       ├── linting.ts
+│       ├── env-validation.ts
+│       ├── logging.ts
+│       ├── health-check.ts
+│       ├── git-hooks.ts
+│       ├── security.ts
+│       └── documentation.ts
+├── features/                   # 12 pluggable feature modules
+│   ├── base.ts                 # FeatureModule interface + utilities
+│   ├── registry.ts             # Feature registry (DI container)
+│   ├── docker/                 # Template-based features...
+│   ├── ci/
+│   ├── testing/
+│   ├── logging/
+│   ├── validation/
+│   ├── health/
+│   ├── hooks/
+│   ├── auth/
+│   ├── db/
+│   ├── api/                    # Claude-powered generators...
+│   ├── component/
+│   └── model/
+├── scoring/                    # Health scoring engine
+│   ├── health.ts               # Score calculation + grading
+│   ├── checks.ts               # 17 health check definitions
+│   ├── detectors.ts            # File-based check detectors
+│   └── report.ts               # Report formatting
+├── claude/                     # AI integration layer
+│   ├── cli.ts                  # Claude CLI process spawning
+│   ├── api.ts                  # Anthropic SDK wrapper
+│   └── prompts/                # 6 prompt builders
+│       ├── enrichment.ts
+│       ├── scaffold.ts
+│       ├── adr.ts
+│       ├── scan.ts
+│       ├── add.ts
+│       └── run.ts
+├── templates/                  # EJS template management
+│   ├── registry.ts             # Stack definitions
+│   ├── renderer.ts             # EJS rendering engine
+│   └── stacks/
+│       └── nextjs-fullstack/   # 25+ production file templates
+├── types/                      # TypeScript interfaces
+│   ├── analysis.ts
+│   ├── enrichment.ts
+│   ├── feature.ts
+│   ├── template.ts
+│   ├── config.ts
+│   └── scoring.ts
+├── ui/                         # Terminal UI components
+│   ├── theme.ts
+│   ├── banner.ts
+│   ├── prompts.ts
+│   ├── spinner.ts
+│   ├── scan-display.ts
+│   └── report.ts
+└── utils/
+    ├── env.ts                  # Claude CLI + API key validation
+    ├── errors.ts               # Custom error classes
+    ├── fs.ts                   # File tree operations
+    └── validation.ts           # Zod-based parsing</code></pre>
+
+  <h2>Design decisions</h2>
+
+  <h3>Claude CLI vs. Anthropic API split</h3>
+
+  <p>vibe-init uses two distinct AI integration paths:</p>
+
+  <table>
+    <thead><tr><th>Path</th><th>Used for</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Claude CLI</strong></td>
+        <td>Interactive features: <code>init</code> enrichment, <code>run</code>, <code>ask</code>, Claude-powered generators</td>
+        <td>Streaming output, real-time user interaction, interactive sessions</td>
+      </tr>
+      <tr>
+        <td><strong>Anthropic SDK</strong></td>
+        <td>Batch generation: README.md, CLAUDE.md, ADR</td>
+        <td>Fire-and-forget, structured output, no interaction needed</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>This split keeps interactive commands responsive while batch operations run with simpler request/response semantics.</p>
+
+  <h3>Registry pattern for features</h3>
+
+  <p>Feature modules are registered in a central registry (<code>features/registry.ts</code>) that acts as a dependency injection container. Each module implements the <code>FeatureModule</code> interface:</p>
+
+  <pre><code>interface FeatureModule {
+  id: string;
+  name: string;
+  description: string;
+  detect(projectDir: string): boolean;
+  apply(projectDir: string, options: FeatureApplyOptions): ApplyResult;
+}</code></pre>
+
+  <p>This makes it trivial to add new features — create a module, implement the interface, register it.</p>
+
+  <h3>Specificity-first stack detection</h3>
+
+  <p>Stack detectors run in order of specificity:</p>
+
+  <ol>
+    <li><strong>Next.js</strong> — checks for <code>next.config.*</code></li>
+    <li><strong>Python / FastAPI</strong> — checks for <code>requirements.txt</code>, <code>pyproject.toml</code></li>
+    <li><strong>Go</strong> — checks for <code>go.mod</code></li>
+    <li><strong>Generic Node.js</strong> — checks for <code>package.json</code> (fallback)</li>
+  </ol>
+
+  <p>First match wins. This prevents false positives (e.g., a Next.js project also has <code>package.json</code>, but should be detected as Next.js, not generic Node).</p>
+
+  <h3>Weighted health scoring</h3>
+
+  <p>The doctor command uses a weighted scoring system rather than simple pass/fail:</p>
+
+  <pre><code>score = Math.round((earnedWeight / totalWeight) * 100)
+grade = lookupGrade(score)  // A+ through F</code></pre>
+
+  <p>Weights reflect relative importance: testing (20pts) and security (20pts) matter more than documentation (10pts). Each check maps to a <code>vibe add</code> command so failures are directly actionable.</p>
+
+  <h3>Three-tier validation</h3>
+
+  <ol>
+    <li><strong>Type level:</strong> TypeScript strict mode + Zod parsing for Claude responses</li>
+    <li><strong>Filesystem level:</strong> <code>fileExists()</code>, <code>readPackageJson()</code> for detection</li>
+    <li><strong>Process level:</strong> <code>checkClaudeCli()</code>, <code>checkAnthropicApiKey()</code> before AI operations</li>
+  </ol>
+
+  <h3>Dry-run mode</h3>
+
+  <p>Every write operation respects the <code>--dry-run</code> flag. This enables safe previewing of all file operations without committing to disk. Critical for building user confidence.</p>
+
+  <h2>Data flow</h2>
+
+  <h3>Init command</h3>
+
+  <pre><code>User idea (string)
+  → [Ignition] Capture idea + project name
+  → [Enrichment] Claude CLI → EnrichmentBrief (personas, features, arch)
+    → User review loop: Accept / Edit / Restart
+  → [ADR] Anthropic API → Architecture Decision Record (markdown)
+  → [Scaffold] TemplateContext → EJS renderer → RenderedFile[]
+    → Anthropic API → README.md + CLAUDE.md
+    → writeFileTree() → project directory on disk</code></pre>
+
+  <h3>Scan command</h3>
+
+  <pre><code>Project directory
+  → Stack detectors (ordered, first match wins)
+  → Practice detectors (10 in parallel)
+  → Build recommendations for missing practices
+  → ProjectAnalysis { stack, practices, missing, recommendations }
+  → [Optional] Anthropic API → CLAUDE.md file</code></pre>
+
+  <h3>Add command</h3>
+
+  <pre><code>Feature name + args
+  → Registry lookup → FeatureModule
+  → Stack detection (quick heuristic)
+  → feature.detect() → already installed?
+  → feature.apply() → template rendering or Claude generation
+  → writeFeatureFiles() → files on disk
+  → Print results + next steps</code></pre>
+
+  <h3>Doctor command</h3>
+
+  <pre><code>Project directory
+  → 17 health checks (each has weight + detector function)
+  → Weighted score calculation
+  → Grade lookup (A+ through F)
+  → HealthReport { score, grade, categories, checks[] }
+  → Formatted terminal report with fix suggestions</code></pre>
+
+  <h2>Error handling</h2>
+
+  <p>Custom error hierarchy rooted in <code>VibeError</code>:</p>
+
+  <pre><code>VibeError (base)
+├── ClaudeCliError        — Claude CLI not found or failed
+├── ApiKeyMissingError    — ANTHROPIC_API_KEY not set
+├── TemplateError         — EJS rendering failure
+├── ValidationError       — Zod parsing failure (invalid Claude response)
+├── FileSystemError       — File read/write failures
+└── FeatureError          — Feature detection or apply failures</code></pre>
+
+  <p>Each error includes a <code>userMessage</code> (user-facing, actionable) and <code>debugInfo</code> (internal details, shown with <code>--verbose</code>). The theme system color-codes error output (red for errors, yellow for warnings, green for success).</p>
+
+  <h2>Build pipeline</h2>
+
+  <pre><code># Development
+npm run dev          # esbuild watch mode
+
+# Production
+npm run lint         # tsc --noEmit (type check only)
+npm run test         # vitest (43 tests, 80% coverage thresholds)
+npm run build        # esbuild bundle → build/index.js
+                     # + copy templates to build/
+
+# CI (GitHub Actions)
+push/PR → npm ci → lint → test → build → verify executable</code></pre>
+
+  <p>The build process uses <strong>esbuild</strong> for sub-second bundling. It produces a single ESM bundle (<code>build/index.js</code>) with a shebang, then copies EJS templates and feature templates alongside it. External dependencies (<code>@anthropic-ai/sdk</code>, <code>commander</code>, etc.) are bundled into the output.</p>
+
+  <h2>Extension points</h2>
+
+  <p>The architecture supports extension in several ways:</p>
+
+  <table>
+    <thead><tr><th>Extension</th><th>How</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>New stack templates</td>
+        <td>Add a directory under <code>src/templates/stacks/</code>, register it in <code>templates/registry.ts</code></td>
+      </tr>
+      <tr>
+        <td>New feature modules</td>
+        <td>Create a module implementing <code>FeatureModule</code>, register in <code>features/registry.ts</code></td>
+      </tr>
+      <tr>
+        <td>New health checks</td>
+        <td>Add entries to the checks array in <code>scoring/checks.ts</code></td>
+      </tr>
+      <tr>
+        <td>New stack detectors</td>
+        <td>Add a detector to <code>analyzers/stack-detectors/</code>, insert in the ordered list in <code>detector.ts</code></td>
+      </tr>
+      <tr>
+        <td>New practice detectors</td>
+        <td>Add a detector to <code>analyzers/practice-detectors/</code>, register in <code>detector.ts</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Tech stack</h2>
+
+  <table>
+    <thead><tr><th>Component</th><th>Technology</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>CLI framework</td><td>Commander.js</td><td>Mature, minimal API, great help generation</td></tr>
+      <tr><td>Interactive prompts</td><td>Inquirer.js</td><td>Rich prompt types (confirm, input, select)</td></tr>
+      <tr><td>Template engine</td><td>EJS</td><td>Simple, familiar syntax, supports conditionals/loops</td></tr>
+      <tr><td>Validation</td><td>Zod</td><td>Runtime type safety for Claude responses</td></tr>
+      <tr><td>AI (interactive)</td><td>Claude CLI</td><td>Streaming, interactive sessions</td></tr>
+      <tr><td>AI (batch)</td><td>Anthropic SDK</td><td>Typed API, retry logic</td></tr>
+      <tr><td>Build</td><td>esbuild</td><td>Sub-second builds, ESM output</td></tr>
+      <tr><td>Tests</td><td>Vitest</td><td>Fast, ESM-native, compatible with Jest API</td></tr>
+      <tr><td>Terminal UI</td><td>Chalk + Ora</td><td>Colors + spinners for polished CLI UX</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-nav">
+    <a href="features.html">
+      <span class="label">Previous</span>
+      <span class="title">Features</span>
+    </a>
+    <a href="../index.html" class="next">
+      <span class="label">Back to</span>
+      <span class="title">Home</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
+    <br>
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.2.2
+  </p>
+</footer>
+
+</body>
+</html>
