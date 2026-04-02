@@ -74,6 +74,25 @@ export async function promptEditFeedback(): Promise<string> {
   return feedback.trim();
 }
 
+export async function promptText(
+  message: string,
+  options: { defaultValue?: string } = {}
+): Promise<string> {
+  const value = await input({
+    message,
+    default: options.defaultValue,
+    validate: (v) => (v.trim().length > 0 ? true : 'Please enter a value'),
+  });
+  return value.trim();
+}
+
+export async function promptSelect<T extends string>(
+  message: string,
+  choices: { name: string; value: T }[]
+): Promise<T> {
+  return select<T>({ message, choices });
+}
+
 export function displayEnrichmentBrief(brief: EnrichmentBrief): void {
   console.log('\n' + theme.brand('═══════════════════════════════════════'));
   console.log(theme.brand('🧠 ENRICHMENT COMPLETE'));
