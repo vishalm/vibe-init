@@ -1,6 +1,6 @@
 {
   "name": "vibe-init-cli",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "The last CLI you'll ever need — scaffolds production-ready full-stack projects using Claude",
   "type": "module",
   "main": "build/index.js",

@@ -29,7 +29,7 @@ export async function runScan(options: ScanOptions): Promise<ScanResult> {
 
   // Step 2: Optionally generate CLAUDE.md via Claude API
   let claudeMd: string | null = null;
-  if (options.generateClaudeMd && process.env.ANTHROPIC_API_KEY) {
+  if (options.generateClaudeMd) {
     claudeMd = await withSpinner('Generating CLAUDE.md with Claude', async () => {
       const prompt = buildScanPrompt(analysis);
       return callAnthropicApi(prompt, {

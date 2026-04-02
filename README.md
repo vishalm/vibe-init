@@ -46,7 +46,7 @@ vibe --version
 |------------|---------|-----------|---------|
 | **Node.js 20+** | Runtime | Yes | [nodejs.org](https://nodejs.org) |
 | **Claude CLI** | AI commands (`init`, `run`, `ask`) | For AI features | `npm i -g @anthropic-ai/claude-code` |
-| **ANTHROPIC_API_KEY** | ADR + doc generation | For AI features | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
+| **ANTHROPIC_API_KEY** | Faster batch generation (falls back to Claude CLI) | Optional | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
 | **Docker** | Local dev stack | Optional | [docker.com](https://docker.com) |
 
 > **Zero API keys needed** for `vibe scan`, `vibe add`, and `vibe doctor` — they use pure filesystem analysis.

@@ -46,8 +46,6 @@ export async function scanCommand(
       console.log('');
     } else if (!options.generateClaudeMd) {
       console.log(theme.dim('  Tip: Use --generate-claude-md to auto-generate a CLAUDE.md file.\n'));
-    } else if (!process.env.ANTHROPIC_API_KEY) {
-      console.log(theme.warning('  ANTHROPIC_API_KEY not set — skipped CLAUDE.md generation.\n'));
     }
   } catch (error) {
     if (error instanceof VibeError) {

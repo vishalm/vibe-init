@@ -12,12 +12,11 @@ export async function initCommand(config: CLIConfig): Promise<void> {
     // Precondition: Claude CLI must be available
     checkClaudeCli();
 
-    // Precondition: ANTHROPIC_API_KEY for batch generation
+    // Note: ANTHROPIC_API_KEY is optional — falls back to Claude CLI
     if (!process.env.ANTHROPIC_API_KEY) {
       console.log(
-        theme.warning(
-          '⚠️  ANTHROPIC_API_KEY not set. ADR and doc generation will be skipped.\n' +
-            '   Set it with: export ANTHROPIC_API_KEY=your-key-here\n'
+        theme.dim(
+          'ℹ  No ANTHROPIC_API_KEY — using Claude CLI for all generation.\n'
         )
       );
     }
@@ -35,14 +34,9 @@ export async function initCommand(config: CLIConfig): Promise<void> {
     console.log(theme.heading('\n📡 Phase 1: Enriching your idea...\n'));
     const brief = await runEnrichment(idea);
 
-    // Phase 2: ADR Generation
-    let adr = '# ADR 001: Initial Architecture\n\n_To be written._';
-    if (process.env.ANTHROPIC_API_KEY) {
-      console.log(theme.heading('\n📐 Phase 2: Generating Architecture Decision Record...\n'));
-      adr = await runAdrGeneration(brief, projectName);
-    } else {
-      console.log(theme.dim('\nSkipping ADR generation (no ANTHROPIC_API_KEY).\n'));
-    }
+    // Phase 2: ADR Generation (uses API key if available, otherwise Claude CLI)
+    console.log(theme.heading('\n📐 Phase 2: Generating Architecture Decision Record...\n'));
+    const adr = await runAdrGeneration(brief, projectName);
 
     // Phase 3: Scaffold
     console.log(theme.heading('\n🏗️  Phase 3: Scaffolding your project...\n'));

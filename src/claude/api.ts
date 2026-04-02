@@ -1,14 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { ApiKeyMissingError, VibeError } from '../utils/errors.js';
+import { VibeError } from '../utils/errors.js';
+import { callClaudeCli } from './cli.js';
 
 let client: Anthropic | null = null;
 
-function getClient(): Anthropic {
+function getClient(): Anthropic | null {
   if (client) return client;
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    throw new ApiKeyMissingError();
+    return null;
   }
 
   client = new Anthropic({ apiKey });
@@ -28,13 +29,24 @@ const DEFAULT_TEMPERATURE = 0.3;
 const MAX_RETRIES = 2;
 
 /**
- * Call the Anthropic API with a prompt and return the text response.
- * Includes retry logic with exponential backoff.
+ * Call Claude with a prompt and return the text response.
+ * Uses the Anthropic API if ANTHROPIC_API_KEY is set, otherwise falls back
+ * to Claude CLI (works with Claude Pro subscription).
  */
 export async function callAnthropicApi(
   userPrompt: string,
   options: ApiCallOptions = {}
 ): Promise<string> {
+  const anthropic = getClient();
+
+  // Fall back to Claude CLI when no API key is available
+  if (!anthropic) {
+    const fullPrompt = options.systemPrompt
+      ? `${options.systemPrompt}\n\n${userPrompt}`
+      : userPrompt;
+    return callClaudeCli(fullPrompt, { timeout: 180_000 });
+  }
+
   const {
     model = DEFAULT_MODEL,
     maxTokens = DEFAULT_MAX_TOKENS,
@@ -42,7 +54,6 @@ export async function callAnthropicApi(
     systemPrompt,
   } = options;
 
-  const anthropic = getClient();
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
@@ -67,8 +78,6 @@ export async function callAnthropicApi(
     } catch (error) {
       lastError = error as Error;
 
-      // Don't retry on auth errors
-      if (error instanceof ApiKeyMissingError) throw error;
       if (error instanceof Anthropic.AuthenticationError) {
         throw new VibeError(
           'Invalid ANTHROPIC_API_KEY. Check your key at https://console.anthropic.com/settings/keys'
