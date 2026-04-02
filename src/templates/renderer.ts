@@ -1,11 +1,28 @@
 import ejs from 'ejs';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TemplateRenderError } from '../utils/errors.js';
 import type { TemplateManifestEntry, TemplateContext, RenderedFile } from '../types/template.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+/**
+ * Resolves the base directory for templates.
+ * After esbuild bundles into build/index.js, __dirname is build/ so we need
+ * to add the 'templates' segment. In dev, __dirname is already src/templates/.
+ */
+function getTemplatesBaseDir(): string {
+  // In build: __dirname is build/ (index.js lives there), templates are at build/templates/
+  // In dev: __dirname is src/templates/ (this file lives there)
+  const templatesSubdir = join(__dirname, 'templates');
+  if (existsSync(join(templatesSubdir, 'stacks'))) {
+    return templatesSubdir;
+  }
+  // Dev mode: __dirname is already the templates directory
+  return __dirname;
+}
 
 /**
  * Resolves the path to a stack's template directory.
@@ -13,15 +30,19 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * In src: src/templates/stacks/<stackId>/
  */
 export function getStackTemplatesDir(stackId: string): string {
-  return join(__dirname, 'stacks', stackId);
+  return join(getTemplatesBaseDir(), 'stacks', stackId);
 }
 
 /**
  * Resolves the path to a feature's template directory.
  */
 export function getFeatureTemplatesDir(featureId: string): string {
-  // Features live in src/features/<id>/templates/ at dev time
-  // and build/features/<id>/templates/ at runtime
+  // In build: build/features/<id>/templates/
+  // In dev: src/features/<id>/templates/ (__dirname is src/templates/, so go up one level)
+  const buildPath = join(__dirname, 'features', featureId, 'templates');
+  if (existsSync(buildPath)) {
+    return buildPath;
+  }
   return join(__dirname, '..', 'features', featureId, 'templates');
 }
 
