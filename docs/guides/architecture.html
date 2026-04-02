@@ -48,18 +48,20 @@
   <pre><code>src/
 ├── index.ts                    # CLI entry point (Commander.js)
 ├── version.ts                  # Single source of version truth
-├── commands/                   # 6 command handlers
-│   ├── init.ts                 # Orchestrates 4-phase init flow
+├── commands/                   # 7 command handlers
+│   ├── init.ts                 # Framework generation (CLAUDE.md, skills, guardrails)
+│   ├── build.ts                # Idea → enrichment → Claude Code builds project
 │   ├── scan.ts                 # Filesystem analysis + CLAUDE.md generation
 │   ├── add.ts                  # Feature injection
 │   ├── doctor.ts               # Health scoring
 │   ├── run.ts                  # Interactive Claude Code sessions
 │   └── ask.ts                  # Read-only Claude advisory
-├── phases/                     # Init command sub-workflows
-│   ├── ignition.ts             # Phase 0: Capture idea
-│   ├── enrichment.ts           # Phase 1: Claude enrichment loop
-│   ├── adr.ts                  # Phase 2: Architecture Decision Record
-│   ├── scaffold.ts             # Phase 3: Template rendering + file writing
+├── phases/                     # Command sub-workflows
+│   ├── framework.ts            # Framework generation (CLAUDE.md, skills, settings)
+│   ├── ignition.ts             # Capture user idea + project name
+│   ├── enrichment.ts           # Claude enrichment loop (personas, features, arch)
+│   ├── adr.ts                  # Architecture Decision Record generation
+│   ├── scaffold.ts             # Template rendering (used by vibe add)
 │   └── scan.ts                 # Scan workflow (shared with scan command)
 ├── analyzers/                  # Pure filesystem detection
 │   ├── detector.ts             # Detection orchestrator
@@ -209,16 +211,29 @@ grade = lookupGrade(score)  // A+ through F</code></pre>
 
   <h2>Data flow</h2>
 
-  <h3>Init command</h3>
+  <h3>Init command (framework generation)</h3>
 
-  <pre><code>User idea (string)
+  <pre><code>Project directory
+  → Detect project type (greenfield vs brownfield)
+  → [If brownfield] Run stack + practice detection
+  → Ask project name + stack preference
+  → Generate CLAUDE.md via Claude (stack-aware, context-aware)
+  → Generate .claude/commands/ skills (test, lint, build, commit, review)
+  → Generate .claude/settings.json (permissions)
+  → Generate docs/adr/000-template.md
+  → writeFileTree() → framework files on disk</code></pre>
+
+  <h3>Build command</h3>
+
+  <pre><code>CLAUDE.md must exist (run vibe init first)
   → [Ignition] Capture idea + project name
   → [Enrichment] Claude CLI → EnrichmentBrief (personas, features, arch)
     → User review loop: Accept / Edit / Restart
-  → [ADR] Anthropic API → Architecture Decision Record (markdown)
-  → [Scaffold] TemplateContext → EJS renderer → RenderedFile[]
-    → Anthropic API → README.md + CLAUDE.md
-    → writeFileTree() → project directory on disk</code></pre>
+  → [ADR] Generate Architecture Decision Record → write to docs/adr/
+  → [README] Generate README.md
+  → [Build] Spawn Claude Code interactively with system prompt:
+      CLAUDE.md + EnrichmentBrief + ADR
+    → Claude Code builds the project following the framework</code></pre>
 
   <h3>Scan command</h3>
 
@@ -341,7 +356,7 @@ push/PR → npm ci → lint → test → build → verify executable</code></pre
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.0
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.1
   </p>
 </footer>
 

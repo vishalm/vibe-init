@@ -41,49 +41,77 @@
   </div>
 
   <h1>Commands Reference</h1>
-  <p class="subtitle">Complete reference for all six vibe-init CLI commands.</p>
+  <p class="subtitle">Complete reference for all seven vibe-init CLI commands.</p>
 
   <!-- ─── vibe init ────────────────────────────────── -->
   <h2 id="init">vibe init</h2>
 
-  <p>Scaffold a production-ready full-stack project from a plain-English idea. Runs an interactive 4-phase flow: Ignition, Enrichment, ADR, and Scaffold.</p>
+  <p>Set up the vibe coding framework — generates CLAUDE.md, custom skills, guardrails, and project conventions. This is the first step in the vibe coding workflow.</p>
 
-  <pre><code>vibe init
-vibe --dry-run init          # Preview files without writing
-vibe --verbose init          # Show debug output</code></pre>
+  <pre><code>vibe init                    # Interactive setup
+vibe --dry-run init          # Preview files without writing</code></pre>
 
   <h3>How it works</h3>
 
   <ol>
-    <li><strong>Ignition</strong> — You describe your idea in 1-5 sentences. Prompts you for a project name.</li>
-    <li><strong>Enrichment</strong> — Claude analyzes your idea and generates a structured brief containing:
-      <ul>
-        <li>Product vision and overview</li>
-        <li>User personas (2-3)</li>
-        <li>Prioritized features (P0/P1/P2)</li>
-        <li>Tech stack recommendation</li>
-        <li>Architecture overview</li>
-      </ul>
-      You can <strong>accept</strong>, <strong>edit</strong> (refine with feedback), or <strong>restart</strong> the enrichment.
-    </li>
-    <li><strong>ADR</strong> — An Architecture Decision Record is auto-generated via the Anthropic API, documenting decisions, alternatives, trade-offs, and 12-Factor compliance.</li>
-    <li><strong>Scaffold</strong> — 25+ production files are rendered from EJS templates and written to a new project directory. Includes app code, API routes, database schema, tests, Docker, CI/CD, and documentation (README.md + CLAUDE.md).</li>
+    <li><strong>Detect project type</strong> — Greenfield (empty directory) or brownfield (existing code). Brownfield projects are scanned automatically.</li>
+    <li><strong>Ask project name</strong> — Defaults to the directory name.</li>
+    <li><strong>Ask stack preference</strong> — (Greenfield only) Next.js, Express, FastAPI, or Go.</li>
+    <li><strong>Generate framework</strong> — Claude generates a comprehensive CLAUDE.md tailored to your stack + project context.</li>
+  </ol>
+
+  <h3>Generated files</h3>
+
+  <table>
+    <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>CLAUDE.md</code></td><td>Comprehensive AI coding instructions — conventions, architecture, security, testing</td></tr>
+      <tr><td><code>.claude/commands/test.md</code></td><td>Custom /test skill for Claude Code</td></tr>
+      <tr><td><code>.claude/commands/lint.md</code></td><td>Custom /lint skill</td></tr>
+      <tr><td><code>.claude/commands/build.md</code></td><td>Custom /build skill (lint + test + build)</td></tr>
+      <tr><td><code>.claude/commands/commit.md</code></td><td>Custom /commit skill (conventional commits)</td></tr>
+      <tr><td><code>.claude/commands/review.md</code></td><td>Custom /review skill (code quality review)</td></tr>
+      <tr><td><code>.claude/commands/add-feature.md</code></td><td>Custom /add-feature skill</td></tr>
+      <tr><td><code>.claude/settings.json</code></td><td>Permission allowlists and deny lists</td></tr>
+      <tr><td><code>docs/adr/000-template.md</code></td><td>Architecture Decision Record template</td></tr>
+      <tr><td><code>.gitignore</code></td><td>Stack-appropriate ignores (greenfield only)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Requirements</h3>
+
+  <ul>
+    <li><strong>Claude CLI</strong> — Required for CLAUDE.md generation</li>
+    <li><strong>ANTHROPIC_API_KEY</strong> — Optional (falls back to Claude CLI if not set)</li>
+  </ul>
+
+  <!-- ─── vibe build ───────────────────────────────── -->
+  <h2 id="build">vibe build</h2>
+
+  <p>Build a project from your idea using the vibe framework. Takes you through enrichment, generates an ADR, then spawns Claude Code to build the project with full context.</p>
+
+  <pre><code>vibe build                   # Interactive build flow
+vibe --verbose build         # Show debug output</code></pre>
+
+  <div class="callout callout-warning">
+    <p><strong>Requires <code>vibe init</code> first.</strong> CLAUDE.md must exist in the current directory.</p>
+  </div>
+
+  <h3>How it works</h3>
+
+  <ol>
+    <li><strong>Ignition</strong> — Describe your idea in 1-5 sentences. Name your project.</li>
+    <li><strong>Enrichment</strong> — Claude generates a structured brief: vision, personas, prioritized features (P0/P1/P2), tech stack, architecture, monetization, and go-to-market. You can <strong>accept</strong>, <strong>edit</strong>, or <strong>restart</strong>.</li>
+    <li><strong>ADR</strong> — Architecture Decision Record auto-generated, documenting decisions, alternatives, trade-offs, and 12-Factor compliance.</li>
+    <li><strong>Build</strong> — Claude Code is spawned interactively with your CLAUDE.md + enrichment brief + ADR as system context. It builds the entire project following your conventions.</li>
   </ol>
 
   <h3>Requirements</h3>
 
   <ul>
-    <li><strong>Claude CLI</strong> — Required for the enrichment phase</li>
-    <li><strong>ANTHROPIC_API_KEY</strong> — Required for ADR and documentation generation (skipped with a warning if missing)</li>
+    <li><strong>Claude CLI</strong> — Required (spawns Claude Code for the build phase)</li>
+    <li><strong>CLAUDE.md</strong> — Must exist (run <code>vibe init</code> first)</li>
   </ul>
-
-  <h3>Generated stack (V1)</h3>
-
-  <p>Currently scaffolds a Next.js 15 full-stack application: TypeScript (strict), Prisma ORM, PostgreSQL, Redis, Docker (multi-stage), GitHub Actions CI, Vitest, Pino logging, Zod validation, Husky + Commitlint.</p>
-
-  <div class="callout callout-info">
-    <p>Additional stack templates (FastAPI, Go) are planned for future releases. The template system is extensible via the stack registry.</p>
-  </div>
 
   <!-- ─── vibe scan ────────────────────────────────── -->
   <h2 id="scan">vibe scan [dir]</h2>
@@ -304,7 +332,7 @@ vibe ask "what's the best approach to add multi-tenancy?"</code></pre>
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.0
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.1
   </p>
 </footer>
 

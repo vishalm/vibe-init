@@ -183,11 +183,11 @@
 <div class="hero">
   <div class="badge">
     <span class="badge-dot"></span>
-    v0.3.0 — Project Intelligence CLI
+    v0.3.1 — Vibe Coding Framework
   </div>
-  <h1>Your entire<br><span>engineering team</span><br>in one CLI</h1>
+  <h1>The <span>vibe coding</span><br>framework CLI</h1>
   <p class="hero-sub">
-    Scaffold new projects. Analyze existing ones. Inject features. Score health. Powered by Claude AI — works with any stack.
+    Prepare the room. Build with AI. CLAUDE.md, skills, guardrails, conventions — then Claude builds your project. Works with any stack.
   </p>
   <div class="hero-actions">
     <a href="guides/getting-started.html" class="btn btn-primary">
@@ -211,30 +211,31 @@
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-title">Terminal — vibe init</span>
+      <span class="terminal-title">Terminal — vibe coding workflow</span>
     </div>
     <div class="terminal-body">
+      <div class="comment"># Step 1: Prepare the room</div>
       <div><span class="prompt">$</span> <span class="cmd">vibe init</span></div>
       <br>
-      <div class="info">+------------------------------------------+</div>
-      <div class="info">|  VIBE INIT — GOD MODE ACTIVATED           |</div>
-      <div class="info">|  The last CLI you'll ever need.           |</div>
-      <div class="info">+------------------------------------------+</div>
+      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Generating CLAUDE.md...</div>
+      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Created .claude/commands/ (6 skills)</div>
+      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Created .claude/settings.json</div>
+      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Created docs/adr/000-template.md</div>
       <br>
-      <div>Tell me your idea. Even one line.</div>
+      <div class="comment"># Step 2: Build from your idea</div>
+      <div><span class="prompt">$</span> <span class="cmd">vibe build</span></div>
+      <br>
+      <div>Tell me your idea.</div>
       <div><span class="prompt">></span> <span class="cmd">A pet health tracker for managing vet visits</span></div>
       <br>
       <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Enriching your idea with Claude...</div>
       <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Generating Architecture Decision Record...</div>
-      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Rendering project templates...</div>
-      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Generating documentation with Claude...</div>
-      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Writing 28 files to pet-health-tracker/...</div>
+      <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> Building with Claude Code...</div>
       <br>
       <div class="info" style="display:flex;align-items:center;gap:0.5rem">
         <svg width="14" height="14" style="color:var(--info);flex-shrink:0"><use href="#icon-sparkles"/></svg>
-        PROJECT SCAFFOLDED SUCCESSFULLY!
+        BUILD SESSION COMPLETE
       </div>
-      <div class="comment">  cd pet-health-tracker && make setup && make dev</div>
     </div>
   </div>
 </div>
@@ -297,25 +298,25 @@
 <section id="how-it-works" style="background: var(--bg-secondary);">
   <div class="container">
     <div class="section-label">How It Works</div>
-    <h2>Four phases. Zero config.</h2>
-    <p class="section-desc">From raw idea to running code in under 2 minutes.</p>
+    <h2>Two steps. Five minutes.</h2>
+    <p class="section-desc">Prepare the room, then build with AI.</p>
 
     <div class="steps">
       <div class="step">
-        <h3>Ignition</h3>
-        <p>You describe your idea in 1-5 sentences. Plain English, broken grammar, half-formed thoughts — all accepted.</p>
+        <h3>vibe init</h3>
+        <p>Set up the vibe coding framework: CLAUDE.md with conventions and guardrails, custom skills for Claude Code, permission settings, and ADR templates.</p>
       </div>
       <div class="step">
-        <h3>Enrichment</h3>
-        <p>Claude analyzes your idea and generates a structured brief: vision, personas, prioritized features (P0/P1/P2), tech stack, and architecture.</p>
+        <h3>Describe your idea</h3>
+        <p>Tell Claude what you want to build in plain English. It generates personas, prioritized features, tech stack, and architecture decisions.</p>
       </div>
       <div class="step">
-        <h3>Architecture</h3>
-        <p>An ADR is auto-generated documenting your architecture decision, alternatives considered, trade-offs, and 12-Factor compliance mapping.</p>
+        <h3>Claude builds it</h3>
+        <p>Claude Code builds the entire project following your CLAUDE.md framework — app code, API routes, database schema, tests, Docker, CI/CD.</p>
       </div>
       <div class="step">
-        <h3>Scaffold</h3>
-        <p>25+ production-ready files are generated: app code, API routes, database schema, tests, Docker, CI/CD, docs — all wired together.</p>
+        <h3>Keep building</h3>
+        <p>Use <code>vibe run</code> to add features, <code>vibe doctor</code> to check health, and <code>vibe add</code> to inject missing practices.</p>
       </div>
     </div>
   </div>
@@ -369,21 +370,34 @@
 <section id="commands" style="background: var(--bg-secondary);">
   <div class="container">
     <div class="section-label">CLI Reference</div>
-    <h2>Six commands.<br>Full lifecycle coverage.</h2>
-    <p class="section-desc">From greenfield scaffolding to brownfield analysis — every command you need.</p>
+    <h2>Seven commands.<br>Full lifecycle coverage.</h2>
+    <p class="section-desc">Prepare, build, analyze, enhance, score, code, and advise.</p>
 
     <div class="command-ref">
       <div class="command-card">
         <div>
           <div class="command-name">vibe init</div>
           <div class="command-flags">
-            <span class="flag">--verbose</span>
             <span class="flag">--dry-run</span>
           </div>
         </div>
         <div>
           <div class="command-desc">
-            Scaffold a new full-stack project from an idea. Interactive enrichment flow with Claude, ADR generation, and 25+ production-ready files.
+            Set up the vibe coding framework: CLAUDE.md, custom skills, guardrails, settings, and ADR template. Detects greenfield vs brownfield automatically.
+          </div>
+        </div>
+      </div>
+
+      <div class="command-card">
+        <div>
+          <div class="command-name">vibe build</div>
+          <div class="command-flags">
+            <span class="flag">--verbose</span>
+          </div>
+        </div>
+        <div>
+          <div class="command-desc">
+            Build a project from your idea. Enrichment generates personas, features, and architecture. Claude Code builds it using the CLAUDE.md framework.
           </div>
         </div>
       </div>
@@ -472,9 +486,9 @@
 <!-- Stack -->
 <section id="stack">
   <div class="container">
-    <div class="section-label">Generated Stack</div>
-    <h2>What ships in every project</h2>
-    <p class="section-desc">V1 scaffolds a complete TypeScript/Next.js full-stack application.</p>
+    <div class="section-label">Stack Support</div>
+    <h2>Tech stack awareness built in</h2>
+    <p class="section-desc">The framework adapts to your stack. CLAUDE.md, skills, and conventions are tailored to your technology choices.</p>
 
     <div class="stack-grid">
       <div class="stack-item">
@@ -546,12 +560,12 @@
           <div class="comment"># Install</div>
           <div><span class="prompt">$</span> <span class="cmd">npm install -g vibe-init-cli</span></div>
           <br>
-          <div class="comment"># Scaffold a new project</div>
+          <div class="comment"># Prepare the room</div>
+          <div><span class="prompt">$</span> <span class="cmd">mkdir my-app && cd my-app</span></div>
           <div><span class="prompt">$</span> <span class="cmd">vibe init</span></div>
           <br>
-          <div class="comment"># Start developing</div>
-          <div><span class="prompt">$</span> <span class="cmd">cd my-project && make setup</span></div>
-          <div><span class="prompt">$</span> <span class="cmd">make dev</span></div>
+          <div class="comment"># Build from your idea</div>
+          <div><span class="prompt">$</span> <span class="cmd">vibe build</span></div>
           <br>
           <div class="comment"># Check project health</div>
           <div><span class="prompt">$</span> <span class="cmd">vibe doctor</span></div>
@@ -566,17 +580,17 @@
           <span class="terminal-title">Existing Project (Brownfield)</span>
         </div>
         <div class="terminal-body">
-          <div class="comment"># Analyze your codebase</div>
+          <div class="comment"># Set up framework for existing project</div>
           <div><span class="prompt">$</span> <span class="cmd">cd my-existing-app</span></div>
-          <div><span class="prompt">$</span> <span class="cmd">vibe scan</span></div>
+          <div><span class="prompt">$</span> <span class="cmd">vibe init</span></div>
           <br>
           <div class="comment"># Add missing features</div>
           <div><span class="prompt">$</span> <span class="cmd">vibe add docker</span></div>
           <div><span class="prompt">$</span> <span class="cmd">vibe add ci</span></div>
           <div><span class="prompt">$</span> <span class="cmd">vibe add testing</span></div>
           <br>
-          <div class="comment"># Generate CLAUDE.md</div>
-          <div><span class="prompt">$</span> <span class="cmd">vibe scan --generate-claude-md</span></div>
+          <div class="comment"># Build with context</div>
+          <div><span class="prompt">$</span> <span class="cmd">vibe run "add caching"</span></div>
         </div>
       </div>
     </div>
@@ -610,7 +624,7 @@
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.0
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.1
   </p>
 </footer>
 

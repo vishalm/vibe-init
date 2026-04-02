@@ -106,63 +106,74 @@ vibe --help</code></pre>
   <pre><code># Add to your shell profile (~/.zshrc, ~/.bashrc, etc.)
 export ANTHROPIC_API_KEY="sk-ant-..."</code></pre>
 
-  <h2>Greenfield: Create a new project</h2>
+  <h2>The vibe coding workflow</h2>
 
-  <p>Scaffold a production-ready project from a plain-English idea:</p>
+  <p>vibe-init uses a two-step workflow: <strong>prepare the room</strong>, then <strong>build with AI</strong>.</p>
+
+  <pre><code># Step 1: Set up the vibe coding framework
+mkdir my-app && cd my-app
+vibe init
+
+# Step 2: Build your project from an idea
+vibe build</code></pre>
+
+  <h2>Step 1: vibe init — Prepare the room</h2>
+
+  <p>Run <code>vibe init</code> to generate the AI coding framework. This creates the files that make Claude Code effective on your project:</p>
 
   <pre><code>vibe init</code></pre>
 
-  <p>This walks you through an interactive 4-phase flow:</p>
+  <p>You'll be asked for a project name and stack preference (Next.js, Express, FastAPI, or Go). Then it generates:</p>
 
-  <ol>
-    <li><strong>Ignition</strong> — Describe your idea in 1-5 sentences</li>
-    <li><strong>Enrichment</strong> — Claude generates personas, features (P0/P1/P2), tech stack, and architecture</li>
-    <li><strong>ADR</strong> — Architecture Decision Record is auto-generated</li>
-    <li><strong>Scaffold</strong> — 25+ production files are written to a new directory</li>
-  </ol>
-
-  <p>After scaffolding, start your project:</p>
-
-  <pre><code>cd my-project
-make setup    # Install deps, start Docker, run migrations
-make dev      # Start Next.js dev server</code></pre>
+  <ul>
+    <li><strong>CLAUDE.md</strong> — Comprehensive coding instructions, conventions, architecture patterns, security guardrails, and testing strategy</li>
+    <li><strong>.claude/commands/</strong> — Custom skills for Claude Code: <code>/test</code>, <code>/lint</code>, <code>/build</code>, <code>/commit</code>, <code>/review</code>, <code>/add-feature</code></li>
+    <li><strong>.claude/settings.json</strong> — Permission allowlists and deny lists</li>
+    <li><strong>docs/adr/000-template.md</strong> — Architecture Decision Record template</li>
+    <li><strong>.gitignore</strong> — Stack-appropriate ignores</li>
+  </ul>
 
   <div class="callout callout-success">
     <p><strong>Tip:</strong> Use <code>vibe --dry-run init</code> to preview generated files without writing anything to disk.</p>
   </div>
 
-  <h2>Brownfield: Analyze an existing project</h2>
+  <h2>Step 2: vibe build — Build from your idea</h2>
 
-  <p>Already have a codebase? Run a scan to understand what you have and what's missing:</p>
+  <p>Once the framework is in place, run <code>vibe build</code> to describe your idea and let Claude build it:</p>
+
+  <pre><code>vibe build</code></pre>
+
+  <p>This walks you through a 3-phase flow:</p>
+
+  <ol>
+    <li><strong>Enrichment</strong> — Describe your idea in plain English. Claude generates personas, prioritized features (P0/P1/P2), tech stack, and architecture. You can accept, edit, or restart.</li>
+    <li><strong>ADR</strong> — Architecture Decision Record is auto-generated documenting decisions, alternatives, and trade-offs.</li>
+    <li><strong>Build</strong> — Claude Code is spawned with your CLAUDE.md framework + enrichment brief + ADR as full context. It builds the project following all your conventions.</li>
+  </ol>
+
+  <div class="callout callout-info">
+    <p><strong>Requires <code>vibe init</code> first.</strong> The build command needs CLAUDE.md to exist in your project directory.</p>
+  </div>
+
+  <h2>Brownfield: Existing projects</h2>
+
+  <p>Already have a codebase? <code>vibe init</code> detects it's an existing project and generates the framework from analysis:</p>
 
   <pre><code>cd my-existing-app
-vibe scan</code></pre>
+vibe init              # Scans project, generates CLAUDE.md + skills</code></pre>
 
-  <p>The scan detects your stack (Next.js, FastAPI, Go, Node.js) and checks for 10 engineering practices: Docker, CI/CD, testing, linting, env validation, logging, health checks, git hooks, security, and documentation.</p>
+  <p>Then use <code>vibe scan</code> for a detailed practice report, and <code>vibe add</code> to fix gaps:</p>
 
-  <h3>Fix the gaps</h3>
-
-  <p>For each missing practice, inject it with <code>vibe add</code>:</p>
-
-  <pre><code>vibe add docker          # Dockerfile + docker-compose.yml
+  <pre><code>vibe scan                # See what's missing
+vibe add docker          # Dockerfile + docker-compose.yml
 vibe add ci              # GitHub Actions CI pipeline
 vibe add testing         # Vitest config + sample test
 vibe add logging         # Pino structured logging
-vibe add validation      # Zod environment validation
-vibe add health          # /api/health endpoint
-vibe add hooks           # Husky + commitlint + lint-staged</code></pre>
+vibe doctor              # Check health score</code></pre>
 
-  <h3>Check your health score</h3>
+  <h2>Continue building with context</h2>
 
-  <pre><code>vibe doctor</code></pre>
-
-  <p>This runs 17 weighted checks across 7 categories and gives you a letter grade (A+ through F) with specific fix suggestions.</p>
-
-  <h2>AI-powered commands</h2>
-
-  <h3>Code with context</h3>
-
-  <p>Spawn Claude Code with your CLAUDE.md injected as system context:</p>
+  <p>After the initial build, use <code>vibe run</code> to continue adding features with full project context:</p>
 
   <pre><code>vibe run "add pagination to the users API endpoint"
 vibe run "refactor auth middleware for role-based access"
@@ -219,7 +230,7 @@ vibe ask "which endpoints might have N+1 query problems?"</code></pre>
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.0
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.1
   </p>
 </footer>
 
