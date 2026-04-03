@@ -147,9 +147,9 @@ vibe scan --generate-claude-md   # Also generate a CLAUDE.md file</code></pre>
       <tr><td>CI/CD</td><td><code>.github/workflows/</code>, <code>.gitlab-ci.yml</code>, <code>.circleci/</code></td></tr>
       <tr><td>Testing</td><td>Test config files (Vitest, Jest, pytest, Go test) + test directories</td></tr>
       <tr><td>Linting</td><td>ESLint, Biome, flake8, golangci-lint configs</td></tr>
-      <tr><td>Env Validation</td><td>Zod schema, dotenv-safe, Pydantic settings</td></tr>
-      <tr><td>Logging</td><td>Pino, Winston, structlog, slog imports/configs</td></tr>
-      <tr><td>Health Checks</td><td><code>/health</code> or <code>/api/health</code> route files</td></tr>
+      <tr><td>Env Validation</td><td>Env config files (<code>src/lib/env.ts</code>), dotenv-safe/envalid in package.json</td></tr>
+      <tr><td>Logging</td><td>Top-level <code>import</code> statements for Pino, Winston, or structlog</td></tr>
+      <tr><td>Health Checks</td><td>Health route files by path convention (<code>src/app/api/health/route.ts</code>, <code>src/routes/health.ts</code>, etc.)</td></tr>
       <tr><td>Git Hooks</td><td><code>.husky/</code>, <code>.pre-commit-config.yml</code>, lefthook config</td></tr>
       <tr><td>Security</td><td><code>.gitignore</code> exists and excludes <code>.env</code></td></tr>
       <tr><td>Documentation</td><td><code>README.md</code>, <code>CLAUDE.md</code>, <code>docs/adr/</code></td></tr>
@@ -161,7 +161,7 @@ vibe scan --generate-claude-md   # Also generate a CLAUDE.md file</code></pre>
   <table>
     <thead><tr><th>Flag</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td><code>--generate-claude-md</code></td><td>Generate a CLAUDE.md file with project context. Requires <code>ANTHROPIC_API_KEY</code>.</td></tr>
+      <tr><td><code>--generate-claude-md</code></td><td>Generate a CLAUDE.md file with project context (uses API key if available, falls back to Claude CLI).</td></tr>
     </tbody>
   </table>
 
@@ -332,7 +332,7 @@ vibe ask "what's the best approach to add multi-tenancy?"</code></pre>
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.1
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.2
   </p>
 </footer>
 
