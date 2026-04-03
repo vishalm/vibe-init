@@ -1,7 +1,7 @@
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { FeatureModule, FeatureApplyOptions, ApplyResult } from '../../types/feature.js';
-import { writeFeatureFiles, mergePackageJson } from '../base.js';
+import { writeFeatureFiles, mergePackageJson, fileExists } from '../base.js';
 
 const ZOD_ENV = `import { z } from 'zod';
 
@@ -32,16 +32,26 @@ export const validation: FeatureModule = {
   category: 'security',
   supportedStacks: ['nextjs', 'node'],
   detect(projectDir) {
-    const srcDir = join(projectDir, 'src');
-    if (!existsSync(srcDir)) return false;
-    try {
-      const files = readdirSync(srcDir, { recursive: true, encoding: 'utf-8' });
-      for (const file of files) {
-        if (!String(file).endsWith('.ts') && !String(file).endsWith('.js')) continue;
-        const content = readFileSync(join(srcDir, String(file)), 'utf-8');
-        if (content.includes('envSchema') || content.includes('dotenv-safe')) return true;
+    // Check for env validation file specifically (not matching string literals elsewhere)
+    if (fileExists(projectDir, 'src/lib/env.ts', 'src/lib/env.js', 'src/config/env.ts', 'src/env.ts')) {
+      const candidates = ['src/lib/env.ts', 'src/lib/env.js', 'src/config/env.ts', 'src/env.ts'];
+      for (const f of candidates) {
+        const fullPath = join(projectDir, f);
+        if (existsSync(fullPath)) {
+          const content = readFileSync(fullPath, 'utf-8');
+          if (content.includes('envSchema') || content.includes('z.object') || content.includes('dotenv-safe')) return true;
+        }
       }
-    } catch { /* ignore */ }
+    }
+    // Also check package.json for dotenv-safe dependency
+    const pkgPath = join(projectDir, 'package.json');
+    if (existsSync(pkgPath)) {
+      try {
+        const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+        const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+        if (allDeps['dotenv-safe'] || allDeps['@t3-oss/env-nextjs'] || allDeps['envalid']) return true;
+      } catch { /* ignore */ }
+    }
     return false;
   },
   async apply(projectDir, options: FeatureApplyOptions): Promise<ApplyResult> {

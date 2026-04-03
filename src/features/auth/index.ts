@@ -6,12 +6,16 @@ function scanForAuthImports(projectDir: string): boolean {
   const srcDir = join(projectDir, 'src');
   if (!existsSync(srcDir)) return false;
   const authPatterns = ['next-auth', '@clerk', 'passport', '@auth/'];
+  const importRegex = new RegExp(
+    `^(?:import\\s.*from\\s+|(?:const|let|var)\\s+\\w+\\s*=\\s*require\\s*\\(\\s*)['"](?:${authPatterns.map((p) => p.replace('/', '\\/')).join('|')})`,
+    'm',
+  );
   try {
     const files = readdirSync(srcDir, { recursive: true, encoding: 'utf-8' });
     for (const file of files) {
       if (!String(file).endsWith('.ts') && !String(file).endsWith('.js')) continue;
       const content = readFileSync(join(srcDir, String(file)), 'utf-8');
-      if (authPatterns.some((p) => content.includes(p))) return true;
+      if (importRegex.test(content)) return true;
     }
   } catch { /* ignore */ }
   return false;

@@ -33,15 +33,26 @@ structlog.configure(
 logger = structlog.get_logger()
 `;
 
+/**
+ * Scan for actual top-level import/require statements.
+ * Uses ^ anchor (multiline) to avoid matching template string content.
+ */
 function scanForImports(projectDir: string, patterns: string[]): boolean {
   const srcDir = join(projectDir, 'src');
   if (!existsSync(srcDir)) return false;
+  // Match only imports at start of line (not embedded in template literals)
+  const importRegex = new RegExp(
+    `^(?:import\\s.*from\\s+|(?:const|let|var)\\s+\\w+\\s*=\\s*require\\s*\\(\\s*)['"](?:${patterns.join('|')})['"/]`,
+    'm',
+  );
   try {
     const files = readdirSync(srcDir, { recursive: true, encoding: 'utf-8' });
     for (const file of files) {
       if (!file.endsWith('.ts') && !file.endsWith('.js') && !file.endsWith('.py')) continue;
       const content = readFileSync(join(srcDir, String(file)), 'utf-8');
-      if (patterns.some((p) => content.includes(p))) return true;
+      if (importRegex.test(content)) return true;
+      // Python: import structlog / from structlog import ...
+      if (file.endsWith('.py') && patterns.some((p) => new RegExp(`^(?:import ${p}|from ${p})`, 'm').test(content))) return true;
     }
   } catch { /* ignore read errors */ }
   return false;

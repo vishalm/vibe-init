@@ -1,7 +1,7 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { FeatureModule, FeatureApplyOptions, ApplyResult } from '../../types/feature.js';
-import { writeFeatureFiles } from '../base.js';
+import { fileExists, writeFeatureFiles } from '../base.js';
 
 const CI_YML = `name: CI
 
@@ -33,10 +33,15 @@ export const ci: FeatureModule = {
   category: 'infrastructure',
   supportedStacks: '*',
   detect(projectDir) {
+    // GitHub Actions
     const workflowDir = join(projectDir, '.github', 'workflows');
-    if (!existsSync(workflowDir)) return false;
-    const files = readdirSync(workflowDir);
-    return files.some((f) => f.endsWith('.yml') || f.endsWith('.yaml'));
+    if (existsSync(workflowDir)) {
+      const files = readdirSync(workflowDir);
+      if (files.some((f) => f.endsWith('.yml') || f.endsWith('.yaml'))) return true;
+    }
+    // GitLab CI, CircleCI
+    if (fileExists(projectDir, '.gitlab-ci.yml', '.circleci/config.yml')) return true;
+    return false;
   },
   async apply(projectDir, options: FeatureApplyOptions): Promise<ApplyResult> {
     const files = [{ path: '.github/workflows/ci.yml', content: CI_YML }];

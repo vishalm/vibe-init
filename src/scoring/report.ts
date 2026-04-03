@@ -62,12 +62,17 @@ export function formatReport(report: HealthReport): string {
     lines.push('');
   }
 
-  // Fix suggestions
+  // Fix suggestions (deduplicated by command)
   const fixable = report.checks.filter((c) => !c.passed && c.fixCommand);
   if (fixable.length > 0) {
+    const seen = new Set<string>();
     lines.push(theme.heading('  Suggested fixes:'));
     for (const check of fixable) {
-      lines.push(`    ${theme.brand('$')} ${theme.info(check.fixCommand!)}  ${theme.dim(`(${check.name})`)}`);
+      if (seen.has(check.fixCommand!)) continue;
+      seen.add(check.fixCommand!);
+      const related = fixable.filter((c) => c.fixCommand === check.fixCommand);
+      const names = related.map((c) => c.name).join(', ');
+      lines.push(`    ${theme.brand('$')} ${theme.info(check.fixCommand!)}  ${theme.dim(`(${names})`)}`);
     }
     lines.push('');
   }

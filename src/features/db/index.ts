@@ -8,12 +8,16 @@ function scanForDbImports(projectDir: string): boolean {
   const srcDir = join(projectDir, 'src');
   if (!existsSync(srcDir)) return false;
   const patterns = ['@prisma/client', 'sqlalchemy', 'drizzle-orm'];
+  const importRegex = new RegExp(
+    `^(?:import\\s.*from\\s+|(?:const|let|var)\\s+\\w+\\s*=\\s*require\\s*\\(\\s*)['"](?:${patterns.map((p) => p.replace('/', '\\/')).join('|')})`,
+    'm',
+  );
   try {
     const files = readdirSync(srcDir, { recursive: true, encoding: 'utf-8' });
     for (const file of files) {
       if (!String(file).endsWith('.ts') && !String(file).endsWith('.js')) continue;
       const content = readFileSync(join(srcDir, String(file)), 'utf-8');
-      if (patterns.some((p) => content.includes(p))) return true;
+      if (importRegex.test(content)) return true;
     }
   } catch { /* ignore */ }
   return false;
@@ -26,7 +30,7 @@ export const db: FeatureModule = {
   category: 'infrastructure',
   supportedStacks: ['nextjs', 'node'],
   detect(projectDir) {
-    return fileExists(projectDir, 'prisma') || scanForDbImports(projectDir);
+    return fileExists(projectDir, 'prisma/schema.prisma') || scanForDbImports(projectDir);
   },
   async apply(projectDir, options: FeatureApplyOptions): Promise<ApplyResult> {
     const files = [

@@ -1,4 +1,4 @@
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileExists } from '../features/base.js';
 
@@ -33,10 +33,22 @@ export function typescriptConfigured(projectDir: string): boolean {
 }
 
 export function linterConfigured(projectDir: string): boolean {
-  return fileExists(
+  // Config file check
+  if (fileExists(
     projectDir, '.eslintrc.js', '.eslintrc.json', '.eslintrc.yml',
     'eslint.config.js', 'eslint.config.mjs', 'biome.json', '.prettierrc', '.prettierrc.json',
-  );
+    'eslint.config.ts',
+  )) return true;
+  // Check package.json for lint script using tsc
+  const pkgPath = join(projectDir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const lintScript = pkg.scripts?.lint;
+      if (lintScript && (lintScript.includes('tsc') || lintScript.includes('eslint') || lintScript.includes('biome'))) return true;
+    } catch { /* ignore */ }
+  }
+  return false;
 }
 
 export function readmeExists(projectDir: string): boolean {

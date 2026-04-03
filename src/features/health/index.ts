@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { FeatureModule, FeatureApplyOptions, ApplyResult } from '../../types/feature.js';
 import { writeFeatureFiles } from '../base.js';
@@ -30,18 +30,25 @@ export default router;
 `;
 
 function findHealthRoute(projectDir: string): boolean {
-  const searchDirs = ['src', 'app', 'pages', 'routes'];
-  for (const dir of searchDirs) {
-    const fullDir = join(projectDir, dir);
-    if (!existsSync(fullDir)) continue;
-    try {
-      const files = readdirSync(fullDir, { recursive: true, encoding: 'utf-8' });
-      for (const file of files) {
-        if (!String(file).endsWith('.ts') && !String(file).endsWith('.js')) continue;
-        const content = readFileSync(join(fullDir, String(file)), 'utf-8');
-        if (content.includes('/health') || content.includes('/api/health')) return true;
-      }
-    } catch { /* ignore */ }
+  // Check for health route files by path convention
+  const healthPaths = [
+    'src/app/api/health/route.ts', 'src/app/api/health/route.js',
+    'src/routes/health.ts', 'src/routes/health.js',
+    'app/api/health/route.ts', 'app/api/health/route.js',
+    'pages/api/health.ts', 'pages/api/health.js',
+    'routes/health.ts', 'routes/health.js',
+  ];
+  for (const p of healthPaths) {
+    if (existsSync(join(projectDir, p))) return true;
+  }
+  // Fallback: check for health route in main app/server files
+  const serverFiles = ['src/index.ts', 'src/index.js', 'src/app.ts', 'src/app.js', 'src/server.ts', 'src/server.js'];
+  for (const f of serverFiles) {
+    const fullPath = join(projectDir, f);
+    if (!existsSync(fullPath)) continue;
+    const content = readFileSync(fullPath, 'utf-8');
+    // Match route definitions like .get('/health' or router.get('/api/health'
+    if (/\.\s*get\s*\(\s*['"]\/(?:api\/)?health['"]/.test(content)) return true;
   }
   return false;
 }
