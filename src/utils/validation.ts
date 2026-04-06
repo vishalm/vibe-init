@@ -23,6 +23,12 @@ const TechStackSchema = z.object({
   rationale: z.string(),
 });
 
+const GovernanceProfileSchema = z.object({
+  securityLevel: z.enum(['standard', 'elevated', 'strict']).default('standard'),
+  complianceNeeds: z.array(z.string()).default(['12-factor']),
+  accessibilityTarget: z.string().default('WCAG-AA'),
+}).optional();
+
 export const EnrichmentBriefSchema = z.object({
   vision: z.string().min(10),
   problemStatement: z.string().min(10),
@@ -36,6 +42,7 @@ export const EnrichmentBriefSchema = z.object({
   architecturePattern: z.string().min(1),
   monetizationHypothesis: z.string().min(1),
   goToMarketSignal: z.string().min(1),
+  governanceProfile: GovernanceProfileSchema,
 });
 
 /**

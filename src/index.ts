@@ -9,6 +9,7 @@ import { doctorCommand } from './commands/doctor.js';
 import { theme } from './ui/theme.js';
 import type { CLIConfig } from './types/config.js';
 import { VERSION } from './version.js';
+import { VibeError } from './utils/errors.js';
 
 const MAIN_HELP = `
 ${theme.brand('╔══════════════════════════════════════════════════════════╗')}
@@ -412,35 +413,34 @@ ${theme.heading('GENERATOR FEATURES')}  ${theme.dim('(require Claude CLI)')}
 `;
 
 const DOCTOR_HELP = `
-${theme.brand('vibe doctor')} — Score project health and suggest improvements
+${theme.brand('vibe doctor')} / ${theme.brand('vibe audit')} — Governance compliance audit
 
 ${theme.heading('DESCRIPTION')}
 
-  Runs 17 health checks across 7 categories to evaluate your project.
-  Calculates a weighted score and letter grade (A+ through F).
-  Suggests \`vibe add\` commands to fix detected gaps.
+  Audits your project against governance policies across 6 categories.
+  Policies have severity levels: block (mandatory), warn, info.
+  Suggests fixes for violations.
 
 ${theme.heading('USAGE')}
 
-  ${theme.brand('$')} vibe doctor                    ${theme.dim('Run health checks in current directory')}
-  ${theme.brand('$')} vibe --verbose doctor           ${theme.dim('Show detailed check results')}
+  ${theme.brand('$')} vibe doctor                    ${theme.dim('Run governance audit')}
+  ${theme.brand('$')} vibe audit                     ${theme.dim('Same command (alias)')}
+  ${theme.brand('$')} vibe --verbose doctor           ${theme.dim('Show detailed results')}
 
-${theme.heading('CATEGORIES')}
+${theme.heading('GOVERNANCE CATEGORIES')}
 
-  ${theme.info('Testing')}          Test framework, test files, coverage config
-  ${theme.info('CI/CD')}            Pipeline configuration
-  ${theme.info('Containerization')} Dockerfile, Docker Compose
-  ${theme.info('Security')}         Env validation, auth, .gitignore
-  ${theme.info('Code Quality')}     Git hooks, TypeScript, linter
-  ${theme.info('Documentation')}    README.md, CLAUDE.md
-  ${theme.info('Observability')}    Logging, health endpoint, database ORM
+  ${theme.info('Security')}          Secrets, env validation, auth, input validation, ORM, lockfile
+  ${theme.info('Accessibility')}     A11y linter, lang attribute, WCAG compliance
+  ${theme.info('Reliability')}       Health endpoint, CI/CD, testing, error boundaries, graceful shutdown
+  ${theme.info('Performance')}       Logging, bundle analysis, image optimization, containerization
+  ${theme.info('Compliance')}        12-Factor App — VCS, deps, config, backing services, port binding
+  ${theme.info('Clean Code')}        TypeScript strict, linter, formatter, git hooks, test coverage
 
-${theme.heading('GRADING SCALE')}
+${theme.heading('SEVERITY LEVELS')}
 
-  ${theme.success('A+ (95+)')}  ${theme.success('A (90-94)')}  ${theme.success('A- (85-89)')}
-  ${theme.info('B+ (80-84)')}  ${theme.info('B (75-79)')}  ${theme.info('B- (70-74)')}
-  ${theme.warning('C+ (65-69)')}  ${theme.warning('C (60-64)')}  ${theme.warning('C- (55-59)')}
-  ${theme.error('D (40-54)')}   ${theme.error('F (0-39)')}
+  ${theme.error('block')}   Mandatory — must be fixed before shipping
+  ${theme.warning('warn')}    Should be fixed — impacts quality
+  ${theme.dim('info')}    Nice to have — best practice recommendation
 `;
 
 program
@@ -457,18 +457,25 @@ program
     });
   });
 
+const doctorAction = async () => {
+  const opts = program.opts();
+  const config: CLIConfig = {
+    verbose: opts.verbose ?? false,
+    dryRun: false,
+  };
+  await doctorCommand(config);
+};
+
 program
   .command('doctor')
-  .description('Score project health and suggest improvements')
+  .description('Audit project governance compliance')
   .addHelpText('after', DOCTOR_HELP)
-  .action(async () => {
-    const opts = program.opts();
-    const config: CLIConfig = {
-      verbose: opts.verbose ?? false,
-      dryRun: false,
-    };
-    await doctorCommand(config);
-  });
+  .action(doctorAction);
+
+program
+  .command('audit')
+  .description('Audit project governance compliance (alias for doctor)')
+  .action(doctorAction);
 
 // Error handling
 program.exitOverride();
@@ -485,10 +492,17 @@ async function main(): Promise<void> {
       }
     }
 
-    console.error(
-      theme.error('\n💥 Unexpected error:'),
-      error instanceof Error ? error.message : String(error)
-    );
+    if (error instanceof VibeError) {
+      console.error(theme.error('\n💥 Error:'), error.userMessage);
+      if (program.opts().verbose && error.debugInfo) {
+        console.error(theme.dim(`  Debug: ${error.debugInfo}`));
+      }
+    } else {
+      console.error(
+        theme.error('\n💥 Unexpected error:'),
+        error instanceof Error ? error.message : String(error)
+      );
+    }
 
     if (program.opts().verbose && error instanceof Error && error.stack) {
       console.error(theme.dim(error.stack));

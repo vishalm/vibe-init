@@ -1,4 +1,5 @@
 import { generateFramework, detectProjectType } from '../phases/framework.js';
+import { generatePolicyYamlFiles } from '../governance/yaml-generator.js';
 import { writeFileTree } from '../utils/fs.js';
 import { checkClaudeCli } from '../utils/env.js';
 import { theme } from '../ui/theme.js';
@@ -6,14 +7,7 @@ import { showBanner } from '../ui/banner.js';
 import { VibeError } from '../utils/errors.js';
 import type { CLIConfig } from '../types/config.js';
 import { VERSION } from '../version.js';
-import { promptText, promptSelect } from '../ui/prompts.js';
-
-const STACK_CHOICES = [
-  { name: 'Next.js 15 (TypeScript, App Router, Prisma, PostgreSQL)', value: 'nextjs-fullstack' },
-  { name: 'Node.js + Express (TypeScript, Prisma, PostgreSQL)', value: 'node-express' },
-  { name: 'Python + FastAPI (SQLAlchemy, PostgreSQL)', value: 'python-fastapi' },
-  { name: 'Go (Gin/Chi, PostgreSQL)', value: 'go-api' },
-];
+import { promptText } from '../ui/prompts.js';
 
 export async function initCommand(config: CLIConfig): Promise<void> {
   try {
@@ -25,26 +19,23 @@ export async function initCommand(config: CLIConfig): Promise<void> {
     const projectType = detectProjectType(projectDir);
 
     if (projectType === 'brownfield') {
-      console.log(theme.info('  Detected existing project — generating framework from analysis.\n'));
+      console.log(theme.info('  Detected existing project — generating governance framework from analysis.\n'));
     } else {
-      console.log(theme.info('  Setting up vibe coding framework for a new project.\n'));
+      console.log(theme.info('  Setting up vibe coding governance framework.\n'));
     }
 
-    // Ask for project name
+    // Ask for project name only — stack is auto-detected from the problem
     const projectName = await promptText('Project name', {
       defaultValue: projectDir.split('/').pop() ?? 'my-project',
     });
 
-    // Ask for stack (greenfield only — brownfield auto-detects)
-    let stack = 'nextjs-fullstack';
-    if (projectType === 'greenfield') {
-      stack = await promptSelect('What stack are you building with?', STACK_CHOICES);
-    }
+    // Stack is 'auto' — the enrichment phase (in vibe build) will choose the right stack
+    const stack = 'auto';
 
-    // Generate the framework
-    console.log(theme.heading('\n🔧 Generating vibe coding framework...\n'));
+    // Step 1: Generate the vibe coding framework (CLAUDE.md, skills, settings, ADR template)
+    console.log(theme.heading('\n🔧 Generating vibe coding governance framework...\n'));
 
-    const files = await generateFramework({
+    const frameworkFiles = await generateFramework({
       projectDir,
       projectName,
       stack,
@@ -52,28 +43,40 @@ export async function initCommand(config: CLIConfig): Promise<void> {
       verbose: config.verbose,
     });
 
+    // Step 2: Generate governance policy YAML files
+    const policyFiles = generatePolicyYamlFiles();
+
+    const allFiles = [...frameworkFiles, ...policyFiles];
+
     if (config.dryRun) {
       console.log(theme.warning('\nDRY RUN — Files that would be created:'));
-      for (const file of files) {
+      for (const file of allFiles) {
         console.log(theme.dim(`  ${file.path}`));
       }
     } else {
-      writeFileTree(projectDir, files);
+      writeFileTree(projectDir, allFiles);
     }
 
     // Summary
     console.log('\n' + theme.brand('═══════════════════════════════════════'));
-    console.log(theme.success('  VIBE FRAMEWORK INITIALIZED'));
+    console.log(theme.success('  GOVERNANCE FRAMEWORK INITIALIZED'));
     console.log(theme.brand('═══════════════════════════════════════\n'));
-    console.log(theme.label('  Created:'));
-    for (const file of files) {
+
+    console.log(theme.label('  Framework:'));
+    for (const file of frameworkFiles) {
       console.log(theme.success('    ✔ ') + theme.value(file.path));
     }
+
+    console.log(theme.label('\n  Governance Policies:'));
+    for (const file of policyFiles) {
+      console.log(theme.success('    ✔ ') + theme.value(file.path));
+    }
+
     console.log(
       theme.label('\n  Next steps:\n') +
-        theme.value('  1. Review CLAUDE.md and customize for your project\n') +
+        theme.value('  1. Review CLAUDE.md and .vibe/policies/ for your project\n') +
         theme.value('  2. Run `vibe build` to build your project with Claude\n') +
-        theme.value('  3. Or start coding with `vibe run "<task>"`\n')
+        theme.value('  3. Run `vibe audit` to check governance compliance\n')
     );
   } catch (error) {
     if (error instanceof VibeError) {

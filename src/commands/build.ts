@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { runIgnition } from '../phases/ignition.js';
 import { runEnrichment } from '../phases/enrichment.js';
@@ -13,6 +13,19 @@ import { VibeError } from '../utils/errors.js';
 import type { CLIConfig } from '../types/config.js';
 import type { EnrichmentBrief } from '../types/enrichment.js';
 import type { RenderedFile } from '../types/template.js';
+
+function loadGovernancePolicies(projectDir: string): string {
+  const policyDir = join(projectDir, '.vibe', 'policies');
+  if (!existsSync(policyDir)) return '';
+  try {
+    const files = readdirSync(policyDir).filter((f) => f.endsWith('.yaml'));
+    const policies: string[] = [];
+    for (const file of files) {
+      policies.push(readFileSync(join(policyDir, file), 'utf-8'));
+    }
+    return policies.join('\n---\n');
+  } catch { return ''; }
+}
 
 export async function buildCommand(config: CLIConfig): Promise<void> {
   try {
@@ -78,7 +91,8 @@ export async function buildCommand(config: CLIConfig): Promise<void> {
     console.log(theme.dim('  Claude Code will use your CLAUDE.md framework, enrichment brief,'));
     console.log(theme.dim('  and ADR to build the project. You can guide it interactively.\n'));
 
-    const buildPrompt = buildProjectPrompt(claudeMd, brief, adr, projectName);
+    const governancePolicies = loadGovernancePolicies(projectDir);
+    const buildPrompt = buildProjectPrompt(claudeMd, brief, adr, projectName, governancePolicies);
 
     const exitCode = await spawnInteractiveClaude(buildPrompt);
 
@@ -106,6 +120,7 @@ function buildProjectPrompt(
   brief: EnrichmentBrief,
   adr: string,
   projectName: string,
+  governancePolicies: string = '',
 ): string {
   const features = [
     ...brief.features.p0.map((f) => `[P0] ${f.name}: ${f.description}`),
@@ -139,7 +154,13 @@ ${features}
 
 ===== ARCHITECTURE DECISION RECORD =====
 ${adr}
-===== END ADR =====
+===== END ADR =====${governancePolicies ? `
+
+===== GOVERNANCE POLICIES =====
+${governancePolicies}
+===== END GOVERNANCE POLICIES =====
+
+IMPORTANT: All code MUST comply with the governance policies above. Policies with severity "block" are mandatory — do not proceed if any blocking policy would be violated.` : ''}
 
 BUILD THIS PROJECT NOW. Follow these steps in order:
 

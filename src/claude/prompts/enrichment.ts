@@ -22,28 +22,40 @@ The JSON must match this exact schema:
     "p2": [{"name": "Feature name", "description": "What it does"}]
   },
   "techStack": {
-    "frontend": "Next.js 15 (App Router) with TypeScript",
-    "backend": "Next.js API Routes + Prisma ORM",
-    "database": "PostgreSQL",
-    "cache": "Redis",
-    "auth": "NextAuth.js v5",
-    "testing": "Vitest + React Testing Library",
-    "deployment": "Docker + GitHub Actions",
-    "rationale": "Why this stack fits"
+    "frontend": "The frontend framework and language",
+    "backend": "The backend framework and ORM",
+    "database": "The database engine",
+    "cache": "Cache layer or 'none' if not needed",
+    "auth": "Authentication approach",
+    "testing": "Testing framework",
+    "deployment": "Deployment approach",
+    "rationale": "Why this specific stack was chosen for this problem"
   },
-  "architecturePattern": "Modular monolith or Monolith — pick the right one",
+  "architecturePattern": "Monolith",
   "monetizationHypothesis": "How this could make money",
-  "goToMarketSignal": "Who to launch to first"
+  "goToMarketSignal": "Who to launch to first",
+  "governanceProfile": {
+    "securityLevel": "standard or elevated or strict",
+    "complianceNeeds": ["12-factor", "OWASP"],
+    "accessibilityTarget": "WCAG-AA"
+  }
 }
 
 CONSTRAINTS:
-- Tech stack is locked to TypeScript + Next.js (App Router) + Prisma + PostgreSQL + Redis
+- CHOOSE THE SIMPLEST TECH STACK that solves the problem. Do NOT default to a heavy stack.
+  - For simple CRUD apps: React + SQLite + Python FastAPI or Express.js
+  - For apps needing real-time: Next.js + PostgreSQL + Redis
+  - For data-heavy apps: Python FastAPI + PostgreSQL
+  - For CLI tools or APIs only: Node.js/Python without a frontend
+  - Always pick the LIGHTEST option that works. Avoid Redis/cache unless truly needed.
+- Architecture MUST be "Monolith" — no microservices for MVP
 - Limit P0 to 3-5 features (core MVP only)
 - Limit P1 to 3-5 features
 - Limit P2 to 2-3 features
 - Create 2-3 realistic personas (not generic)
-- Architecture pattern must be "Modular Monolith" or "Monolith" for MVP
-- Be specific and actionable — not vague buzzwords`;
+- Be specific and actionable — not vague buzzwords
+- Set governanceProfile.securityLevel based on data sensitivity (user data = elevated, financial = strict, internal tool = standard)
+- Set governanceProfile.accessibilityTarget to WCAG-AA for any user-facing web app`;
 
 export function buildEnrichmentPrompt(idea: string): string {
   return `${ENRICHMENT_SYSTEM_PROMPT}

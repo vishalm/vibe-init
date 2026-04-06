@@ -1,15 +1,6 @@
-import type { HealthReport, ScoreCategory, CategoryScore } from '../types/scoring.js';
+import type { GovernanceReport, GovernanceCategory, GovernanceCategoryScore } from '../types/governance.js';
+import { GOVERNANCE_CATEGORY_LABELS } from '../governance/registry.js';
 import { theme } from '../ui/theme.js';
-
-const CATEGORY_LABELS: Record<ScoreCategory, string> = {
-  'testing': 'Testing',
-  'ci-cd': 'CI/CD',
-  'containerization': 'Containerization',
-  'security': 'Security',
-  'code-quality': 'Code Quality',
-  'documentation': 'Documentation',
-  'observability': 'Observability',
-};
 
 function progressBar(score: number, max: number, width: number = 20): string {
   const ratio = max > 0 ? score / max : 0;
@@ -27,57 +18,85 @@ function gradeColor(grade: string): string {
   return theme.error(grade);
 }
 
-function formatCategory(cat: ScoreCategory, catScore: CategoryScore): string {
+function severityIcon(severity: string): string {
+  switch (severity) {
+    case 'block': return theme.error('\u2718');
+    case 'warn': return theme.warning('\u26A0');
+    case 'info': return theme.dim('\u2139');
+    default: return theme.dim('\u2022');
+  }
+}
+
+function formatCategory(cat: GovernanceCategory, catScore: GovernanceCategoryScore): string {
   const lines: string[] = [];
-  const label = CATEGORY_LABELS[cat].padEnd(18);
+  const label = GOVERNANCE_CATEGORY_LABELS[cat].padEnd(22);
   lines.push(`  ${theme.bold(label)} ${progressBar(catScore.score, catScore.maxScore)}`);
-  for (const check of catScore.checks) {
-    const icon = check.passed ? theme.success('\u2714') : theme.error('\u2718');
-    const name = check.passed ? theme.dim(check.name) : theme.value(check.name);
-    lines.push(`    ${icon} ${name}`);
+  for (const policy of catScore.policies) {
+    const icon = policy.passed ? theme.success('\u2714') : severityIcon(policy.severity);
+    const name = policy.passed ? theme.dim(policy.name) : theme.value(policy.name);
+    const sev = policy.passed ? '' : theme.dim(` [${policy.severity}]`);
+    lines.push(`    ${icon} ${name}${sev}`);
   }
   return lines.join('\n');
 }
 
-export function formatReport(report: HealthReport): string {
+export function formatReport(report: GovernanceReport): string {
   const lines: string[] = [];
 
   // Header
   lines.push('');
   lines.push(theme.brand('\u2550'.repeat(56)));
-  lines.push(theme.bold(`  Project Health Report`));
+  lines.push(theme.bold(`  Governance Audit Report`));
   lines.push(theme.dim(`  ${report.projectDir}  |  Stack: ${report.stack}`));
   lines.push(theme.brand('\u2550'.repeat(56)));
   lines.push('');
 
   // Grade badge
-  lines.push(`  Overall Score: ${theme.bold(String(report.overallScore))}  Grade: ${gradeColor(report.grade)}`);
-  lines.push(`  ${progressBar(report.overallScore, 100, 40)}`);
+  lines.push(`  Score: ${theme.bold(String(report.score))}  Grade: ${gradeColor(report.grade)}`);
+  lines.push(`  ${progressBar(report.score, 100, 40)}`);
   lines.push('');
 
   // Categories
-  const cats = Object.keys(report.categories) as ScoreCategory[];
+  const cats = Object.keys(report.categories) as GovernanceCategory[];
   for (const cat of cats) {
     lines.push(formatCategory(cat, report.categories[cat]));
     lines.push('');
   }
 
-  // Fix suggestions (deduplicated by command)
-  const fixable = report.checks.filter((c) => !c.passed && c.fixCommand);
-  if (fixable.length > 0) {
-    const seen = new Set<string>();
-    lines.push(theme.heading('  Suggested fixes:'));
-    for (const check of fixable) {
-      if (seen.has(check.fixCommand!)) continue;
-      seen.add(check.fixCommand!);
-      const related = fixable.filter((c) => c.fixCommand === check.fixCommand);
-      const names = related.map((c) => c.name).join(', ');
-      lines.push(`    ${theme.brand('$')} ${theme.info(check.fixCommand!)}  ${theme.dim(`(${names})`)}`);
+  // Violations grouped by severity
+  const blockers = report.violations.filter((v) => v.severity === 'block');
+  const warnings = report.violations.filter((v) => v.severity === 'warn');
+
+  if (blockers.length > 0) {
+    lines.push(theme.error('  BLOCKING VIOLATIONS:'));
+    for (const v of blockers) {
+      lines.push(`    ${theme.error('\u2718')} ${v.name}${v.fix ? `  ${theme.dim('→')} ${theme.info(v.fix)}` : ''}`);
     }
     lines.push('');
   }
 
-  lines.push(theme.dim(`  Scanned at ${report.timestamp}`));
+  if (warnings.length > 0) {
+    lines.push(theme.warning('  WARNINGS:'));
+    for (const v of warnings) {
+      lines.push(`    ${theme.warning('\u26A0')} ${v.name}${v.fix ? `  ${theme.dim('→')} ${theme.info(v.fix)}` : ''}`);
+    }
+    lines.push('');
+  }
+
+  // Fix suggestions (deduplicated)
+  const fixable = report.violations.filter((v) => v.fix);
+  if (fixable.length > 0) {
+    const seen = new Set<string>();
+    lines.push(theme.heading('  Quick fixes:'));
+    for (const v of fixable) {
+      if (seen.has(v.fix!)) continue;
+      seen.add(v.fix!);
+      lines.push(`    ${theme.brand('$')} ${theme.info(v.fix!)}`);
+    }
+    lines.push('');
+  }
+
+  lines.push(theme.dim(`  ${report.checks.length} policies checked | ${report.violations.length} violations | ${report.timestamp}`));
   lines.push('');
 
   return lines.join('\n');

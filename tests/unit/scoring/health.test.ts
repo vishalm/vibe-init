@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { scoreProject } from '../../../src/scoring/health.js';
 
-describe('Health scoring engine', () => {
+describe('Governance audit engine', () => {
   let tempDir: string;
 
   beforeEach(() => {
@@ -17,8 +17,8 @@ describe('Health scoring engine', () => {
 
   it('should return a score between 0 and 100', () => {
     const report = scoreProject(tempDir);
-    expect(report.overallScore).toBeGreaterThanOrEqual(0);
-    expect(report.overallScore).toBeLessThanOrEqual(100);
+    expect(report.score).toBeGreaterThanOrEqual(0);
+    expect(report.score).toBeLessThanOrEqual(100);
   });
 
   it('should return a valid letter grade', () => {
@@ -26,16 +26,15 @@ describe('Health scoring engine', () => {
     expect(report.grade).toMatch(/^[A-F][+-]?$/);
   });
 
-  it('should return all 7 categories', () => {
+  it('should return all 6 governance categories', () => {
     const report = scoreProject(tempDir);
     const catNames = Object.keys(report.categories);
-    expect(catNames).toContain('testing');
-    expect(catNames).toContain('ci-cd');
-    expect(catNames).toContain('containerization');
     expect(catNames).toContain('security');
-    expect(catNames).toContain('code-quality');
-    expect(catNames).toContain('documentation');
-    expect(catNames).toContain('observability');
+    expect(catNames).toContain('accessibility');
+    expect(catNames).toContain('reliability');
+    expect(catNames).toContain('performance');
+    expect(catNames).toContain('compliance');
+    expect(catNames).toContain('clean-code');
   });
 
   it('should return check results with required fields', () => {
@@ -46,6 +45,7 @@ describe('Health scoring engine', () => {
       expect(typeof check.passed).toBe('boolean');
       expect(check.weight).toBeGreaterThan(0);
       expect(check.category).toBeDefined();
+      expect(check.severity).toBeDefined();
     }
   });
 
@@ -54,25 +54,26 @@ describe('Health scoring engine', () => {
     expect(['F', 'D']).toContain(report.grade);
   });
 
-  it('should include fix suggestions for failed checks', () => {
+  it('should include fix suggestions for violations', () => {
     const report = scoreProject(tempDir);
-    const failed = report.checks.filter((c) => !c.passed);
-    const withFixes = failed.filter((c) => c.fixCommand);
-    // Most failed checks should have fix commands
+    const withFixes = report.violations.filter((v) => v.fix);
     expect(withFixes.length).toBeGreaterThan(0);
-    for (const check of withFixes) {
-      expect(check.fixCommand).toMatch(/^vibe add /);
+    // Fixes can be vibe add commands or shell commands
+    for (const v of withFixes) {
+      expect(v.fix!.length).toBeGreaterThan(0);
     }
   });
 
   it('should score well-configured project higher', () => {
-    writeFileSync(join(tempDir, 'package.json'), JSON.stringify({ name: 'test' }));
+    writeFileSync(join(tempDir, 'package.json'), JSON.stringify({ name: 'test', dependencies: { zod: '^3.0.0' } }));
+    writeFileSync(join(tempDir, 'package-lock.json'), '{}');
     writeFileSync(join(tempDir, 'README.md'), '# Test');
     writeFileSync(join(tempDir, 'CLAUDE.md'), '# AI');
     writeFileSync(join(tempDir, 'Dockerfile'), 'FROM node:20');
     writeFileSync(join(tempDir, 'docker-compose.yml'), 'version: "3"');
     writeFileSync(join(tempDir, '.gitignore'), '.env\nnode_modules/');
-    writeFileSync(join(tempDir, 'vitest.config.ts'), 'export default { test: { coverage: {} } }');
+    writeFileSync(join(tempDir, '.env.example'), 'DATABASE_URL=postgresql://localhost\nPORT=3000');
+    writeFileSync(join(tempDir, 'vitest.config.ts'), 'export default { test: { coverage: { thresholds: {} } } }');
     writeFileSync(join(tempDir, 'tsconfig.json'), JSON.stringify({ compilerOptions: { strict: true } }));
     mkdirSync(join(tempDir, '.github', 'workflows'), { recursive: true });
     writeFileSync(join(tempDir, '.github', 'workflows', 'ci.yml'), 'name: CI');
@@ -80,9 +81,10 @@ describe('Health scoring engine', () => {
     writeFileSync(join(tempDir, '.husky', 'pre-commit'), '#!/bin/sh');
     mkdirSync(join(tempDir, '__tests__'));
     writeFileSync(join(tempDir, '__tests__', 'app.test.ts'), 'test("ok", () => {})');
+    mkdirSync(join(tempDir, '.git'));
 
     const report = scoreProject(tempDir);
-    expect(report.overallScore).toBeGreaterThanOrEqual(50);
+    expect(report.score).toBeGreaterThanOrEqual(40);
   });
 
   it('should increase score when adding practices', () => {
@@ -91,14 +93,25 @@ describe('Health scoring engine', () => {
     writeFileSync(join(tempDir, 'README.md'), '# Test');
     writeFileSync(join(tempDir, '.gitignore'), '.env\n');
     writeFileSync(join(tempDir, 'Dockerfile'), 'FROM node:20');
+    writeFileSync(join(tempDir, 'package.json'), '{}');
+    mkdirSync(join(tempDir, '.git'));
 
     const betterReport = scoreProject(tempDir);
-    expect(betterReport.overallScore).toBeGreaterThan(emptyReport.overallScore);
+    expect(betterReport.score).toBeGreaterThan(emptyReport.score);
   });
 
   it('should include timestamp', () => {
     const report = scoreProject(tempDir);
     expect(report.timestamp).toBeDefined();
     expect(new Date(report.timestamp).getTime()).not.toBeNaN();
+  });
+
+  it('should list violations (failed policies)', () => {
+    const report = scoreProject(tempDir);
+    expect(report.violations.length).toBeGreaterThan(0);
+    for (const v of report.violations) {
+      expect(v.passed).toBe(false);
+      expect(['block', 'warn', 'info']).toContain(v.severity);
+    }
   });
 });

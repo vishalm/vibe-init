@@ -21,6 +21,12 @@ export interface TechStackRecommendation {
   rationale: string;
 }
 
+export interface GovernanceProfile {
+  securityLevel: 'standard' | 'elevated' | 'strict';
+  complianceNeeds: string[];
+  accessibilityTarget: string;
+}
+
 export interface EnrichmentBrief {
   vision: string;
   problemStatement: string;
@@ -34,4 +40,5 @@ export interface EnrichmentBrief {
   architecturePattern: string;
   monetizationHypothesis: string;
   goToMarketSignal: string;
+  governanceProfile?: GovernanceProfile;
 }

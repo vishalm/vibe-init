@@ -1,10 +1,10 @@
-import type { HealthReport } from '../types/scoring.js';
+import type { GovernanceReport } from '../types/governance.js';
 import { formatReport } from '../scoring/report.js';
 
 /**
- * Display a health report to the console with themed output.
+ * Display a governance audit report to the console.
  */
-export function displayReport(report: HealthReport): void {
+export function displayReport(report: GovernanceReport): void {
   const formatted = formatReport(report);
   console.log(formatted);
 }
