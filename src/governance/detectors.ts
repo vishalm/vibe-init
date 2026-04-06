@@ -181,6 +181,198 @@ export function logsAsStreams(dir: string): boolean {
   return false;
 }
 
+// ── API Governance ──────────────────────────────────────────────
+
+export function openApiSpecExists(dir: string): boolean {
+  return fileExists(dir, 'openapi.yaml', 'openapi.yml', 'openapi.json', 'swagger.yaml', 'swagger.json', 'docs/openapi.yaml');
+}
+
+export function apiVersioningDetected(dir: string): boolean {
+  const srcDir = join(dir, 'src');
+  if (!existsSync(srcDir)) return false;
+  // Check for versioned API routes (/v1/, /v2/) or versioning middleware
+  try {
+    const files = readdirSync(srcDir, { recursive: true, encoding: 'utf-8' });
+    for (const file of files) {
+      const fStr = String(file);
+      if (fStr.includes('/v1/') || fStr.includes('/v2/') || fStr.includes('api/v1') || fStr.includes('api/v2')) return true;
+    }
+  } catch { /* ignore */ }
+  return false;
+}
+
+export function rateLimitingConfigured(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      if (deps['express-rate-limit'] || deps['rate-limiter-flexible'] || deps['@nestjs/throttler'] || deps['slowapi']) return true;
+    } catch { /* ignore */ }
+  }
+  if (fileExists(dir, 'requirements.txt')) {
+    const content = readFileSync(join(dir, 'requirements.txt'), 'utf-8');
+    if (content.includes('slowapi') || content.includes('django-ratelimit')) return true;
+  }
+  return false;
+}
+
+// ── Data Governance ─────────────────────────────────────────────
+
+export function privacyPolicyDocumented(dir: string): boolean {
+  return fileExists(dir, 'PRIVACY.md', 'docs/privacy.md', 'PRIVACY_POLICY.md');
+}
+
+export function dataRetentionDocumented(dir: string): boolean {
+  return fileExists(dir, 'docs/data-retention.md', 'docs/data-governance.md', 'DATA_RETENTION.md');
+}
+
+export function encryptionLibraryPresent(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      if (deps['bcrypt'] || deps['bcryptjs'] || deps['argon2'] || deps['crypto-js']) return true;
+    } catch { /* ignore */ }
+  }
+  return false;
+}
+
+export function piiHandlingAware(dir: string): boolean {
+  // Check if there's a data model or schema mentioning email, phone, ssn etc.
+  // indicating awareness of PII fields
+  const schemaFiles = ['prisma/schema.prisma', 'src/models', 'src/schemas'];
+  for (const f of schemaFiles) {
+    const full = join(dir, f);
+    if (!existsSync(full)) continue;
+    if (existsSync(full) && readFileSync(full, 'utf-8').match(/email|phone|ssn|address|password/i)) return true;
+  }
+  return false;
+}
+
+// ── Code Review ─────────────────────────────────────────────────
+
+export function prTemplateExists(dir: string): boolean {
+  return fileExists(dir, '.github/pull_request_template.md', '.github/PULL_REQUEST_TEMPLATE.md',
+    '.github/PULL_REQUEST_TEMPLATE/default.md', 'docs/pull_request_template.md');
+}
+
+export function codeOwnersExists(dir: string): boolean {
+  return fileExists(dir, 'CODEOWNERS', '.github/CODEOWNERS', 'docs/CODEOWNERS');
+}
+
+export function issueTemplatesExist(dir: string): boolean {
+  return fileExists(dir, '.github/ISSUE_TEMPLATE', '.github/ISSUE_TEMPLATE.md',
+    '.github/ISSUE_TEMPLATE/bug_report.md', '.github/ISSUE_TEMPLATE/feature_request.md');
+}
+
+export function contributingGuideExists(dir: string): boolean {
+  return fileExists(dir, 'CONTRIBUTING.md', 'docs/CONTRIBUTING.md', '.github/CONTRIBUTING.md');
+}
+
+export function branchProtectionConfigured(dir: string): boolean {
+  // Can't directly check GitHub settings, but detect branch protection patterns
+  return fileExists(dir, '.github/branch-protection.yml', 'ruleset.json') ||
+    codeOwnersExists(dir); // CODEOWNERS implies review requirements
+}
+
+// ── Observability ───────────────────────────────────────────────
+
+export function tracingConfigured(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      if (deps['@opentelemetry/sdk-node'] || deps['@opentelemetry/api'] || deps['dd-trace'] || deps['@sentry/node']) return true;
+    } catch { /* ignore */ }
+  }
+  if (fileExists(dir, 'requirements.txt')) {
+    const content = readFileSync(join(dir, 'requirements.txt'), 'utf-8');
+    if (content.includes('opentelemetry') || content.includes('sentry-sdk') || content.includes('ddtrace')) return true;
+  }
+  return false;
+}
+
+export function metricsConfigured(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      if (deps['prom-client'] || deps['@opentelemetry/sdk-metrics'] || deps['hot-shots'] || deps['datadog-metrics']) return true;
+    } catch { /* ignore */ }
+  }
+  return false;
+}
+
+export function errorTrackingConfigured(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      if (deps['@sentry/node'] || deps['@sentry/nextjs'] || deps['bugsnag'] || deps['@bugsnag/js'] || deps['@rollbar/node']) return true;
+    } catch { /* ignore */ }
+  }
+  return false;
+}
+
+// ── Expanded Security ───────────────────────────────────────────
+
+export function vulnerabilityScanningConfigured(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      if (pkg.scripts?.['audit'] || pkg.scripts?.['security']) return true;
+    } catch { /* ignore */ }
+  }
+  return fileExists(dir, '.snyk', '.nsprc', '.auditrc');
+}
+
+export function securityPolicyDocumented(dir: string): boolean {
+  return fileExists(dir, 'SECURITY.md', '.github/SECURITY.md', 'docs/SECURITY.md');
+}
+
+// ── Expanded Documentation ──────────────────────────────────────
+
+export function changelogMaintained(dir: string): boolean {
+  return fileExists(dir, 'CHANGELOG.md', 'CHANGES.md', 'HISTORY.md');
+}
+
+export function architectureDocumented(dir: string): boolean {
+  return fileExists(dir, 'docs/architecture.md', 'docs/adr', 'ARCHITECTURE.md', 'docs/c4-model.md');
+}
+
+// ── Expanded Testing ────────────────────────────────────────────
+
+export function e2eTestingConfigured(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+      if (deps['playwright'] || deps['@playwright/test'] || deps['cypress'] || deps['puppeteer']) return true;
+    } catch { /* ignore */ }
+  }
+  return fileExists(dir, 'playwright.config.ts', 'cypress.config.ts', 'cypress.config.js');
+}
+
+export function loadTestingConfigured(dir: string): boolean {
+  return fileExists(dir, 'k6', 'load-test', 'artillery.yml', 'artillery.yaml') ||
+    (() => {
+      const pkgPath = join(dir, 'package.json');
+      if (!existsSync(pkgPath)) return false;
+      try {
+        const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+        const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+        return !!(deps['k6'] || deps['artillery'] || deps['autocannon']);
+      } catch { return false; }
+    })();
+}
+
 // ── Clean Code ──────────────────────────────────────────────────
 
 export function typescriptStrictMode(dir: string): boolean {

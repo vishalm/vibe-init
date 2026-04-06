@@ -5,6 +5,10 @@ import { reliabilityPolicies } from './policies/reliability.js';
 import { performancePolicies } from './policies/performance.js';
 import { compliancePolicies } from './policies/compliance.js';
 import { cleanCodePolicies } from './policies/clean-code.js';
+import { apiGovernancePolicies } from './policies/api-governance.js';
+import { dataGovernancePolicies } from './policies/data-governance.js';
+import { codeReviewPolicies } from './policies/code-review.js';
+import { observabilityPolicies } from './policies/observability.js';
 
 const ALL_POLICIES: GovernancePolicy[] = [
   ...securityPolicies,
@@ -13,10 +17,15 @@ const ALL_POLICIES: GovernancePolicy[] = [
   ...performancePolicies,
   ...compliancePolicies,
   ...cleanCodePolicies,
+  ...apiGovernancePolicies,
+  ...dataGovernancePolicies,
+  ...codeReviewPolicies,
+  ...observabilityPolicies,
 ];
 
 export const GOVERNANCE_CATEGORIES: GovernanceCategory[] = [
-  'security', 'accessibility', 'reliability', 'performance', 'compliance', 'clean-code',
+  'security', 'accessibility', 'reliability', 'performance', 'compliance',
+  'clean-code', 'api-governance', 'data-governance', 'code-review', 'observability',
 ];
 
 export const GOVERNANCE_CATEGORY_LABELS: Record<GovernanceCategory, string> = {
@@ -26,6 +35,10 @@ export const GOVERNANCE_CATEGORY_LABELS: Record<GovernanceCategory, string> = {
   'performance': 'Performance',
   'compliance': '12-Factor Compliance',
   'clean-code': 'Clean Code',
+  'api-governance': 'API Governance',
+  'data-governance': 'Data Governance',
+  'code-review': 'Code Review',
+  'observability': 'Observability',
 };
 
 export function getAllPolicies(): GovernancePolicy[] {

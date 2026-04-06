@@ -1,5 +1,5 @@
 import type { GovernancePolicy } from '../../types/governance.js';
-import { gracefulShutdownHandler, errorBoundaryPresent, databaseMigrationsVersioned } from '../detectors.js';
+import { gracefulShutdownHandler, errorBoundaryPresent, databaseMigrationsVersioned, e2eTestingConfigured, loadTestingConfigured } from '../detectors.js';
 
 export const reliabilityPolicies: GovernancePolicy[] = [
   {
@@ -34,5 +34,15 @@ export const reliabilityPolicies: GovernancePolicy[] = [
     description: 'Automated CI/CD pipeline must exist for consistent builds and deployments',
     severity: 'block', weight: 8, detector: 'ci',
     fix: 'vibe add ci',
+  },
+  {
+    id: 'rel-007', category: 'reliability', name: 'E2E testing configured',
+    description: 'End-to-end testing should be configured (Playwright, Cypress)',
+    severity: 'info', weight: 4, detector: e2eTestingConfigured,
+  },
+  {
+    id: 'rel-008', category: 'reliability', name: 'Load testing configured',
+    description: 'Load testing should be configured for performance regression detection (k6, Artillery)',
+    severity: 'info', weight: 3, detector: loadTestingConfigured,
   },
 ];

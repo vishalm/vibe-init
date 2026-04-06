@@ -1,6 +1,7 @@
 import type { GovernancePolicy } from '../../types/governance.js';
 import {
   gitignoreExcludesEnv, noHardcodedSecrets, dependencyLockfileExists, inputValidationConfigured,
+  vulnerabilityScanningConfigured, securityPolicyDocumented,
 } from '../detectors.js';
 
 export const securityPolicies: GovernancePolicy[] = [
@@ -50,5 +51,17 @@ export const securityPolicies: GovernancePolicy[] = [
     severity: 'warn', weight: 6, detector: 'db',
     fix: 'vibe add db',
     references: ['https://owasp.org/Top10/A03_2021-Injection/'],
+  },
+  {
+    id: 'sec-008', category: 'security', name: 'Vulnerability scanning',
+    description: 'Dependency vulnerability scanning should be configured (npm audit, Snyk)',
+    severity: 'warn', weight: 6, detector: vulnerabilityScanningConfigured,
+    references: ['https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/'],
+  },
+  {
+    id: 'sec-009', category: 'security', name: 'SECURITY.md present',
+    description: 'A security policy must document how to report vulnerabilities',
+    severity: 'info', weight: 4, detector: securityPolicyDocumented,
+    references: ['https://docs.github.com/en/code-security/getting-started/adding-a-security-policy-to-your-repository'],
   },
 ];

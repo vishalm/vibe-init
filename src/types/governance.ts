@@ -4,7 +4,11 @@ export type GovernanceCategory =
   | 'reliability'
   | 'performance'
   | 'compliance'
-  | 'clean-code';
+  | 'clean-code'
+  | 'api-governance'
+  | 'data-governance'
+  | 'code-review'
+  | 'observability';
 
 export type GovernanceSeverity = 'block' | 'warn' | 'info';
 
