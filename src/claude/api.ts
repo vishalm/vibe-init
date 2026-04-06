@@ -44,7 +44,9 @@ export async function callAnthropicApi(
     const fullPrompt = options.systemPrompt
       ? `${options.systemPrompt}\n\n${userPrompt}`
       : userPrompt;
-    return callClaudeCli(fullPrompt, { timeout: 180_000 });
+    // Scale timeout with expected output size: 5min for large generations, 3min default
+    const timeout = (options.maxTokens ?? 0) > 4000 ? 300_000 : 180_000;
+    return callClaudeCli(fullPrompt, { timeout });
   }
 
   const {

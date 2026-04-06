@@ -35,7 +35,7 @@ export async function callClaudeCli(
   const claudePath = checkClaudeCli();
 
   return new Promise<string>((resolve, reject) => {
-    const args = ['--print', '--output-format', 'text'];
+    const args = ['--print', '--output-format', 'text', '--max-turns', '1'];
     const child = spawn(claudePath, args, {
       stdio: ['pipe', 'pipe', 'pipe'],
       timeout,
@@ -62,11 +62,15 @@ export async function callClaudeCli(
       );
     });
 
-    child.on('close', (code) => {
+    child.on('close', (code, signal) => {
       if (code !== 0) {
+        const isTimeout = code === 143 || signal === 'SIGTERM';
+        const message = isTimeout
+          ? `Claude CLI timed out after ${Math.round(timeout / 1000)}s. Try setting ANTHROPIC_API_KEY for faster generation, or retry.`
+          : `Claude CLI exited with code ${code}`;
         reject(
           new ClaudeCliError(
-            `Claude CLI exited with code ${code}`,
+            message,
             `stderr: ${stderr}\nstdout (first 500): ${stdout.slice(0, 500)}`
           )
         );
