@@ -6,6 +6,7 @@ import { askCommand } from './commands/ask.js';
 import { scanCommand } from './commands/scan.js';
 import { addCommand } from './commands/add.js';
 import { doctorCommand } from './commands/doctor.js';
+import { anchorCommand } from './commands/anchor.js';
 import { theme } from './ui/theme.js';
 import type { CLIConfig } from './types/config.js';
 import { VERSION } from './version.js';
@@ -476,6 +477,17 @@ program
   .command('audit')
   .description('Audit project governance compliance (alias for doctor)')
   .action(doctorAction);
+
+program
+  .command('anchor [feature]')
+  .description('Create or view feature context anchors for persistent decision tracking')
+  .action(async (feature: string | undefined) => {
+    const opts = program.opts();
+    await anchorCommand(feature, {
+      verbose: opts.verbose ?? false,
+      dryRun: opts.dryRun ?? false,
+    });
+  });
 
 // Error handling
 program.exitOverride();

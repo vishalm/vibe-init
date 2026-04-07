@@ -1,5 +1,6 @@
 import { generateFramework, detectProjectType } from '../phases/framework.js';
 import { generatePolicyYamlFiles } from '../governance/yaml-generator.js';
+import { installAutoSkills, detectProjectSkills } from '../skills/autoskills.js';
 import { writeFileTree } from '../utils/fs.js';
 import { checkClaudeCli } from '../utils/env.js';
 import { theme } from '../ui/theme.js';
@@ -53,8 +54,18 @@ export async function initCommand(config: CLIConfig): Promise<void> {
       for (const file of allFiles) {
         console.log(theme.dim(`  ${file.path}`));
       }
+      const detected = detectProjectSkills(projectDir);
+      if (detected.length > 0) {
+        console.log(theme.dim('\n  Auto-detected skills: ' + detected.map((d) => d.name).join(', ')));
+      }
     } else {
       writeFileTree(projectDir, allFiles);
+    }
+
+    // Step 3: Auto-install stack-specific skills
+    let skillResult = { installed: [] as string[], skipped: [] as string[] };
+    if (!config.dryRun) {
+      skillResult = installAutoSkills(projectDir, { force: false, verbose: config.verbose });
     }
 
     // Summary
@@ -72,11 +83,19 @@ export async function initCommand(config: CLIConfig): Promise<void> {
       console.log(theme.success('    ✔ ') + theme.value(file.path));
     }
 
+    if (skillResult.installed.length > 0) {
+      console.log(theme.label('\n  Auto-installed Skills:'));
+      for (const skill of skillResult.installed) {
+        console.log(theme.success('    ✔ ') + theme.value(`.claude/commands/${skill}`));
+      }
+    }
+
     console.log(
       theme.label('\n  Next steps:\n') +
         theme.value('  1. Review CLAUDE.md and .vibe/policies/ for your project\n') +
-        theme.value('  2. Run `vibe build` to build your project with Claude\n') +
-        theme.value('  3. Run `vibe audit` to check governance compliance\n')
+        theme.value('  2. Run `vibe anchor "feature name"` to track feature decisions\n') +
+        theme.value('  3. Run `vibe build` to build your project with Claude\n') +
+        theme.value('  4. Run `vibe audit` to check governance compliance\n')
     );
   } catch (error) {
     if (error instanceof VibeError) {
