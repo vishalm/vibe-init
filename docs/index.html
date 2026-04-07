@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/theme.js"></script>
   <style>
     /* ── Hero (landing-only) ─────────────────────────── */
     .hero {
@@ -24,7 +25,7 @@
     .hero::before {
       content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
       width: 800px; height: 800px;
-      background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, var(--brand-subtle) 0%, transparent 70%);
       pointer-events: none;
     }
     .badge {
@@ -45,28 +46,6 @@
     h1 span { color: var(--brand); }
     .hero-sub { font-size: 1.25rem; color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem; }
     .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-
-    /* ── Diagram tabs ────────────────────────────────── */
-    .diagram-tabs {
-      display: flex; gap: 0.5rem; flex-wrap: wrap;
-      margin-bottom: 2rem;
-    }
-    .diagram-tab {
-      padding: 0.6rem 1.4rem; border-radius: 8px;
-      background: var(--bg-card); border: 1px solid var(--border);
-      color: var(--text-secondary); font-size: 0.9rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
-    }
-    .diagram-tab:hover { border-color: var(--brand); color: var(--text); }
-    .diagram-tab.active { background: var(--brand); color: white; border-color: var(--brand); }
-    .diagram-panel { display: none; }
-    .diagram-panel.active { display: block; }
-    .diagram-panel pre.mermaid {
-      background: #1a1a2e; border: 1px solid #3a3a5c;
-      border-radius: 16px; padding: 2rem; overflow-x: auto;
-      min-height: 300px; display: flex; align-items: center; justify-content: center;
-    }
   </style>
 </head>
 <body>
@@ -197,6 +176,10 @@
         <svg width="16" height="16" style="color:white"><use href="#icon-github"/></svg>
         GitHub
       </a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </div>
   </div>
 </nav>
@@ -668,7 +651,7 @@
       <button class="diagram-tab" onclick="showDiagram('policies')">Policy Categories</button>
     </div>
 
-    <div id="diagram-system" class="diagram-panel active">
+    <div id="diagram-system" class="diagram-panel active"><div class="diagram-container">
       <pre class="mermaid">
 graph TB
     subgraph CLI["CLI Layer — src/index.ts"]
@@ -731,9 +714,9 @@ graph TB
     contexts --> ctxdocs
 
       </pre>
-    </div>
+    </div></div>
 
-    <div id="diagram-workflow" class="diagram-panel">
+    <div id="diagram-workflow" class="diagram-panel"><div class="diagram-container">
       <pre class="mermaid">
 sequenceDiagram
     participant Dev as 👤 Developer
@@ -779,9 +762,9 @@ sequenceDiagram
     CLI-->>Dev: Grade: A+ to F + fix suggestions
     end
       </pre>
-    </div>
+    </div></div>
 
-    <div id="diagram-dataflow" class="diagram-panel">
+    <div id="diagram-dataflow" class="diagram-panel"><div class="diagram-container">
       <pre class="mermaid">
 flowchart LR
     subgraph INPUT["Input"]
@@ -821,9 +804,9 @@ flowchart LR
     enrich --> claudemd
 
       </pre>
-    </div>
+    </div></div>
 
-    <div id="diagram-policies" class="diagram-panel">
+    <div id="diagram-policies" class="diagram-panel"><div class="diagram-container">
       <pre class="mermaid">
 graph TB
     GOV["🛡️ Governance Engine<br/>59 Policies · 10 Categories"]
@@ -879,7 +862,7 @@ graph TB
     GOV --> OTHER
 
       </pre>
-    </div>
+    </div></div>
 
     <p style="text-align:center;margin-top:2rem">
       <a href="guides/architecture.html" class="btn btn-secondary">
@@ -916,58 +899,14 @@ graph TB
 
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-      darkMode: true,
-      background: '#1a1a2e',
-      primaryColor: '#2d2d44',
-      primaryTextColor: '#e0e0e0',
-      primaryBorderColor: '#FF6B35',
-      secondaryColor: '#1e1e36',
-      secondaryTextColor: '#e0e0e0',
-      secondaryBorderColor: '#4a4a6a',
-      tertiaryColor: '#252540',
-      tertiaryTextColor: '#e0e0e0',
-      tertiaryBorderColor: '#4a4a6a',
-      lineColor: '#8888aa',
-      textColor: '#e0e0e0',
-      mainBkg: '#2d2d44',
-      nodeBorder: '#FF6B35',
-      nodeTextColor: '#e0e0e0',
-      clusterBkg: '#16162b',
-      clusterBorder: '#3a3a5c',
-      titleColor: '#ffffff',
-      edgeLabelBackground: '#2d2d44',
-      actorBkg: '#2d2d44',
-      actorBorder: '#FF6B35',
-      actorTextColor: '#e0e0e0',
-      actorLineColor: '#8888aa',
-      signalColor: '#8888aa',
-      signalTextColor: '#e0e0e0',
-      labelBoxBkgColor: '#2d2d44',
-      labelBoxBorderColor: '#4a4a6a',
-      labelTextColor: '#e0e0e0',
-      loopTextColor: '#e0e0e0',
-      noteBkgColor: '#33334d',
-      noteTextColor: '#e0e0e0',
-      noteBorderColor: '#FF6B35',
-      activationBkgColor: '#3a3a5c',
-      activationBorderColor: '#FF6B35',
-      sequenceNumberColor: '#ffffff',
-      sectionBkgColor: '#2d2d44',
-      altSectionBkgColor: '#252540',
-      sectionBkgColor2: '#1e1e36',
-      fontFamily: 'Inter, -apple-system, sans-serif',
-      fontSize: '14px'
-    }
-  });
+  window.mermaid = mermaid;
+  // theme.js handles initialization via DOMContentLoaded
+  window.dispatchEvent(new Event('mermaid-loaded'));
 </script>
 <script>
   function showDiagram(id) {
-    document.querySelectorAll('.diagram-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.diagram-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.diagram-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.diagram-tab').forEach(function(t) { t.classList.remove('active'); });
     document.getElementById('diagram-' + id).classList.add('active');
     event.target.classList.add('active');
   }
