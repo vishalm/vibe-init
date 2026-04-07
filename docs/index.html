@@ -45,6 +45,28 @@
     h1 span { color: var(--brand); }
     .hero-sub { font-size: 1.25rem; color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem; }
     .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+    /* ── Diagram tabs ────────────────────────────────── */
+    .diagram-tabs {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .diagram-tab {
+      padding: 0.6rem 1.4rem; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .diagram-tab:hover { border-color: var(--brand); color: var(--text); }
+    .diagram-tab.active { background: var(--brand); color: white; border-color: var(--brand); }
+    .diagram-panel { display: none; }
+    .diagram-panel.active { display: block; }
+    .diagram-panel pre.mermaid {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem; overflow-x: auto;
+      min-height: 300px; display: flex; align-items: center; justify-content: center;
+    }
   </style>
 </head>
 <body>
@@ -632,6 +654,272 @@
   </div>
 </section>
 
+<!-- Architecture -->
+<section id="architecture">
+  <div class="container">
+    <div class="section-label">Architecture</div>
+    <h2>How the engine works</h2>
+    <p class="section-desc">Visual overview of modules, data flow, and governance lifecycle.</p>
+
+    <div class="diagram-tabs">
+      <button class="diagram-tab active" onclick="showDiagram('system')">System Overview</button>
+      <button class="diagram-tab" onclick="showDiagram('workflow')">Governance Workflow</button>
+      <button class="diagram-tab" onclick="showDiagram('dataflow')">Data Flow</button>
+      <button class="diagram-tab" onclick="showDiagram('policies')">Policy Categories</button>
+    </div>
+
+    <div id="diagram-system" class="diagram-panel active">
+      <pre class="mermaid">
+graph TB
+    subgraph CLI["CLI Layer — src/index.ts"]
+        direction LR
+        init["vibe init"]
+        build["vibe build"]
+        scan["vibe scan"]
+        add["vibe add"]
+        audit["vibe audit"]
+        anchor["vibe anchor"]
+        run["vibe run"]
+        ask["vibe ask"]
+    end
+
+    subgraph CORE["Core Engine"]
+        direction TB
+        framework["Framework Generator<br/>CLAUDE.md + Skills + Settings"]
+        enrichment["Enrichment Engine<br/>Personas · Features · Arch"]
+        governance["Governance Registry<br/>59 Policies · 10 Categories"]
+        analyzer["Stack Analyzer<br/>4 Stack + 10 Practice Detectors"]
+        features["Feature Registry<br/>12 Pluggable Modules"]
+        scoring["Health Scoring<br/>17 Weighted Checks"]
+        contexts["Context Anchoring<br/>Persistent Decision Docs"]
+    end
+
+    subgraph AI["AI Integration"]
+        direction LR
+        claude_cli["Claude CLI<br/>Interactive · Streaming"]
+        anthropic["Anthropic SDK<br/>Batch · Structured"]
+    end
+
+    subgraph OUTPUT["Generated Artifacts"]
+        direction LR
+        claudemd["CLAUDE.md"]
+        policies["59 YAML Policies"]
+        skills[".claude/commands/"]
+        adrs["docs/adr/"]
+        ctxdocs["docs/context/"]
+    end
+
+    init --> framework
+    init --> governance
+    build --> enrichment
+    scan --> analyzer
+    add --> features
+    audit --> scoring
+    audit --> governance
+    anchor --> contexts
+    run --> claude_cli
+    ask --> claude_cli
+
+    enrichment --> claude_cli
+    framework --> anthropic
+    scoring --> analyzer
+
+    framework --> claudemd
+    framework --> skills
+    governance --> policies
+    enrichment --> adrs
+    contexts --> ctxdocs
+
+    style CLI fill:#FF6B35,color:#fff,stroke:#E55A25
+    style CORE fill:#18181B,color:#FAFAFA,stroke:#FF6B35
+    style AI fill:#18181B,color:#FAFAFA,stroke:#06B6D4
+    style OUTPUT fill:#18181B,color:#FAFAFA,stroke:#22C55E
+    style init fill:#FF6B35,color:#fff
+    style build fill:#FF6B35,color:#fff
+    style scan fill:#FF6B35,color:#fff
+    style add fill:#FF6B35,color:#fff
+    style audit fill:#FF6B35,color:#fff
+    style anchor fill:#FF6B35,color:#fff
+    style run fill:#FF6B35,color:#fff
+    style ask fill:#FF6B35,color:#fff
+    style claude_cli fill:#06B6D4,color:#fff
+    style anthropic fill:#06B6D4,color:#fff
+    style claudemd fill:#22C55E,color:#fff
+    style policies fill:#22C55E,color:#fff
+    style skills fill:#22C55E,color:#fff
+    style adrs fill:#22C55E,color:#fff
+    style ctxdocs fill:#22C55E,color:#fff
+      </pre>
+    </div>
+
+    <div id="diagram-workflow" class="diagram-panel">
+      <pre class="mermaid">
+sequenceDiagram
+    participant Dev as 👤 Developer
+    participant CLI as ⚡ vibe CLI
+    participant Gov as 🛡️ Governance Engine
+    participant AI as 🤖 Claude
+    participant FS as 📁 Filesystem
+
+    rect rgb(30, 30, 33)
+    Note over Dev,FS: Phase 1 — Initialize Governance Framework
+    Dev->>CLI: vibe init
+    CLI->>Gov: Generate 59 YAML policies
+    Gov-->>FS: .vibe/policies/*.yaml
+    CLI->>AI: Generate CLAUDE.md (stack-aware)
+    AI-->>FS: CLAUDE.md
+    CLI->>FS: .claude/commands/ (auto-skills)
+    CLI->>FS: .claude/settings.json
+    CLI->>FS: docs/adr/000-template.md
+    CLI-->>Dev: ✅ Framework ready
+    end
+
+    rect rgb(30, 30, 33)
+    Note over Dev,FS: Phase 2 — Build with Governance
+    Dev->>CLI: vibe build
+    CLI->>Dev: Describe your idea
+    Dev-->>CLI: "A pet health tracker..."
+    CLI->>AI: Enrich idea → Personas, Features, Architecture
+    AI-->>CLI: EnrichmentBrief
+    CLI->>Dev: Review enrichment
+    Dev-->>CLI: Approve ✅
+    CLI->>AI: Build project (CLAUDE.md + Brief + ADR as context)
+    AI-->>FS: Complete project with governance
+    CLI-->>Dev: ✅ Project built
+    end
+
+    rect rgb(30, 30, 33)
+    Note over Dev,FS: Phase 3 — Anchor & Audit
+    Dev->>CLI: vibe anchor "auth"
+    CLI-->>FS: docs/context/auth.md (decisions, constraints, state)
+    Dev->>CLI: vibe audit
+    CLI->>Gov: Check 59 policies against project
+    Gov-->>CLI: 10-category scorecard
+    CLI-->>Dev: Grade: A+ to F + fix suggestions
+    end
+      </pre>
+    </div>
+
+    <div id="diagram-dataflow" class="diagram-panel">
+      <pre class="mermaid">
+flowchart LR
+    subgraph INPUT["Input"]
+        idea["💡 Idea"]
+        project["📂 Existing Project"]
+        feature["🔧 Feature Name"]
+    end
+
+    subgraph DETECT["Detection"]
+        stack["Stack Detection<br/>Next.js · FastAPI · Go · Node"]
+        practice["Practice Detection<br/>Docker · CI · Tests · Lint<br/>Env · Logging · Health<br/>Hooks · Security · Docs"]
+    end
+
+    subgraph PROCESS["Processing"]
+        enrich["Claude Enrichment<br/>→ Personas<br/>→ P0/P1/P2 Features<br/>→ Architecture"]
+        generate["Policy Generation<br/>→ 59 YAML files<br/>→ 10 categories<br/>→ 3 severity levels"]
+        score["Health Scoring<br/>→ 17 weighted checks<br/>→ 7 categories<br/>→ A+ through F"]
+    end
+
+    subgraph OUTPUT["Output"]
+        claudemd["CLAUDE.md<br/>AI Instructions"]
+        yaml["YAML Policies<br/>Security · Clean Code<br/>Reliability · 12-Factor<br/>API · Performance<br/>Data · Code Review<br/>Observability · A11y"]
+        codebase["Built Codebase<br/>Governed by CLAUDE.md"]
+        report["Audit Report<br/>Scorecard + Fix Commands"]
+    end
+
+    idea --> enrich
+    project --> stack
+    project --> practice
+    feature --> generate
+
+    stack --> enrich
+    practice --> score
+    enrich --> codebase
+    generate --> yaml
+    score --> report
+    enrich --> claudemd
+
+    style INPUT fill:#FF6B35,color:#fff,stroke:#E55A25
+    style DETECT fill:#06B6D4,color:#fff,stroke:#0891B2
+    style PROCESS fill:#EAB308,color:#000,stroke:#CA8A04
+    style OUTPUT fill:#22C55E,color:#fff,stroke:#16A34A
+      </pre>
+    </div>
+
+    <div id="diagram-policies" class="diagram-panel">
+      <pre class="mermaid">
+graph TB
+    GOV["🛡️ Governance Engine<br/>59 Policies · 10 Categories"]
+
+    subgraph SEC["Security — 9 policies"]
+        s1["sec-001 .gitignore"]
+        s2["sec-002 No secrets"]
+        s3["sec-003 Env validation"]
+        s4["sec-004 Input validation"]
+        s5["sec-005 ORM usage"]
+    end
+
+    subgraph CC["Clean Code — 10 policies"]
+        c1["cc-001 TS strict"]
+        c2["cc-002 No any"]
+        c3["cc-003 Linter"]
+        c4["cc-004 Formatter"]
+        c5["cc-005 Git hooks"]
+    end
+
+    subgraph REL["Reliability — 8 policies"]
+        r1["rel-001 Health endpoint"]
+        r2["rel-002 CI/CD"]
+        r3["rel-003 Tests"]
+        r4["rel-004 Graceful shutdown"]
+    end
+
+    subgraph API["API Governance — 5 policies"]
+        a1["api-001 OpenAPI spec"]
+        a2["api-002 Versioning"]
+        a3["api-003 Rate limiting"]
+    end
+
+    subgraph TF["12-Factor — 7 policies"]
+        t1["12f-001 VCS"]
+        t2["12f-002 Deps"]
+        t3["12f-003 Config in env"]
+    end
+
+    subgraph OTHER["+ 5 More Categories"]
+        o1["Code Review — 6"]
+        o2["Performance — 4"]
+        o3["Data Governance — 4"]
+        o4["Observability — 4"]
+        o5["Accessibility — 2"]
+    end
+
+    GOV --> SEC
+    GOV --> CC
+    GOV --> REL
+    GOV --> API
+    GOV --> TF
+    GOV --> OTHER
+
+    style GOV fill:#FF6B35,color:#fff,stroke:#E55A25
+    style SEC fill:#DC2626,color:#fff,stroke:#B91C1C
+    style CC fill:#06B6D4,color:#fff,stroke:#0891B2
+    style REL fill:#22C55E,color:#fff,stroke:#16A34A
+    style API fill:#EAB308,color:#000,stroke:#CA8A04
+    style TF fill:#8B5CF6,color:#fff,stroke:#7C3AED
+    style OTHER fill:#71717A,color:#fff,stroke:#52525B
+      </pre>
+    </div>
+
+    <p style="text-align:center;margin-top:2rem">
+      <a href="guides/architecture.html" class="btn btn-secondary">
+        Full architecture deep-dive
+        <svg width="16" height="16" style="color:var(--text-muted)"><use href="#icon-arrow-right"/></svg>
+      </a>
+    </p>
+  </div>
+</section>
+
 <!-- CTA -->
 <div class="cta-section">
   <div class="container">
@@ -656,5 +944,49 @@
   </p>
 </footer>
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#FF6B35',
+      primaryTextColor: '#FAFAFA',
+      primaryBorderColor: '#E55A25',
+      lineColor: '#71717A',
+      secondaryColor: '#18181B',
+      tertiaryColor: '#27272A',
+      background: '#0A0A0B',
+      mainBkg: '#18181B',
+      nodeBorder: '#FF6B35',
+      clusterBkg: '#111113',
+      clusterBorder: '#27272A',
+      titleColor: '#FAFAFA',
+      edgeLabelBackground: '#18181B',
+      actorBkg: '#FF6B35',
+      actorBorder: '#E55A25',
+      actorTextColor: '#FAFAFA',
+      signalColor: '#A1A1AA',
+      signalTextColor: '#FAFAFA',
+      noteBkgColor: '#27272A',
+      noteTextColor: '#FAFAFA',
+      noteBorderColor: '#71717A',
+      activationBkgColor: '#FF6B35',
+      sequenceNumberColor: '#FAFAFA',
+      sectionBkgColor: '#18181B',
+      altSectionBkgColor: '#111113',
+      fontFamily: 'Inter, sans-serif',
+      fontSize: '14px'
+    }
+  });
+</script>
+<script>
+  function showDiagram(id) {
+    document.querySelectorAll('.diagram-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.diagram-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('diagram-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
 </body>
 </html>
