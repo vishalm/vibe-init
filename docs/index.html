@@ -63,7 +63,7 @@
     .diagram-panel { display: none; }
     .diagram-panel.active { display: block; }
     .diagram-panel pre.mermaid {
-      background: var(--bg-card); border: 1px solid var(--border);
+      background: #1a1a2e; border: 1px solid #3a3a5c;
       border-radius: 16px; padding: 2rem; overflow-x: auto;
       min-height: 300px; display: flex; align-items: center; justify-content: center;
     }
@@ -730,25 +730,6 @@ graph TB
     enrichment --> adrs
     contexts --> ctxdocs
 
-    style CLI fill:#FF6B35,color:#fff,stroke:#E55A25
-    style CORE fill:#18181B,color:#FAFAFA,stroke:#FF6B35
-    style AI fill:#18181B,color:#FAFAFA,stroke:#06B6D4
-    style OUTPUT fill:#18181B,color:#FAFAFA,stroke:#22C55E
-    style init fill:#FF6B35,color:#fff
-    style build fill:#FF6B35,color:#fff
-    style scan fill:#FF6B35,color:#fff
-    style add fill:#FF6B35,color:#fff
-    style audit fill:#FF6B35,color:#fff
-    style anchor fill:#FF6B35,color:#fff
-    style run fill:#FF6B35,color:#fff
-    style ask fill:#FF6B35,color:#fff
-    style claude_cli fill:#06B6D4,color:#fff
-    style anthropic fill:#06B6D4,color:#fff
-    style claudemd fill:#22C55E,color:#fff
-    style policies fill:#22C55E,color:#fff
-    style skills fill:#22C55E,color:#fff
-    style adrs fill:#22C55E,color:#fff
-    style ctxdocs fill:#22C55E,color:#fff
       </pre>
     </div>
 
@@ -839,10 +820,6 @@ flowchart LR
     score --> report
     enrich --> claudemd
 
-    style INPUT fill:#FF6B35,color:#fff,stroke:#E55A25
-    style DETECT fill:#06B6D4,color:#fff,stroke:#0891B2
-    style PROCESS fill:#EAB308,color:#000,stroke:#CA8A04
-    style OUTPUT fill:#22C55E,color:#fff,stroke:#16A34A
       </pre>
     </div>
 
@@ -901,13 +878,6 @@ graph TB
     GOV --> TF
     GOV --> OTHER
 
-    style GOV fill:#FF6B35,color:#fff,stroke:#E55A25
-    style SEC fill:#DC2626,color:#fff,stroke:#B91C1C
-    style CC fill:#06B6D4,color:#fff,stroke:#0891B2
-    style REL fill:#22C55E,color:#fff,stroke:#16A34A
-    style API fill:#EAB308,color:#000,stroke:#CA8A04
-    style TF fill:#8B5CF6,color:#fff,stroke:#7C3AED
-    style OTHER fill:#71717A,color:#fff,stroke:#52525B
       </pre>
     </div>
 
@@ -948,34 +918,48 @@ graph TB
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({
     startOnLoad: true,
-    theme: 'dark',
+    theme: 'base',
     themeVariables: {
-      primaryColor: '#FF6B35',
-      primaryTextColor: '#FAFAFA',
-      primaryBorderColor: '#E55A25',
-      lineColor: '#71717A',
-      secondaryColor: '#18181B',
-      tertiaryColor: '#27272A',
-      background: '#0A0A0B',
-      mainBkg: '#18181B',
+      darkMode: true,
+      background: '#1a1a2e',
+      primaryColor: '#2d2d44',
+      primaryTextColor: '#e0e0e0',
+      primaryBorderColor: '#FF6B35',
+      secondaryColor: '#1e1e36',
+      secondaryTextColor: '#e0e0e0',
+      secondaryBorderColor: '#4a4a6a',
+      tertiaryColor: '#252540',
+      tertiaryTextColor: '#e0e0e0',
+      tertiaryBorderColor: '#4a4a6a',
+      lineColor: '#8888aa',
+      textColor: '#e0e0e0',
+      mainBkg: '#2d2d44',
       nodeBorder: '#FF6B35',
-      clusterBkg: '#111113',
-      clusterBorder: '#27272A',
-      titleColor: '#FAFAFA',
-      edgeLabelBackground: '#18181B',
-      actorBkg: '#FF6B35',
-      actorBorder: '#E55A25',
-      actorTextColor: '#FAFAFA',
-      signalColor: '#A1A1AA',
-      signalTextColor: '#FAFAFA',
-      noteBkgColor: '#27272A',
-      noteTextColor: '#FAFAFA',
-      noteBorderColor: '#71717A',
-      activationBkgColor: '#FF6B35',
-      sequenceNumberColor: '#FAFAFA',
-      sectionBkgColor: '#18181B',
-      altSectionBkgColor: '#111113',
-      fontFamily: 'Inter, sans-serif',
+      nodeTextColor: '#e0e0e0',
+      clusterBkg: '#16162b',
+      clusterBorder: '#3a3a5c',
+      titleColor: '#ffffff',
+      edgeLabelBackground: '#2d2d44',
+      actorBkg: '#2d2d44',
+      actorBorder: '#FF6B35',
+      actorTextColor: '#e0e0e0',
+      actorLineColor: '#8888aa',
+      signalColor: '#8888aa',
+      signalTextColor: '#e0e0e0',
+      labelBoxBkgColor: '#2d2d44',
+      labelBoxBorderColor: '#4a4a6a',
+      labelTextColor: '#e0e0e0',
+      loopTextColor: '#e0e0e0',
+      noteBkgColor: '#33334d',
+      noteTextColor: '#e0e0e0',
+      noteBorderColor: '#FF6B35',
+      activationBkgColor: '#3a3a5c',
+      activationBorderColor: '#FF6B35',
+      sequenceNumberColor: '#ffffff',
+      sectionBkgColor: '#2d2d44',
+      altSectionBkgColor: '#252540',
+      sectionBkgColor2: '#1e1e36',
+      fontFamily: 'Inter, -apple-system, sans-serif',
       fontSize: '14px'
     }
   });

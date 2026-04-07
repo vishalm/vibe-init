@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../assets/style.css">
   <style>
     .diagram-container {
-      background: var(--bg-card); border: 1px solid var(--border);
+      background: #1a1a2e; border: 1px solid #3a3a5c;
       border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
       overflow-x: auto;
     }
@@ -131,12 +131,6 @@ graph TB
     run --> cli_ai
     ask --> cli_ai
 
-    style CLI fill:#FF6B35,color:#fff,stroke:#E55A25
-    style PHASES fill:#18181B,color:#FAFAFA,stroke:#06B6D4
-    style ANALYZERS fill:#18181B,color:#FAFAFA,stroke:#EAB308
-    style GOV fill:#18181B,color:#FAFAFA,stroke:#DC2626
-    style FEATURES fill:#18181B,color:#FAFAFA,stroke:#22C55E
-    style AI fill:#18181B,color:#FAFAFA,stroke:#8B5CF6
     </pre>
   </div>
 
@@ -159,9 +153,6 @@ flowchart LR
     G --> I
     H --> I
 
-    style A fill:#FF6B35,color:#fff
-    style B fill:#EAB308,color:#000
-    style I fill:#22C55E,color:#fff
     </pre>
   </div>
 
@@ -179,11 +170,6 @@ flowchart LR
     F --> G["Spawn Claude Code<br/>CLAUDE.md + Brief + ADR"]
     G --> H["Built Project<br/>With Full Governance"]
 
-    style A fill:#DC2626,color:#fff
-    style C fill:#06B6D4,color:#fff
-    style D fill:#EAB308,color:#000
-    style G fill:#8B5CF6,color:#fff
-    style H fill:#22C55E,color:#fff
     </pre>
   </div>
 
@@ -204,9 +190,6 @@ flowchart LR
     G --> H
     H --> I["Grade: A+ to F<br/>+ Fix Suggestions"]
 
-    style A fill:#FF6B35,color:#fff
-    style H fill:#EAB308,color:#000
-    style I fill:#22C55E,color:#fff
     </pre>
   </div>
 
@@ -232,10 +215,6 @@ graph LR
     CLI_PROC["Claude CLI Process<br/>Streaming · Real-time"] --- INTERACTIVE
     API_REQ["Anthropic API<br/>Request/Response · Structured"] --- BATCH
 
-    style INTERACTIVE fill:#06B6D4,color:#fff,stroke:#0891B2
-    style BATCH fill:#8B5CF6,color:#fff,stroke:#7C3AED
-    style CLI_PROC fill:#06B6D4,color:#fff
-    style API_REQ fill:#8B5CF6,color:#fff
     </pre>
   </div>
 
@@ -560,22 +539,29 @@ push/PR → npm ci → lint → test → build → verify executable</code></pre
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
   mermaid.initialize({
     startOnLoad: true,
-    theme: 'dark',
+    theme: 'base',
     themeVariables: {
-      primaryColor: '#FF6B35',
-      primaryTextColor: '#FAFAFA',
-      primaryBorderColor: '#E55A25',
-      lineColor: '#71717A',
-      secondaryColor: '#18181B',
-      tertiaryColor: '#27272A',
-      background: '#0A0A0B',
-      mainBkg: '#18181B',
+      darkMode: true,
+      background: '#1a1a2e',
+      primaryColor: '#2d2d44',
+      primaryTextColor: '#e0e0e0',
+      primaryBorderColor: '#FF6B35',
+      secondaryColor: '#1e1e36',
+      secondaryTextColor: '#e0e0e0',
+      secondaryBorderColor: '#4a4a6a',
+      tertiaryColor: '#252540',
+      tertiaryTextColor: '#e0e0e0',
+      tertiaryBorderColor: '#4a4a6a',
+      lineColor: '#8888aa',
+      textColor: '#e0e0e0',
+      mainBkg: '#2d2d44',
       nodeBorder: '#FF6B35',
-      clusterBkg: '#111113',
-      clusterBorder: '#27272A',
-      titleColor: '#FAFAFA',
-      edgeLabelBackground: '#18181B',
-      fontFamily: 'Inter, sans-serif',
+      nodeTextColor: '#e0e0e0',
+      clusterBkg: '#16162b',
+      clusterBorder: '#3a3a5c',
+      titleColor: '#ffffff',
+      edgeLabelBackground: '#2d2d44',
+      fontFamily: 'Inter, -apple-system, sans-serif',
       fontSize: '14px'
     }
   });
