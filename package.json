@@ -1,7 +1,7 @@
 {
   "name": "vibe-init-cli",
-  "version": "0.5.0",
-  "description": "The last CLI you'll ever need — scaffolds production-ready full-stack projects using Claude",
+  "version": "0.5.1",
+  "description": "Software engineering governance engine for AI-assisted coding — 59 policies, 10 categories, context anchoring, auto-skills",
   "type": "module",
   "main": "build/index.js",
   "bin": {

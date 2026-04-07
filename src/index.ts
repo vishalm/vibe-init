@@ -13,99 +13,98 @@ import { VERSION } from './version.js';
 import { VibeError } from './utils/errors.js';
 
 const MAIN_HELP = `
-${theme.brand('╔══════════════════════════════════════════════════════════╗')}
-${theme.brand('║')}  🔥 ${theme.bold('VIBE INIT')} — The vibe coding framework CLI            ${theme.brand('║')}
-${theme.brand('║')}     Prepare. Build. Ship. Powered by Claude AI.          ${theme.brand('║')}
-${theme.brand('╚══════════════════════════════════════════════════════════╝')}
-
-${theme.heading('USAGE')}
-
-  ${theme.brand('$')} vibe init                        ${theme.dim('Set up the vibe coding framework')}
-  ${theme.brand('$')} vibe build                       ${theme.dim('Build a project from your idea + framework')}
-  ${theme.brand('$')} vibe run "add user auth"          ${theme.dim('Run a coding task with Claude')}
-  ${theme.brand('$')} vibe ask "how does routing work?"  ${theme.dim('Ask Claude about your project')}
-  ${theme.brand('$')} vibe scan .                       ${theme.dim('Scan a project for stack & practices')}
-  ${theme.brand('$')} vibe add docker                   ${theme.dim('Add a feature module to your project')}
-  ${theme.brand('$')} vibe doctor                       ${theme.dim('Score project health and get fix suggestions')}
+${theme.brand('╔══════════════════════════════════════════════════════════════╗')}
+${theme.brand('║')}  🔥 ${theme.bold('VIBE INIT')} — Software Engineering Governance Engine      ${theme.brand('║')}
+${theme.brand('║')}     59 policies · 10 categories · Context anchoring         ${theme.brand('║')}
+${theme.brand('║')}     Auto-skills · Powered by Claude AI                      ${theme.brand('║')}
+${theme.brand('╚══════════════════════════════════════════════════════════════╝')}
 
 ${theme.heading('COMMANDS')}
 
-  ${theme.brand('init')}             Set up the vibe coding framework (CLAUDE.md, skills, guardrails)
-  ${theme.brand('build')}            Build a project from your idea using the framework
-  ${theme.brand('run')} <task>       Execute a coding task with Claude using project context
-  ${theme.brand('ask')} <question>   Ask Claude a read-only question about your project
-  ${theme.brand('scan')} [dir]       Scan an existing project and detect stack, practices, and gaps
-  ${theme.brand('add')} <feature>   Add a feature module (docker, ci, testing, logging, etc.)
-  ${theme.brand('doctor')}           Score project health and suggest improvements
+  ${theme.brand('init')}                  Generate governance framework (CLAUDE.md, 59 policies, auto-skills)
+  ${theme.brand('build')}                 Describe your idea → Claude builds it with governance
+  ${theme.brand('anchor')} [feature]      Create/view persistent feature context documents
+  ${theme.brand('audit')} / ${theme.brand('doctor')}       Governance compliance audit (59 policies, 10 categories)
+  ${theme.brand('scan')} [dir]            Scan project for stack, practices, and gaps
+  ${theme.brand('add')} <feature>         Inject features (docker, ci, testing, logging, health, hooks, etc.)
+  ${theme.brand('run')} <task>            Execute coding task with Claude + project context
+  ${theme.brand('ask')} <question>        Ask Claude about your project (read-only)
 
-${theme.heading('THE VIBE CODING WORKFLOW')}
+${theme.heading('THE GOVERNANCE WORKFLOW')}
 
-  ${theme.label('Step 1:')} ${theme.brand('vibe init')}   — Prepare the room: CLAUDE.md, skills, guardrails, conventions
-  ${theme.label('Step 2:')} ${theme.brand('vibe build')}  — Describe your idea, Claude builds it following the framework
-  ${theme.label('Step 3:')} ${theme.brand('vibe run')}    — Continue building features with full project context
-  ${theme.label('Step 4:')} ${theme.brand('vibe doctor')} — Check project health and fix gaps
-
-${theme.heading('PREREQUISITES')}
-
-  ${theme.label('1.')} Claude CLI installed     ${theme.dim('npm install -g @anthropic-ai/claude-code')}
-  ${theme.label('2.')} Node.js 20+              ${theme.dim('https://nodejs.org')}
-  ${theme.label('3.')} API key (optional)       ${theme.dim('export ANTHROPIC_API_KEY=sk-ant-... (faster, falls back to CLI)')}
+  ${theme.label('Step 1:')} ${theme.brand('vibe init')}     Prepare the room
+           ${theme.dim('CLAUDE.md + .vibe/policies/ (59 YAML) + .claude/commands/ (auto-skills)')}
+  ${theme.label('Step 2:')} ${theme.brand('vibe build')}    Build from your idea
+           ${theme.dim('Enrichment → ADR → Claude Code builds with governance context')}
+  ${theme.label('Step 3:')} ${theme.brand('vibe anchor')}   Track decisions
+           ${theme.dim('Persistent context docs: decisions, constraints, open questions')}
+  ${theme.label('Step 4:')} ${theme.brand('vibe audit')}    Check compliance
+           ${theme.dim('Security · Accessibility · Reliability · Performance · 12-Factor')}
+           ${theme.dim('Clean Code · API · Data · Code Review · Observability')}
 
 ${theme.heading('QUICKSTART')}
 
   ${theme.dim('# New project')}
   ${theme.brand('$')} mkdir my-app && cd my-app
-  ${theme.brand('$')} vibe init              ${theme.dim('Set up framework (CLAUDE.md, skills, guardrails)')}
-  ${theme.brand('$')} vibe build             ${theme.dim('Describe idea → Claude builds it')}
+  ${theme.brand('$')} vibe init                           ${theme.dim('59 policies + auto-skills installed')}
+  ${theme.brand('$')} vibe build                          ${theme.dim('Describe idea → Claude builds it')}
+  ${theme.brand('$')} vibe anchor "user authentication"   ${theme.dim('Anchor feature decisions')}
+  ${theme.brand('$')} vibe audit                          ${theme.dim('Check governance compliance')}
 
   ${theme.dim('# Existing project')}
   ${theme.brand('$')} cd my-existing-app
-  ${theme.brand('$')} vibe init              ${theme.dim('Analyze project → generate framework')}
-  ${theme.brand('$')} vibe run "add caching" ${theme.dim('Build with full context')}
+  ${theme.brand('$')} vibe init                           ${theme.dim('Analyze project → generate framework')}
+  ${theme.brand('$')} vibe audit                          ${theme.dim('10-category governance scorecard')}
+  ${theme.brand('$')} vibe add docker && vibe add ci      ${theme.dim('Fix violations')}
 
 ${theme.heading('WHAT vibe init CREATES')}
 
-  ${theme.success('✔')} CLAUDE.md — Comprehensive AI coding instructions
-  ${theme.success('✔')} .claude/commands/ — Custom skills (test, lint, build, review, commit)
-  ${theme.success('✔')} .claude/settings.json — Permissions and guardrails
-  ${theme.success('✔')} docs/adr/ — Architecture Decision Record template
-  ${theme.success('✔')} .gitignore — Stack-appropriate ignores
+  ${theme.success('✔')} CLAUDE.md                   AI coding instructions + conventions
+  ${theme.success('✔')} .vibe/policies/*.yaml       59 governance policies (Agent Governance Toolkit format)
+  ${theme.success('✔')} .claude/commands/*.md        Auto-detected skills (React, Next.js, Prisma, etc.)
+  ${theme.success('✔')} .claude/settings.json        Permission guardrails
+  ${theme.success('✔')} docs/adr/000-template.md     Architecture Decision Record template
+
+${theme.heading('GOVERNANCE CATEGORIES')} ${theme.dim('(59 policies)')}
+
+  ${theme.error('■')} Security (9)       ${theme.warning('■')} Accessibility (2)  ${theme.info('■')} Reliability (8)
+  ${theme.success('■')} Performance (4)    ${theme.brand('■')} 12-Factor (7)      ${theme.bold('■')} Clean Code (10)
+  ${theme.info('■')} API (5)            ${theme.warning('■')} Data (4)           ${theme.success('■')} Code Review (6)
+  ${theme.dim('■')} Observability (4)
+
+${theme.heading('PREREQUISITES')}
+
+  ${theme.label('1.')} Claude CLI     ${theme.dim('npm install -g @anthropic-ai/claude-code')}
+  ${theme.label('2.')} Node.js 20+    ${theme.dim('https://nodejs.org')}
+  ${theme.label('3.')} API key        ${theme.dim('Optional — falls back to Claude CLI')}
 
 ${theme.heading('LEARN MORE')}
 
-  Documentation:  ${theme.info('https://vishalm.github.io/vibe-init')}
-  GitHub:         ${theme.info('https://github.com/vishalm/vibe-init')}
-  Report issues:  ${theme.info('https://github.com/vishalm/vibe-init/issues')}
+  ${theme.info('https://vishalm.github.io/vibe-init')}
+  ${theme.info('https://github.com/vishalm/vibe-init')}
 `;
 
 const INIT_HELP = `
-${theme.brand('vibe init')} — Set up the vibe coding framework
+${theme.brand('vibe init')} — Set up the governance framework
 
 ${theme.heading('DESCRIPTION')}
 
-  Prepares your project for AI-assisted (vibe) coding by generating:
-  • CLAUDE.md — Comprehensive coding instructions, conventions, and guardrails
-  • .claude/commands/ — Custom skills for Claude Code (test, lint, build, review, commit)
-  • .claude/settings.json — Permissions and safety guardrails
-  • docs/adr/ — Architecture Decision Record template
+  Generates the full governance framework for AI-assisted coding:
+  • CLAUDE.md — Comprehensive coding instructions and conventions
+  • .vibe/policies/*.yaml — 59 governance policies (10 categories)
+  • .claude/commands/*.md — Auto-detected skills (React, Next.js, Prisma, etc.)
+  • .claude/settings.json — Permission guardrails
+  • docs/adr/000-template.md — ADR template
   • .gitignore — Stack-appropriate ignores (greenfield only)
 
-  For greenfield projects: asks your stack preference and generates fresh framework.
-  For brownfield projects: scans your codebase and generates framework from analysis.
-
-  After init, run ${theme.brand('vibe build')} to describe your idea and build the project.
+  ${theme.bold('Greenfield:')} generates fresh framework.
+  ${theme.bold('Brownfield:')} scans codebase and generates framework from analysis.
+  ${theme.bold('Auto-skills:')} detects your tech stack and installs matching Claude Code skills.
 
 ${theme.heading('USAGE')}
 
   ${theme.brand('$')} vibe init                  ${theme.dim('Interactive setup')}
   ${theme.brand('$')} vibe --dry-run init        ${theme.dim('Preview without writing files')}
-
-${theme.heading('GENERATED FILES')}
-
-  ${theme.dim('Framework:')}   CLAUDE.md, .claude/settings.json
-  ${theme.dim('Skills:')}      .claude/commands/{test,lint,build,commit,review,add-feature}.md
-  ${theme.dim('Docs:')}        docs/adr/000-template.md
-  ${theme.dim('Git:')}         .gitignore (greenfield only)
 `;
 
 const BUILD_HELP = `
@@ -303,7 +302,7 @@ const program = new Command();
 
 program
   .name('vibe')
-  .description('The last CLI you\'ll ever need — scaffolds production-ready projects using Claude')
+  .description('Software engineering governance engine for AI-assisted coding')
   .version(VERSION)
   .option('-v, --verbose', 'Enable verbose output', false)
   .option('--dry-run', 'Preview what would be generated without writing files', false)

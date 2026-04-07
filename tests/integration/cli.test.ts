@@ -47,13 +47,15 @@ describe('CLI: vibe --version', () => {
 describe('CLI: vibe --help', () => {
   it('should print help text with all commands', () => {
     const output = run('--help');
-    expect(output).toContain('vibe init');
-    expect(output).toContain('vibe build');
-    expect(output).toContain('vibe run');
-    expect(output).toContain('vibe ask');
-    expect(output).toContain('vibe scan');
-    expect(output).toContain('vibe add');
-    expect(output).toContain('vibe doctor');
+    expect(output).toContain('init');
+    expect(output).toContain('build');
+    expect(output).toContain('run');
+    expect(output).toContain('ask');
+    expect(output).toContain('scan');
+    expect(output).toContain('add');
+    expect(output).toContain('doctor');
+    expect(output).toContain('audit');
+    expect(output).toContain('anchor');
   });
 
   it('should mention the vibe coding workflow', () => {
