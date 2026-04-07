@@ -41,7 +41,7 @@
   </div>
 
   <h1>Commands Reference</h1>
-  <p class="subtitle">Complete reference for all seven vibe-init CLI commands.</p>
+  <p class="subtitle">Complete reference for all nine vibe-init CLI commands.</p>
 
   <!-- ─── vibe init ────────────────────────────────── -->
   <h2 id="init">vibe init</h2>
@@ -256,6 +256,39 @@ vibe --verbose doctor    # Show detailed check results</code></pre>
 
   <p>Each failed check includes a suggestion pointing to the relevant <code>vibe add</code> command to fix it.</p>
 
+  <!-- ─── vibe anchor ───────────────────────────────── -->
+  <h2 id="anchor">vibe anchor [feature]</h2>
+
+  <p>Create or view feature context anchors — persistent decision documents that survive across AI chat sessions. Based on Martin Fowler's <a href="https://martinfowler.com/articles/reduce-friction-ai/context-anchoring.html">Context Anchoring</a> pattern.</p>
+
+  <pre><code>vibe anchor                     # List all anchored features
+vibe anchor "user auth"          # Create context doc for a feature
+vibe anchor "user auth"          # Revisit — shows status</code></pre>
+
+  <h3>What it creates</h3>
+
+  <p>Each feature anchor is a markdown file at <code>docs/context/&lt;slug&gt;.md</code> with:</p>
+
+  <ul>
+    <li><strong>Decisions table</strong> — Decision | Reason | Rejected Alternative (highest-value artifact)</li>
+    <li><strong>Constraints</strong> — Hard boundaries for this feature</li>
+    <li><strong>Open Questions</strong> — Checkbox list of unresolved items</li>
+    <li><strong>State</strong> — Milestone tracking (design, implementation, tests, review)</li>
+    <li><strong>Context for AI</strong> — What Claude needs to know when working on this feature</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <p><strong>Litmus test:</strong> Can you close your AI chat and start fresh without anxiety? If yes, your context is properly anchored.</p>
+  </div>
+
+  <!-- ─── vibe audit ───────────────────────────────── -->
+  <h2 id="audit">vibe audit</h2>
+
+  <p>Alias for <code>vibe doctor</code>. Runs the governance compliance audit with 59 policies across 10 categories.</p>
+
+  <pre><code>vibe audit                       # Run governance audit
+vibe doctor                      # Same command</code></pre>
+
   <!-- ─── vibe run ─────────────────────────────────── -->
   <h2 id="run">vibe run &lt;task&gt;</h2>
 
@@ -332,7 +365,7 @@ vibe ask "what's the best approach to add multi-tenancy?"</code></pre>
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.2
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.5.0
   </p>
 </footer>
 

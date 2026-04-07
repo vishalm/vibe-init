@@ -42,7 +42,7 @@
   </div>
 
   <h1>Getting Started</h1>
-  <p class="subtitle">Install vibe-init and scaffold your first project in under 60 seconds.</p>
+  <p class="subtitle">Install vibe-init and set up governance for your project in under 60 seconds.</p>
 
   <h2>Installation</h2>
 
@@ -171,9 +171,25 @@ vibe add testing         # Vitest config + sample test
 vibe add logging         # Pino structured logging
 vibe doctor              # Check health score</code></pre>
 
+  <h2>Anchor your decisions</h2>
+
+  <p>As you build, anchor important feature decisions so context persists across chat sessions:</p>
+
+  <pre><code>vibe anchor "user authentication"   # Create a feature context doc
+vibe anchor "payment flow"          # Another feature
+vibe anchor                         # List all anchored features</code></pre>
+
+  <p>Each anchor creates <code>docs/context/&lt;feature&gt;.md</code> with a decisions table, constraints, open questions, and progress tracking. Claude reads these before starting work on a feature.</p>
+
+  <h2>Check governance compliance</h2>
+
+  <pre><code>vibe audit    # or: vibe doctor</code></pre>
+
+  <p>59 policies across 10 categories (security, accessibility, reliability, performance, 12-factor compliance, clean code, API governance, data governance, code review, observability). Shows blocking violations, warnings, and quick-fix commands.</p>
+
   <h2>Continue building with context</h2>
 
-  <p>After the initial build, use <code>vibe run</code> to continue adding features with full project context:</p>
+  <p>Use <code>vibe run</code> to keep adding features with full project context:</p>
 
   <pre><code>vibe run "add pagination to the users API endpoint"
 vibe run "refactor auth middleware for role-based access"
@@ -230,7 +246,7 @@ vibe ask "which endpoints might have N+1 query problems?"</code></pre>
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.3.2
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.5.0
   </p>
 </footer>
 

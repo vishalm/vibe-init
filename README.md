@@ -1,30 +1,83 @@
-# vibe-init-cli
+<p align="center">
+  <img src="https://img.shields.io/badge/vibe--init-governance%20engine-FF6B35?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTV6Ii8+PHBhdGggZD0iTTIgMTdsMTAgNSAxMC01Ii8+PHBhdGggZD0iTTIgMTJsMTAgNSAxMC01Ii8+PC9zdmc+" alt="vibe-init">
+</p>
 
-[![CI](https://github.com/vishalm/vibe-init/actions/workflows/ci.yml/badge.svg)](https://github.com/vishalm/vibe-init/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/vibe-init-cli.svg)](https://www.npmjs.com/package/vibe-init-cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org)
-[![Downloads](https://img.shields.io/npm/dm/vibe-init-cli.svg)](https://www.npmjs.com/package/vibe-init-cli)
+<h1 align="center">vibe-init-cli</h1>
 
-> **The vibe coding framework CLI.** Prepare the room. Build with AI. Ship with confidence. Powered by Claude.
+<p align="center">
+  <strong>The software engineering governance engine for AI-assisted coding.</strong><br>
+  <sub>59 governance policies. 10 categories. Context anchoring. Auto-skills. Powered by Claude.</sub>
+</p>
 
-[Documentation](https://vishalm.github.io/vibe-init) · [GitHub](https://github.com/vishalm/vibe-init) · [Report Bug](https://github.com/vishalm/vibe-init/issues) · [Request Feature](https://github.com/vishalm/vibe-init/issues)
+<p align="center">
+  <a href="https://github.com/vishalm/vibe-init/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/vishalm/vibe-init/ci.yml?style=flat-square&label=CI&logo=github" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/vibe-init-cli"><img src="https://img.shields.io/npm/v/vibe-init-cli?style=flat-square&color=FF6B35&logo=npm" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/vibe-init-cli"><img src="https://img.shields.io/npm/dm/vibe-init-cli?style=flat-square&color=22C55E" alt="Downloads"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen?style=flat-square&logo=node.js" alt="Node.js"></a>
+</p>
+
+<p align="center">
+  <a href="https://vishalm.github.io/vibe-init">Documentation</a> · <a href="https://github.com/vishalm/vibe-init">GitHub</a> · <a href="https://github.com/vishalm/vibe-init/issues">Report Bug</a>
+</p>
 
 ---
 
-## Why vibe-init?
+## What is vibe-init?
 
-Most scaffolding tools generate a starter template and leave you alone. **vibe-init is different** — it's a vibe coding framework that prepares your project for successful AI-assisted development, then builds it with full context:
+**vibe-init** is a governance-first CLI that prepares any project for successful AI-assisted (vibe) coding. It generates governance policies, coding standards, Claude Code skills, and persistent context anchors — so Claude follows your rules from the first line of code.
 
-| Phase | Command | What it does |
-|-------|---------|-------------|
-| **Prepare** | `vibe init` | Set up the vibe coding framework (CLAUDE.md, skills, guardrails) |
-| **Build** | `vibe build` | Describe your idea → Claude builds it using the framework |
-| **Analyze** | `vibe scan` | Detect stack, framework, and missing best practices |
-| **Enhance** | `vibe add <feature>` | Inject features (Docker, CI, tests, logging, etc.) |
-| **Score** | `vibe doctor` | Grade project health A+ through F with fix suggestions |
-| **Code** | `vibe run <task>` | Execute coding tasks with Claude + full project context |
-| **Advise** | `vibe ask <question>` | Ask Claude about your project (read-only) |
+```mermaid
+graph LR
+    A["vibe init"] --> B["CLAUDE.md<br/>AI Instructions"]
+    A --> C[".vibe/policies/<br/>59 Governance Policies"]
+    A --> D[".claude/commands/<br/>Auto-detected Skills"]
+    A --> E["docs/adr/<br/>ADR Template"]
+    
+    F["vibe build"] --> G["Describe Idea"]
+    G --> H["Claude Enrichment<br/>Personas · Features · Architecture"]
+    H --> I["Claude Code Builds<br/>With Full Governance Context"]
+    
+    J["vibe audit"] --> K["10-Category<br/>Governance Scorecard"]
+    
+    L["vibe anchor"] --> M["Feature Context Docs<br/>Decisions · Constraints · State"]
+    
+    style A fill:#FF6B35,color:#fff
+    style F fill:#FF6B35,color:#fff
+    style J fill:#FF6B35,color:#fff
+    style L fill:#FF6B35,color:#fff
+```
+
+---
+
+## Governance at a Glance
+
+```mermaid
+pie title 59 Policies Across 10 Categories
+    "Security" : 9
+    "Clean Code" : 10
+    "Reliability" : 8
+    "12-Factor Compliance" : 7
+    "API Governance" : 5
+    "Performance" : 4
+    "Data Governance" : 4
+    "Code Review" : 6
+    "Observability" : 4
+    "Accessibility" : 2
+```
+
+| Category | Policies | Severity | What it checks |
+|----------|:--------:|----------|---------------|
+| **Security** | 9 | block/warn/info | .gitignore, no secrets, env validation, input validation, ORM, lockfile, vuln scanning, auth, SECURITY.md |
+| **Clean Code** | 10 | block/warn/info | TS strict, no-any, linter, formatter, git hooks, commits, coverage, console.log, README, CLAUDE.md |
+| **Reliability** | 8 | block/warn/info | Health endpoint, CI/CD, tests, graceful shutdown, error boundaries, migrations, E2E, load testing |
+| **12-Factor** | 7 | block/warn | VCS, deps, config-in-env, backing services as URLs, port binding, dev/prod parity, logs as streams |
+| **API Governance** | 5 | block/warn/info | OpenAPI spec, versioning, rate limiting, input validation, health endpoint |
+| **Code Review** | 6 | warn/info | PR templates, CODEOWNERS, issue templates, CONTRIBUTING.md, CHANGELOG, architecture docs |
+| **Performance** | 4 | warn/info | Structured logging, bundle analysis, image optimization, containerization |
+| **Data Governance** | 4 | warn | Privacy policy, password hashing, SECURITY.md, ORM |
+| **Observability** | 4 | warn/info | Logging, tracing (OpenTelemetry), metrics (Prometheus), error tracking (Sentry) |
+| **Accessibility** | 2 | warn | a11y linter (eslint-plugin-jsx-a11y), HTML lang attribute |
 
 ---
 
@@ -34,160 +87,202 @@ Most scaffolding tools generate a starter template and leave you alone. **vibe-i
 npm install -g vibe-init-cli
 ```
 
-After installation, the `vibe` command is available globally:
-
-```bash
-vibe --help
-vibe --version
-```
-
 ### Prerequisites
 
-| Requirement | Purpose | Required? | Install |
-|------------|---------|-----------|---------|
-| **Node.js 20+** | Runtime | Yes | [nodejs.org](https://nodejs.org) |
-| **Claude CLI** | AI commands (`init`, `build`, `run`, `ask`) | For AI features | `npm i -g @anthropic-ai/claude-code` |
-| **ANTHROPIC_API_KEY** | Faster batch generation (falls back to Claude CLI) | Optional | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
-
-> **Zero API keys needed** for `vibe scan`, `vibe add`, and `vibe doctor` — they use pure filesystem analysis.
+| Requirement | Purpose | Required? |
+|------------|---------|-----------|
+| **Node.js 20+** | Runtime | Yes |
+| **Claude CLI** | AI commands (`init`, `build`, `run`, `ask`) | For AI features |
+| **ANTHROPIC_API_KEY** | Faster batch generation (falls back to Claude CLI) | Optional |
 
 ---
 
-## Quick Start
+## The Vibe Coding Workflow
 
-### The Vibe Coding Workflow
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant VI as vibe init
+    participant VB as vibe build
+    participant CC as Claude Code
+    participant VA as vibe audit
+    
+    Dev->>VI: vibe init
+    VI->>VI: Generate CLAUDE.md
+    VI->>VI: Generate 59 governance policies
+    VI->>VI: Auto-detect & install skills
+    VI-->>Dev: Framework ready
+    
+    Dev->>VB: vibe build
+    VB->>CC: Describe your idea
+    CC->>CC: Enrich → Personas, Features, Architecture
+    CC->>CC: Generate ADR
+    CC->>CC: Build project (governed by CLAUDE.md)
+    CC-->>Dev: Project built with governance
+    
+    Dev->>VA: vibe audit
+    VA->>VA: Check 59 policies
+    VA-->>Dev: Governance scorecard (A+ to F)
+```
+
+### Step 1: Prepare the room
 
 ```bash
-# Step 1: Prepare the room — generates CLAUDE.md, skills, guardrails
 mkdir my-app && cd my-app
 vibe init
-
-# Step 2: Build — describe your idea, Claude builds it
-vibe build
-
-# Step 3: Continue building with context
-vibe run "add pagination to the users API"
-
-# Step 4: Check health
-vibe doctor
 ```
 
-### Existing Project (Brownfield)
+Generates: CLAUDE.md + `.vibe/policies/` (59 YAML policies) + `.claude/commands/` (auto-detected skills) + ADR template + .gitignore
+
+### Step 2: Build from your idea
 
 ```bash
-cd my-existing-app
-
-# Analyze and generate the vibe framework
-vibe init
-
-# Add missing features
-vibe add docker
-vibe add ci
-vibe add testing
-
-# Check health score
-vibe doctor
+vibe build
 ```
+
+Describe your idea → Claude enriches it (personas, P0/P1/P2 features, architecture) → Claude Code builds it following your governance framework.
+
+### Step 3: Track decisions
+
+```bash
+vibe anchor "user authentication"
+```
+
+Creates `docs/context/user-authentication.md` with decisions table, constraints, open questions, and state tracking. Context persists across AI sessions.
+
+### Step 4: Check compliance
+
+```bash
+vibe audit    # or: vibe doctor
+```
+
+10-category governance scorecard with blocking violations, warnings, and quick-fix commands.
 
 ---
 
 ## Commands
 
-### `vibe init` — Prepare the Room
+| Command | Description |
+|---------|-------------|
+| `vibe init` | Set up governance framework (CLAUDE.md, policies, skills, ADR template) |
+| `vibe build` | Build a project from your idea with governance context |
+| `vibe anchor [feature]` | Create/view feature context anchors for persistent decisions |
+| `vibe audit` / `vibe doctor` | Governance compliance audit (59 policies, 10 categories) |
+| `vibe scan [dir]` | Analyze project stack and engineering practices |
+| `vibe add <feature>` | Inject features: docker, ci, testing, logging, validation, health, hooks, auth, db |
+| `vibe run <task>` | Code with Claude using project context |
+| `vibe ask <question>` | Read-only advisory from Claude |
 
-Sets up the vibe coding framework for your project. Generates everything Claude needs to code effectively:
+---
 
-- **CLAUDE.md** — Comprehensive coding instructions, conventions, guardrails
-- **.claude/commands/** — Custom skills (test, lint, build, review, commit, add-feature)
-- **.claude/settings.json** — Permissions and safety guardrails
-- **docs/adr/** — Architecture Decision Record template
-- **.gitignore** — Stack-appropriate ignores
+## Context Anchoring
 
-```bash
-vibe init                    # Interactive setup
-vibe --dry-run init          # Preview files without writing
+Based on Martin Fowler's [Context Anchoring](https://martinfowler.com/articles/reduce-friction-ai/context-anchoring.html) pattern.
+
+```mermaid
+graph TD
+    A["Long AI Chat<br/>Context trapped in session"] -->|"vibe anchor"| B["docs/context/feature.md"]
+    B --> C["Decisions Table<br/>Decision | Reason | Rejected Alternative"]
+    B --> D["Constraints<br/>Hard boundaries"]
+    B --> E["Open Questions<br/>Unresolved items"]
+    B --> F["State<br/>Progress tracking"]
+    
+    G["New AI Session"] -->|reads| B
+    G --> H["Full context restored<br/>No re-explanation needed"]
+    
+    style A fill:#DC2626,color:#fff
+    style B fill:#22C55E,color:#fff
+    style H fill:#22C55E,color:#fff
 ```
 
-For **greenfield** projects: asks your stack preference (Next.js, Express, FastAPI, Go).
-For **brownfield** projects: scans your codebase and generates framework from analysis.
+**Litmus test:** Can you close your AI chat and start fresh without anxiety? If yes, context is anchored.
 
-### `vibe build` — Build from Your Idea
+---
 
-Takes your idea through enrichment, generates an ADR, then spawns Claude Code to build the project using your CLAUDE.md as the coding bible.
+## Auto-Skills
 
-```bash
-vibe build                   # Interactive build flow
+`vibe init` auto-detects your tech stack and installs matching Claude Code skills:
+
+| Detected | Skills installed |
+|----------|----------------|
+| React | `react-patterns`, `component-design` |
+| Next.js | `nextjs-app-router`, `nextjs-server-components` |
+| TypeScript | `typescript-strict` |
+| Prisma | `prisma-patterns` |
+| Tailwind | `tailwind-patterns` |
+| Express | `express-patterns` |
+| FastAPI | `fastapi-patterns` |
+| Vitest | `vitest-testing` |
+| Playwright | `playwright-e2e` |
+| Docker | `docker-patterns` |
+
+Plus universal skills: `/anchor` (context memory) and `/governance` (audit check).
+
+Integration with [autoskills](https://github.com/vishalm/ai-skills-autoskills) for community skill registry.
+
+---
+
+## Governance Policy Format
+
+Policies are generated as YAML files compatible with [Microsoft Agent Governance Toolkit](https://github.com/microsoft/agent-governance-toolkit):
+
+```yaml
+# .vibe/policies/security.yaml
+category: "security"
+conflict_resolution: "deny_overrides"
+
+rules:
+  - name: "sec-001"
+    display_name: "Gitignore excludes .env"
+    severity: "block"
+    action: "deny"
+    references:
+      - "https://owasp.org/Top10/A07_2021"
 ```
 
-**Requires `vibe init` first** (CLAUDE.md must exist). The flow:
+Three severity levels:
+- **block** — mandatory, must fix before shipping
+- **warn** — should fix, impacts quality
+- **info** — nice to have, best practice
 
-1. **Enrichment** — Describe your idea → Claude generates personas, features (P0/P1/P2), architecture
-2. **ADR** — Architecture Decision Record auto-generated
-3. **Build** — Claude Code builds the project following CLAUDE.md conventions
+---
 
-### `vibe scan [dir]` — Analyze Any Project
+## Project Architecture
 
-Pure filesystem detection — no API calls, no external dependencies.
-
-```bash
-vibe scan                        # Scan current directory
-vibe scan /path/to/project       # Scan specific directory
-vibe scan --generate-claude-md   # Also generate a CLAUDE.md
-```
-
-**Detects stacks:** Next.js, FastAPI, Go (Gin/Echo/Fiber/Chi), Node.js (Express/Fastify/NestJS/Hono)
-
-**Checks 10 practices:** Docker · CI/CD · Testing · Linting · Env Validation · Logging · Health Checks · Git Hooks · Security · Documentation
-
-### `vibe add <feature>` — Inject Features
-
-Idempotent and stack-aware. Safe to run multiple times.
-
-```bash
-# Template-based features (instant, no API key needed)
-vibe add docker          # Dockerfile + docker-compose.yml
-vibe add ci              # GitHub Actions CI pipeline
-vibe add testing         # Vitest config + sample test
-vibe add logging         # Pino (Node) or structlog (Python)
-vibe add validation      # Zod environment validation
-vibe add health          # /api/health endpoint
-vibe add hooks           # Husky + commitlint + lint-staged
-vibe add auth            # Authentication setup guidance
-vibe add db              # Prisma schema + client
-
-# Claude-powered generators (require Claude CLI)
-vibe add api users       # Generate REST API endpoint + test
-vibe add component Card  # Generate React component + test
-vibe add model Order     # Generate Prisma model + migration
-```
-
-### `vibe doctor` — Health Score
-
-17 weighted checks across 7 categories. Suggests `vibe add` commands to fix gaps.
-
-```bash
-vibe doctor              # Run health checks
-```
-
-**Grades:** A+ (95+) · A (90-94) · A- (85-89) · B+ (80-84) · B (75-79) · B- (70-74) · C+ (65-69) · C (60-64) · C- (55-59) · D (40-54) · F (0-39)
-
-### `vibe run <task>` — Code with Context
-
-Spawns Claude Code with your project's CLAUDE.md as system context.
-
-```bash
-vibe run "add pagination to the users API endpoint"
-vibe run "refactor auth middleware for role-based access control"
-vibe run "write integration tests for the checkout flow"
-```
-
-### `vibe ask <question>` — Advisory Mode
-
-Read-only — Claude analyzes but makes no changes.
-
-```bash
-vibe ask "should I use Redis for sessions or stick with JWT?"
-vibe ask "what are the security risks in the current auth setup?"
+```mermaid
+graph TD
+    CLI["src/index.ts<br/>CLI Entry (Commander.js)"]
+    
+    CLI --> Init["commands/init.ts<br/>Framework Generation"]
+    CLI --> Build["commands/build.ts<br/>Idea → Claude Build"]
+    CLI --> Anchor["commands/anchor.ts<br/>Context Memory"]
+    CLI --> Audit["commands/doctor.ts<br/>Governance Audit"]
+    CLI --> Scan["commands/scan.ts<br/>Project Analysis"]
+    CLI --> Add["commands/add.ts<br/>Feature Injection"]
+    CLI --> Run["commands/run.ts<br/>Claude Code Tasks"]
+    
+    Init --> Framework["phases/framework.ts<br/>CLAUDE.md + Skills + Settings"]
+    Init --> Policies["governance/yaml-generator.ts<br/>59 YAML Policy Files"]
+    Init --> Skills["skills/autoskills.ts<br/>Stack Detection + Skill Install"]
+    
+    Audit --> Registry["governance/registry.ts<br/>10 Categories"]
+    Registry --> SecPol["policies/security.ts"]
+    Registry --> A11yPol["policies/accessibility.ts"]
+    Registry --> RelPol["policies/reliability.ts"]
+    Registry --> PerfPol["policies/performance.ts"]
+    Registry --> CompPol["policies/compliance.ts"]
+    Registry --> CCPol["policies/clean-code.ts"]
+    Registry --> ApiPol["policies/api-governance.ts"]
+    Registry --> DataPol["policies/data-governance.ts"]
+    Registry --> CRPol["policies/code-review.ts"]
+    Registry --> ObsPol["policies/observability.ts"]
+    
+    Build --> Enrich["phases/enrichment.ts<br/>Claude Enrichment"]
+    Build --> ADR["phases/adr.ts<br/>Architecture Decision Record"]
+    
+    style CLI fill:#FF6B35,color:#fff
+    style Registry fill:#06B6D4,color:#fff
+    style Framework fill:#22C55E,color:#fff
 ```
 
 ---
@@ -199,31 +294,27 @@ git clone https://github.com/vishalm/vibe-init.git
 cd vibe-init
 npm install
 
-npm run build        # Build with esbuild
-npm run lint         # TypeScript type check
-npm run test         # Run all tests
-npm run dev          # Watch mode for development
-
-# Run locally without installing globally
-node build/index.js --help
+npm run build          # Build with esbuild
+npm run lint           # TypeScript type check
+npm run test           # Run all 103 tests
+npm run prerelease     # Full pre-release checks
+npm run dev            # Watch mode
 ```
 
 ## Contributing
 
-Contributions are welcome! Please follow these steps:
-
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feat/amazing-feature`)
-3. Commit with [conventional commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.)
-4. Push to your branch and open a Pull Request
+3. Commit with [conventional commits](https://www.conventionalcommits.org/)
+4. Push and open a Pull Request
 
 ## License
 
-[MIT](LICENSE) — free for personal and commercial use.
+[MIT](LICENSE)
 
 ---
 
 <p align="center">
   Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with <a href="https://claude.ai">Claude</a><br>
-  <sub>The vibe coding framework CLI.</sub>
+  <sub>The software engineering governance engine.</sub>
 </p>
