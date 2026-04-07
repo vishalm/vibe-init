@@ -681,8 +681,10 @@ footer a:hover { text-decoration: underline; }
 }
 .diagram-tab:hover { border-color: var(--brand); color: var(--text); }
 .diagram-tab.active { background: var(--brand); color: white; border-color: var(--brand); }
-.diagram-panel { display: none; }
-.diagram-panel.active { display: block; }
+.diagram-panel { display: none; visibility: hidden; height: 0; overflow: hidden; }
+.diagram-panel.active { display: block; visibility: visible; height: auto; overflow: visible; }
+/* Render all panels visibly during init, then hide via JS */
+.diagram-panel.mermaid-init { display: block; visibility: visible; height: auto; overflow: visible; position: absolute; left: -9999px; }
 .diagram-panel .diagram-container {
   min-height: 300px;
   display: flex;

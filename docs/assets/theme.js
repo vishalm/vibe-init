@@ -120,6 +120,10 @@
     var theme = document.documentElement.getAttribute('data-theme') || 'dark';
     var config = theme === 'light' ? lightMermaid : darkMermaid;
 
+    // Temporarily show hidden panels for re-render
+    var hiddenPanels = document.querySelectorAll('.diagram-panel:not(.active)');
+    hiddenPanels.forEach(function (p) { p.classList.add('mermaid-init'); });
+
     window.mermaid.initialize(config);
 
     var diagrams = document.querySelectorAll('.mermaid');
@@ -133,7 +137,11 @@
       el.innerHTML = source;
     });
 
-    window.mermaid.run();
+    window.mermaid.run().then(function () {
+      hiddenPanels.forEach(function (p) { p.classList.remove('mermaid-init'); });
+    }).catch(function () {
+      hiddenPanels.forEach(function (p) { p.classList.remove('mermaid-init'); });
+    });
   }
 
   window.toggleTheme = function () {
@@ -145,6 +153,11 @@
 
   function initMermaid() {
     if (typeof window.mermaid === 'undefined') return;
+
+    // Temporarily make hidden panels visible so Mermaid can measure & render
+    var hiddenPanels = document.querySelectorAll('.diagram-panel:not(.active)');
+    hiddenPanels.forEach(function (p) { p.classList.add('mermaid-init'); });
+
     document.querySelectorAll('.mermaid').forEach(function (el) {
       if (!el.getAttribute('data-mermaid-src')) {
         el.setAttribute('data-mermaid-src', el.textContent);
@@ -153,7 +166,12 @@
     var theme = document.documentElement.getAttribute('data-theme') || 'dark';
     var config = theme === 'light' ? lightMermaid : darkMermaid;
     window.mermaid.initialize(config);
-    window.mermaid.run();
+    window.mermaid.run().then(function () {
+      // Hide panels again after render completes
+      hiddenPanels.forEach(function (p) { p.classList.remove('mermaid-init'); });
+    }).catch(function () {
+      hiddenPanels.forEach(function (p) { p.classList.remove('mermaid-init'); });
+    });
   }
 
   window.addEventListener('mermaid-loaded', initMermaid);
