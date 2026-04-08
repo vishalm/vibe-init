@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" fill="none">
   <defs>
     <!-- Gradients -->
     <linearGradient id="g-brand" x1="0" y1="0" x2="1" y2="1">
@@ -66,27 +66,40 @@
       <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/>
     </filter>
 
-    <clipPath id="card-clip"><rect width="900" height="560" rx="24"/></clipPath>
+    <clipPath id="card-clip"><rect width="900" height="620" rx="24"/></clipPath>
+
+    <!-- AVC blue gradient -->
+    <linearGradient id="g-avc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#007AFF"/>
+      <stop offset="100%" stop-color="#0055CC"/>
+    </linearGradient>
+    <filter id="glow-avc" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#007AFF" flood-opacity="0.35"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
 
   <!-- Background -->
-  <rect width="900" height="560" rx="24" fill="#0A0A0A" clip-path="url(#card-clip)"/>
+  <rect width="900" height="620" rx="24" fill="#0A0A0A" clip-path="url(#card-clip)"/>
 
   <!-- Subtle grid pattern -->
   <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
     <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-opacity="0.03" stroke-width="0.5"/>
   </pattern>
-  <rect width="900" height="560" fill="url(#grid)"/>
+  <rect width="900" height="620" fill="url(#grid)"/>
 
   <!-- Ambient glow orbs -->
-  <circle cx="450" cy="200" r="280" fill="#FF6D35" opacity="0.04"/>
-  <circle cx="200" cy="400" r="200" fill="#64D2FF" opacity="0.03"/>
-  <circle cx="700" cy="450" r="180" fill="#BF5AF2" opacity="0.03"/>
+  <circle cx="450" cy="230" r="280" fill="#FF6D35" opacity="0.04"/>
+  <circle cx="200" cy="440" r="200" fill="#64D2FF" opacity="0.03"/>
+  <circle cx="700" cy="480" r="180" fill="#BF5AF2" opacity="0.03"/>
+  <circle cx="450" cy="50" r="160" fill="#007AFF" opacity="0.04"/>
 
   <!-- ═══════════════════════════════════════════════════════
        CENTER: Shield / Governance Core
        ═══════════════════════════════════════════════════════ -->
-  <g transform="translate(450, 195)" filter="url(#glow-brand)">
+  <g transform="translate(450, 235)" filter="url(#glow-brand)">
     <!-- Outer ring -->
     <circle cx="0" cy="0" r="72" fill="none" stroke="url(#g-brand)" stroke-width="2" stroke-dasharray="6 4" opacity="0.5">
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite"/>
@@ -110,8 +123,38 @@
        ORBITAL NODES — Floating module cards
        ═══════════════════════════════════════════════════════ -->
 
+  <!-- Node: AVC — Agile Vibe Coding (top-center) -->
+  <g transform="translate(330, 28)" filter="url(#shadow-card)">
+    <rect width="240" height="100" rx="16" fill="url(#g-card-dark)" stroke="#007AFF" stroke-width="1.5" stroke-opacity="0.6"/>
+    <rect width="240" height="100" rx="16" fill="url(#g-glass)"/>
+    <!-- Sprint/kanban icon -->
+    <rect x="16" y="16" width="32" height="32" rx="8" fill="#007AFF" fill-opacity="0.15"/>
+    <rect x="23" y="23" width="6" height="18" rx="2" fill="#007AFF" opacity="0.5"/>
+    <rect x="31" y="27" width="6" height="14" rx="2" fill="#007AFF" opacity="0.7"/>
+    <rect x="39" y="21" width="6" height="20" rx="2" fill="#007AFF"/>
+    <text x="56" y="31" font-family="'SF Mono', 'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#F5F5F7">Agile Vibe Coding</text>
+    <text x="56" y="45" font-family="-apple-system, sans-serif" font-size="9" fill="#A1A1A6">agilevibecoding.org</text>
+    <!-- Ceremony pills -->
+    <g transform="translate(16, 58)">
+      <rect width="90" height="18" rx="9" fill="#007AFF" fill-opacity="0.12" stroke="#007AFF" stroke-opacity="0.3" stroke-width="0.5"/>
+      <text x="45" y="12" text-anchor="middle" font-family="'SF Mono', monospace" font-size="7.5" fill="#007AFF">Sponsor Call</text>
+      <rect x="96" width="90" height="18" rx="9" fill="#007AFF" fill-opacity="0.12" stroke="#007AFF" stroke-opacity="0.3" stroke-width="0.5"/>
+      <text x="141" y="12" text-anchor="middle" font-family="'SF Mono', monospace" font-size="7.5" fill="#007AFF">Sprint Plan</text>
+    </g>
+    <g transform="translate(16, 80)">
+      <text x="0" y="10" font-family="-apple-system, sans-serif" font-size="7.5" fill="#6E6E73">Epics · Stories · Traceability</text>
+      <text x="155" y="10" font-family="'SF Mono', monospace" font-size="7.5" fill="#007AFF" font-weight="600">NEW</text>
+    </g>
+  </g>
+
+  <!-- Connection line: AVC → Shield -->
+  <line x1="450" y1="128" x2="450" y2="178" stroke="#007AFF" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5">
+    <animate attributeName="stroke-dashoffset" values="0;-14" dur="2s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="450" cy="178" r="3.5" fill="#007AFF" opacity="0.7"/>
+
   <!-- Node: CLAUDE.md (top-left) -->
-  <g transform="translate(140, 110)" filter="url(#shadow-card)">
+  <g transform="translate(80, 140)" filter="url(#shadow-card)">
     <rect width="172" height="88" rx="16" fill="url(#g-card-dark)" stroke="#38383A" stroke-width="1"/>
     <rect width="172" height="88" rx="16" fill="url(#g-glass)"/>
     <!-- File icon -->
@@ -130,10 +173,10 @@
   </g>
 
   <!-- Connection line: CLAUDE.md → Shield -->
-  <line x1="312" y1="154" x2="393" y2="185" stroke="#FF6D35" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
+  <line x1="252" y1="184" x2="393" y2="225" stroke="#FF6D35" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
     <animate attributeName="stroke-dashoffset" values="0;-14" dur="2s" repeatCount="indefinite"/>
   </line>
-  <circle cx="393" cy="185" r="3" fill="#FF6D35" opacity="0.6"/>
+  <circle cx="393" cy="225" r="3" fill="#FF6D35" opacity="0.6"/>
 
   <!-- Node: Auto-Skills (top-right) -->
   <g transform="translate(588, 95)" filter="url(#shadow-card)">
@@ -156,13 +199,13 @@
   </g>
 
   <!-- Connection line: Auto-Skills → Shield -->
-  <line x1="588" y1="145" x2="510" y2="185" stroke="#BF5AF2" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
+  <line x1="588" y1="145" x2="510" y2="225" stroke="#BF5AF2" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
     <animate attributeName="stroke-dashoffset" values="0;-14" dur="2s" repeatCount="indefinite"/>
   </line>
-  <circle cx="510" cy="185" r="3" fill="#BF5AF2" opacity="0.6"/>
+  <circle cx="510" cy="225" r="3" fill="#BF5AF2" opacity="0.6"/>
 
   <!-- Node: Governance Audit (bottom-left) -->
-  <g transform="translate(80, 340)" filter="url(#shadow-card)">
+  <g transform="translate(80, 380)" filter="url(#shadow-card)">
     <rect width="200" height="108" rx="16" fill="url(#g-card-dark)" stroke="#38383A" stroke-width="1"/>
     <rect width="200" height="108" rx="16" fill="url(#g-glass)"/>
     <!-- Shield icon -->
@@ -186,13 +229,13 @@
   </g>
 
   <!-- Connection line: Audit → Shield -->
-  <line x1="230" y1="340" x2="420" y2="260" stroke="#30D158" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
+  <line x1="230" y1="380" x2="420" y2="300" stroke="#30D158" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
     <animate attributeName="stroke-dashoffset" values="0;-14" dur="2s" repeatCount="indefinite"/>
   </line>
-  <circle cx="420" cy="260" r="3" fill="#30D158" opacity="0.6"/>
+  <circle cx="420" cy="300" r="3" fill="#30D158" opacity="0.6"/>
 
   <!-- Node: Context Anchoring (bottom-center) -->
-  <g transform="translate(350, 370)" filter="url(#shadow-card)">
+  <g transform="translate(350, 410)" filter="url(#shadow-card)">
     <rect width="200" height="100" rx="16" fill="url(#g-card-dark)" stroke="#38383A" stroke-width="1"/>
     <rect width="200" height="100" rx="16" fill="url(#g-glass)"/>
     <!-- Anchor icon -->
@@ -215,13 +258,13 @@
   </g>
 
   <!-- Connection line: Anchor → Shield -->
-  <line x1="450" y1="370" x2="450" y2="268" stroke="#64D2FF" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
+  <line x1="450" y1="410" x2="450" y2="308" stroke="#64D2FF" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
     <animate attributeName="stroke-dashoffset" values="0;-14" dur="2s" repeatCount="indefinite"/>
   </line>
-  <circle cx="450" cy="268" r="3" fill="#64D2FF" opacity="0.6"/>
+  <circle cx="450" cy="308" r="3" fill="#64D2FF" opacity="0.6"/>
 
   <!-- Node: Policy Engine (bottom-right) -->
-  <g transform="translate(620, 330)" filter="url(#shadow-card)">
+  <g transform="translate(620, 370)" filter="url(#shadow-card)">
     <rect width="200" height="115" rx="16" fill="url(#g-card-dark)" stroke="#38383A" stroke-width="1"/>
     <rect width="200" height="115" rx="16" fill="url(#g-glass)"/>
     <!-- Layers icon -->
@@ -244,15 +287,15 @@
   </g>
 
   <!-- Connection line: Policies → Shield -->
-  <line x1="620" y1="370" x2="510" y2="255" stroke="#FFD60A" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
+  <line x1="620" y1="410" x2="510" y2="295" stroke="#FFD60A" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
     <animate attributeName="stroke-dashoffset" values="0;-14" dur="2s" repeatCount="indefinite"/>
   </line>
-  <circle cx="510" cy="255" r="3" fill="#FFD60A" opacity="0.6"/>
+  <circle cx="510" cy="295" r="3" fill="#FFD60A" opacity="0.6"/>
 
   <!-- ═══════════════════════════════════════════════════════
        BOTTOM: Grade badge
        ═══════════════════════════════════════════════════════ -->
-  <g transform="translate(450, 520)">
+  <g transform="translate(450, 580)">
     <rect x="-80" y="-18" width="160" height="32" rx="16" fill="#30D158" fill-opacity="0.1" stroke="#30D158" stroke-opacity="0.25" stroke-width="1"/>
     <circle cx="-56" cy="-2" r="4" fill="#30D158">
       <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
