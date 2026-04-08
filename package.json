@@ -1,6 +1,6 @@
 {
   "name": "vibe-init-cli",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Software engineering governance engine for AI-assisted coding — 59 policies, 10 categories, context anchoring, auto-skills",
   "type": "module",
   "main": "build/index.js",
