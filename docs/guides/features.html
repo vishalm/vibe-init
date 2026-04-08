@@ -171,6 +171,24 @@ vibe add model User</code></pre>
   <p>Generates a Prisma model definition with appropriate fields, relations, and a migration.</p>
   <p><strong>Files created:</strong> Updated <code>prisma/schema.prisma</code> + migration file</p>
 
+  <h2>Agile Vibe Coding integration</h2>
+  <p>New in v0.6.0 — vibe-init integrates with the <a href="https://agilevibecoding.org" target="_blank">Agile Vibe Coding</a> framework for traceable, accountable AI-assisted development.</p>
+
+  <h3 id="avc">@agile-vibe-coding/avc</h3>
+  <pre><code>npm install -g @agile-vibe-coding/avc
+cd your-project
+avc</code></pre>
+  <p>AVC provides structured agile ceremonies adapted for AI-assisted coding:</p>
+  <ul>
+    <li><strong>Sponsor Call:</strong> Define project vision, create epics with business context and priorities</li>
+    <li><strong>Sprint Planning:</strong> Break epics into user stories with acceptance criteria and traceability</li>
+  </ul>
+  <p>Every epic, story, and task links back to a requirement — making governance auditable end-to-end. Combined with vibe-init's 59 governance policies, this creates a complete traceability chain from business requirement to deployed code.</p>
+
+  <div class="callout callout-info">
+    <p><strong>Manifesto Principle III — Traceable Intent:</strong> Every feature and generated code must link back to a requirement or decision. Without traceability, you can't audit, you can't maintain, and you can't scale.</p>
+  </div>
+
   <h2>Feature detection</h2>
   <p>Each feature module includes a <code>detect()</code> method that checks whether the feature is already present in your project. This is used by:</p>
   <ul>
@@ -197,7 +215,7 @@ vibe add model User</code></pre>
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.5.0
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.6.0
   </p>
 </footer>
 

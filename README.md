@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>The software engineering governance engine for AI-assisted coding.</strong><br>
-  <sub>59 governance policies. 10 categories. Context anchoring. Auto-skills. Powered by Claude.</sub>
+  <sub>59 governance policies. 10 categories. Agile Vibe Coding. Context anchoring. Auto-skills. Powered by Claude.</sub>
 </p>
 
 <p align="center">
@@ -42,10 +42,14 @@ graph LR
     
     L["vibe anchor"] --> M["Feature Context Docs<br/>Decisions · Constraints · State"]
     
+    N["avc"] --> O["Sponsor Call · Sprint Planning<br/>Epics · Stories · Traceability"]
+    O --> I
+    
     style A fill:#FF6B35,color:#fff
     style F fill:#FF6B35,color:#fff
     style J fill:#FF6B35,color:#fff
     style L fill:#FF6B35,color:#fff
+    style N fill:#007AFF,color:#fff
 ```
 
 ---
@@ -94,6 +98,7 @@ npm install -g vibe-init-cli
 | **Node.js 20+** | Runtime | Yes |
 | **Claude CLI** | AI commands (`init`, `build`, `run`, `ask`) | For AI features |
 | **ANTHROPIC_API_KEY** | Faster batch generation (falls back to Claude CLI) | Optional |
+| **@agile-vibe-coding/avc** | Agile ceremonies (epics, stories, sprint planning) | Optional |
 
 ---
 
@@ -102,6 +107,7 @@ npm install -g vibe-init-cli
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
+    participant AVC as avc (Agile)
     participant VI as vibe init
     participant VB as vibe build
     participant CC as Claude Code
@@ -113,6 +119,11 @@ sequenceDiagram
     VI->>VI: Auto-detect & install skills
     VI-->>Dev: Framework ready
     
+    Dev->>AVC: avc
+    AVC->>AVC: Sponsor Call → Epics
+    AVC->>AVC: Sprint Planning → Stories
+    AVC-->>Dev: Backlog with traceability
+    
     Dev->>VB: vibe build
     VB->>CC: Describe your idea
     CC->>CC: Enrich → Personas, Features, Architecture
@@ -121,7 +132,7 @@ sequenceDiagram
     CC-->>Dev: Project built with governance
     
     Dev->>VA: vibe audit
-    VA->>VA: Check 59 policies
+    VA->>VA: Check 59 policies + traceability
     VA-->>Dev: Governance scorecard (A+ to F)
 ```
 
@@ -196,6 +207,64 @@ graph TD
 ```
 
 **Litmus test:** Can you close your AI chat and start fresh without anxiety? If yes, context is anchored.
+
+---
+
+## Agile Vibe Coding Integration
+
+**New in v0.6.0** — Built on the [Agile Vibe Coding Manifesto](https://agilevibecoding.org), vibe-init now integrates with the AVC framework for traceable, accountable AI-assisted development.
+
+```mermaid
+graph LR
+    AVC["avc<br/>Sponsor Call · Sprint Planning"] --> Epics["Epics &<br/>Stories"]
+    Epics --> VI["vibe init<br/>Governance Framework"]
+    VI --> VB["vibe build<br/>With Traceability"]
+    VB --> VA["vibe audit<br/>Traceability Checks"]
+    
+    style AVC fill:#007AFF,color:#fff
+    style Epics fill:#BF5AF2,color:#fff
+    style VI fill:#FF6B35,color:#fff
+    style VB fill:#FF6B35,color:#fff
+    style VA fill:#34C759,color:#fff
+```
+
+### Why Agile Vibe Coding?
+
+> *"Zero traceability of decisions" — that's the exact pain point. Vibe coding ships fast but the governance layer is missing, and that's where production risk accumulates.*
+
+The manifesto's core values:
+- **Accountability over anonymous generation** — clear human responsibility for AI output
+- **Traceable intent over opaque implementation** — every change links to a requirement
+- **Discoverable domain structure over scattered code** — organized around business concepts
+- **Human-readable documentation over implicit knowledge** — preserved understanding
+
+### Quick Start with AVC
+
+```bash
+# Install AVC
+npm install -g @agile-vibe-coding/avc
+
+# Set up governance framework
+cd your-project
+vibe init
+
+# Run AVC ceremonies
+avc
+# → Sponsor Call: define epics and priorities
+# → Sprint Planning: break epics into stories with acceptance criteria
+
+# Build with full traceability
+vibe build
+```
+
+### What AVC Adds
+
+| Ceremony | Purpose | Output |
+|----------|---------|--------|
+| **Sponsor Call** | Define project vision, epics, and priorities | Epics with business context |
+| **Sprint Planning** | Break epics into stories, estimate complexity | Sprint backlog with traceability |
+
+Every epic, story, and task created by AVC links back to a requirement — making governance auditable end-to-end.
 
 ---
 
