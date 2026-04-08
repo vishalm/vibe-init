@@ -91,6 +91,11 @@ vibe --help</code></pre>
         <td>Local dev stack (PostgreSQL, Redis)</td>
         <td>Optional</td>
       </tr>
+      <tr>
+        <td><strong>@agile-vibe-coding/avc</strong></td>
+        <td>Agile ceremonies — epics, stories, sprint planning</td>
+        <td>Optional</td>
+      </tr>
     </tbody>
   </table>
 
@@ -113,13 +118,17 @@ export ANTHROPIC_API_KEY="sk-ant-..."</code></pre>
 
   <h2>The vibe coding workflow</h2>
 
-  <p>vibe-init uses a two-step workflow: <strong>prepare the room</strong>, then <strong>build with AI</strong>.</p>
+  <p>vibe-init uses a structured workflow: <strong>prepare the room</strong>, <strong>plan with agile</strong>, then <strong>build with AI</strong>.</p>
 
   <pre><code># Step 1: Set up the vibe coding framework
 mkdir my-app && cd my-app
 vibe init
 
-# Step 2: Build your project from an idea
+# Step 2: Plan with Agile Vibe Coding (optional)
+npm install -g @agile-vibe-coding/avc
+avc                      # Sponsor Call → Epics → Sprint Planning → Stories
+
+# Step 3: Build your project from an idea
 vibe build</code></pre>
 
   <h2>Step 1: vibe init — Prepare the room</h2>
@@ -191,6 +200,30 @@ vibe anchor                         # List all anchored features</code></pre>
   <pre><code>vibe audit    # or: vibe doctor</code></pre>
 
   <p>59 policies across 10 categories (security, accessibility, reliability, performance, 12-factor compliance, clean code, API governance, data governance, code review, observability). Shows blocking violations, warnings, and quick-fix commands.</p>
+
+  <h2>Plan with Agile Vibe Coding</h2>
+
+  <p>For structured, traceable AI development, use <a href="https://agilevibecoding.org" target="_blank">Agile Vibe Coding</a> before building:</p>
+
+  <pre><code># Install AVC
+npm install -g @agile-vibe-coding/avc
+
+# Run ceremonies
+cd your-project
+avc</code></pre>
+
+  <p>AVC walks you through two ceremonies:</p>
+
+  <ol>
+    <li><strong>Sponsor Call</strong> — Define your project vision and create epics with business context</li>
+    <li><strong>Sprint Planning</strong> — Break epics into user stories with acceptance criteria and traceability</li>
+  </ol>
+
+  <p>Every epic and story links back to a requirement — so when you run <code>vibe build</code> and <code>vibe audit</code>, there's a complete traceability chain from business requirement to deployed code.</p>
+
+  <div class="callout callout-success">
+    <p><strong>Tip:</strong> AVC is optional but recommended for production projects. It makes governance auditing meaningful — you can trace every line of generated code back to a business requirement.</p>
+  </div>
 
   <h2>Continue building with context</h2>
 

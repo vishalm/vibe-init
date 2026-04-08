@@ -15,8 +15,8 @@ import { VibeError } from './utils/errors.js';
 const MAIN_HELP = `
 ${theme.brand('╔══════════════════════════════════════════════════════════════╗')}
 ${theme.brand('║')}  🔥 ${theme.bold('VIBE INIT')} — Software Engineering Governance Engine      ${theme.brand('║')}
-${theme.brand('║')}     59 policies · 10 categories · Context anchoring         ${theme.brand('║')}
-${theme.brand('║')}     Auto-skills · Powered by Claude AI                      ${theme.brand('║')}
+${theme.brand('║')}     59 policies · 10 categories · Agile Vibe Coding         ${theme.brand('║')}
+${theme.brand('║')}     Context anchoring · Auto-skills · Powered by Claude AI  ${theme.brand('║')}
 ${theme.brand('╚══════════════════════════════════════════════════════════════╝')}
 
 ${theme.heading('COMMANDS')}
@@ -34,11 +34,13 @@ ${theme.heading('THE GOVERNANCE WORKFLOW')}
 
   ${theme.label('Step 1:')} ${theme.brand('vibe init')}     Prepare the room
            ${theme.dim('CLAUDE.md + .vibe/policies/ (59 YAML) + .claude/commands/ (auto-skills)')}
-  ${theme.label('Step 2:')} ${theme.brand('vibe build')}    Build from your idea
+  ${theme.label('Step 2:')} ${theme.info('avc')}              Plan with Agile Vibe Coding ${theme.dim('(optional)')}
+           ${theme.dim('Sponsor Call → Epics → Sprint Planning → Stories with traceability')}
+  ${theme.label('Step 3:')} ${theme.brand('vibe build')}    Build from your idea
            ${theme.dim('Enrichment → ADR → Claude Code builds with governance context')}
-  ${theme.label('Step 3:')} ${theme.brand('vibe anchor')}   Track decisions
+  ${theme.label('Step 4:')} ${theme.brand('vibe anchor')}   Track decisions
            ${theme.dim('Persistent context docs: decisions, constraints, open questions')}
-  ${theme.label('Step 4:')} ${theme.brand('vibe audit')}    Check compliance
+  ${theme.label('Step 5:')} ${theme.brand('vibe audit')}    Check compliance
            ${theme.dim('Security · Accessibility · Reliability · Performance · 12-Factor')}
            ${theme.dim('Clean Code · API · Data · Code Review · Observability')}
 
@@ -47,6 +49,7 @@ ${theme.heading('QUICKSTART')}
   ${theme.dim('# New project')}
   ${theme.brand('$')} mkdir my-app && cd my-app
   ${theme.brand('$')} vibe init                           ${theme.dim('59 policies + auto-skills installed')}
+  ${theme.brand('$')} avc                                 ${theme.dim('Sponsor Call → Epics → Sprint Planning')}
   ${theme.brand('$')} vibe build                          ${theme.dim('Describe idea → Claude builds it')}
   ${theme.brand('$')} vibe anchor "user authentication"   ${theme.dim('Anchor feature decisions')}
   ${theme.brand('$')} vibe audit                          ${theme.dim('Check governance compliance')}
@@ -77,11 +80,13 @@ ${theme.heading('PREREQUISITES')}
   ${theme.label('1.')} Claude CLI     ${theme.dim('npm install -g @anthropic-ai/claude-code')}
   ${theme.label('2.')} Node.js 20+    ${theme.dim('https://nodejs.org')}
   ${theme.label('3.')} API key        ${theme.dim('Optional — falls back to Claude CLI')}
+  ${theme.label('4.')} AVC            ${theme.dim('npm install -g @agile-vibe-coding/avc  (optional — agile ceremonies)')}
 
 ${theme.heading('LEARN MORE')}
 
   ${theme.info('https://vishalm.github.io/vibe-init')}
   ${theme.info('https://github.com/vishalm/vibe-init')}
+  ${theme.info('https://agilevibecoding.org')}           ${theme.dim('Agile Vibe Coding Manifesto')}
 `;
 
 const INIT_HELP = `
@@ -100,6 +105,7 @@ ${theme.heading('DESCRIPTION')}
   ${theme.bold('Greenfield:')} generates fresh framework.
   ${theme.bold('Brownfield:')} scans codebase and generates framework from analysis.
   ${theme.bold('Auto-skills:')} detects your tech stack and installs matching Claude Code skills.
+  ${theme.bold('Agile Vibe Coding:')} pair with ${theme.info('avc')} for epics, stories, and sprint planning.
 
 ${theme.heading('USAGE')}
 
@@ -117,6 +123,7 @@ ${theme.heading('DESCRIPTION')}
   using your CLAUDE.md framework as the coding bible.
 
   Requires ${theme.brand('vibe init')} to have been run first (CLAUDE.md must exist).
+  For structured planning before building, run ${theme.info('avc')} first (Sponsor Call → Sprint Planning).
 
 ${theme.heading('USAGE')}
 
@@ -417,7 +424,8 @@ ${theme.brand('vibe doctor')} / ${theme.brand('vibe audit')} — Governance comp
 
 ${theme.heading('DESCRIPTION')}
 
-  Audits your project against governance policies across 6 categories.
+  Audits your project against governance policies across 10 categories.
+  Includes traceability checks when paired with Agile Vibe Coding (avc).
   Policies have severity levels: block (mandatory), warn, info.
   Suggests fixes for violations.
 
