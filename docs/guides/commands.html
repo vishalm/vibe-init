@@ -340,7 +340,7 @@ vibe ask "what's the best approach to add multi-tenancy?"</code></pre>
   <p>Unlike <code>vibe run</code>, this command is non-interactive — it sends your question, prints Claude's response, and exits. No file modifications are possible.</p>
 
   <!-- ─── Agile Vibe Coding ─────────────────────────── -->
-  <h2 id="avc">Agile Vibe Coding (avc)</h2>
+  <h2 id="avc">Agile Vibe Coding (vibe avc)</h2>
 
   <p>New in v0.6.0 — vibe-init integrates with the <a href="https://agilevibecoding.org" target="_blank">Agile Vibe Coding</a> framework for structured, traceable AI-assisted development. AVC is a companion CLI that provides agile ceremonies.</p>
 
@@ -349,7 +349,7 @@ npm install -g @agile-vibe-coding/avc
 
 # Run AVC ceremonies in your project
 cd your-project
-avc</code></pre>
+vibe avc</code></pre>
 
   <h3>Ceremonies</h3>
 
@@ -367,7 +367,7 @@ avc</code></pre>
 vibe init
 
 # 2. Plan with AVC ceremonies
-avc                          # Sponsor Call → Sprint Planning
+vibe avc                          # Sponsor Call → Sprint Planning
 
 # 3. Build with full traceability
 vibe build                   # Claude builds with governance + agile context

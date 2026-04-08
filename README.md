@@ -42,7 +42,7 @@ graph LR
     
     L["vibe anchor"] --> M["Feature Context Docs<br/>Decisions · Constraints · State"]
     
-    N["avc"] --> O["Sponsor Call · Sprint Planning<br/>Epics · Stories · Traceability"]
+    N["vibe avc"] --> O["Sponsor Call · Sprint Planning<br/>Epics · Stories · Traceability"]
     O --> I
     
     style A fill:#FF6B35,color:#fff
@@ -107,7 +107,7 @@ npm install -g vibe-init-cli
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
-    participant AVC as avc (Agile)
+    participant AVC as vibe avc (Agile)
     participant VI as vibe init
     participant VB as vibe build
     participant CC as Claude Code
@@ -119,7 +119,7 @@ sequenceDiagram
     VI->>VI: Auto-detect & install skills
     VI-->>Dev: Framework ready
     
-    Dev->>AVC: avc
+    Dev->>AVC: vibe avc
     AVC->>AVC: Sponsor Call → Epics
     AVC->>AVC: Sprint Planning → Stories
     AVC-->>Dev: Backlog with traceability
@@ -216,7 +216,7 @@ graph TD
 
 ```mermaid
 graph LR
-    AVC["avc<br/>Sponsor Call · Sprint Planning"] --> Epics["Epics &<br/>Stories"]
+    AVC["vibe avc<br/>Sponsor Call · Sprint Planning"] --> Epics["Epics &<br/>Stories"]
     Epics --> VI["vibe init<br/>Governance Framework"]
     VI --> VB["vibe build<br/>With Traceability"]
     VB --> VA["vibe audit<br/>Traceability Checks"]
@@ -249,7 +249,7 @@ cd your-project
 vibe init
 
 # Run AVC ceremonies
-avc
+vibe avc
 # → Sponsor Call: define epics and priorities
 # → Sprint Planning: break epics into stories with acceptance criteria
 

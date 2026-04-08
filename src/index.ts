@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import { execFileSync } from 'node:child_process';
 import { initCommand } from './commands/init.js';
 import { buildCommand } from './commands/build.js';
 import { runCommand } from './commands/run.js';
@@ -34,7 +35,7 @@ ${theme.heading('THE GOVERNANCE WORKFLOW')}
 
   ${theme.label('Step 1:')} ${theme.brand('vibe init')}     Prepare the room
            ${theme.dim('CLAUDE.md + .vibe/policies/ (59 YAML) + .claude/commands/ (auto-skills)')}
-  ${theme.label('Step 2:')} ${theme.info('avc')}              Plan with Agile Vibe Coding ${theme.dim('(optional)')}
+  ${theme.label('Step 2:')} ${theme.info('vibe avc')}              Plan with Agile Vibe Coding ${theme.dim('(optional)')}
            ${theme.dim('Sponsor Call → Epics → Sprint Planning → Stories with traceability')}
   ${theme.label('Step 3:')} ${theme.brand('vibe build')}    Build from your idea
            ${theme.dim('Enrichment → ADR → Claude Code builds with governance context')}
@@ -49,7 +50,7 @@ ${theme.heading('QUICKSTART')}
   ${theme.dim('# New project')}
   ${theme.brand('$')} mkdir my-app && cd my-app
   ${theme.brand('$')} vibe init                           ${theme.dim('59 policies + auto-skills installed')}
-  ${theme.brand('$')} avc                                 ${theme.dim('Sponsor Call → Epics → Sprint Planning')}
+  ${theme.brand('$')} vibe avc                            ${theme.dim('Sponsor Call → Epics → Sprint Planning')}
   ${theme.brand('$')} vibe build                          ${theme.dim('Describe idea → Claude builds it')}
   ${theme.brand('$')} vibe anchor "user authentication"   ${theme.dim('Anchor feature decisions')}
   ${theme.brand('$')} vibe audit                          ${theme.dim('Check governance compliance')}
@@ -105,7 +106,7 @@ ${theme.heading('DESCRIPTION')}
   ${theme.bold('Greenfield:')} generates fresh framework.
   ${theme.bold('Brownfield:')} scans codebase and generates framework from analysis.
   ${theme.bold('Auto-skills:')} detects your tech stack and installs matching Claude Code skills.
-  ${theme.bold('Agile Vibe Coding:')} pair with ${theme.info('avc')} for epics, stories, and sprint planning.
+  ${theme.bold('Agile Vibe Coding:')} pair with ${theme.info('vibe avc')} for epics, stories, and sprint planning.
 
 ${theme.heading('USAGE')}
 
@@ -123,7 +124,7 @@ ${theme.heading('DESCRIPTION')}
   using your CLAUDE.md framework as the coding bible.
 
   Requires ${theme.brand('vibe init')} to have been run first (CLAUDE.md must exist).
-  For structured planning before building, run ${theme.info('avc')} first (Sponsor Call → Sprint Planning).
+  For structured planning before building, run ${theme.info('vibe avc')} first (Sponsor Call → Sprint Planning).
 
 ${theme.heading('USAGE')}
 
@@ -494,6 +495,51 @@ program
       verbose: opts.verbose ?? false,
       dryRun: opts.dryRun ?? false,
     });
+  });
+
+const AVC_HELP = `
+${theme.brand('vibe avc')} — Run Agile Vibe Coding ceremonies
+
+${theme.heading('DESCRIPTION')}
+
+  Launches the Agile Vibe Coding (AVC) CLI for structured, traceable
+  AI-assisted development. Provides agile ceremonies adapted for vibe coding.
+
+  Based on the ${theme.info('Agile Vibe Coding Manifesto')} (agilevibecoding.org).
+
+${theme.heading('CEREMONIES')}
+
+  ${theme.info('Sponsor Call')}      Define project vision, create epics with business context
+  ${theme.info('Sprint Planning')}   Break epics into stories with acceptance criteria + traceability
+
+${theme.heading('USAGE')}
+
+  ${theme.brand('$')} vibe avc                   ${theme.dim('Launch AVC interactive ceremonies')}
+
+${theme.heading('INSTALL')}
+
+  ${theme.brand('$')} npm install -g @agile-vibe-coding/avc
+`;
+
+program
+  .command('avc')
+  .description('Run Agile Vibe Coding ceremonies (epics, stories, sprint planning)')
+  .addHelpText('after', AVC_HELP)
+  .action(async () => {
+    try {
+      execFileSync('avc', { stdio: 'inherit', cwd: process.cwd() });
+    } catch (error) {
+      const isNotFound = error instanceof Error && 'code' in error && (error as NodeJS.ErrnoException).code === 'ENOENT';
+      if (isNotFound) {
+        console.error(theme.error('\n💥 AVC CLI not found.'));
+        console.error(`\n  Install it with:\n\n  ${theme.brand('$')} npm install -g @agile-vibe-coding/avc\n`);
+        console.error(`  Learn more: ${theme.info('https://agilevibecoding.org')}\n`);
+        process.exit(1);
+      }
+      // Non-zero exit from avc — just forward the exit code
+      const exitCode = error instanceof Error && 'status' in error ? (error as { status: number }).status : 1;
+      process.exit(exitCode);
+    }
   });
 
 // Error handling
