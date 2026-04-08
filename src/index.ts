@@ -531,10 +531,18 @@ program
     } catch (error) {
       const isNotFound = error instanceof Error && 'code' in error && (error as NodeJS.ErrnoException).code === 'ENOENT';
       if (isNotFound) {
-        console.error(theme.error('\n💥 AVC CLI not found.'));
-        console.error(`\n  Install it with:\n\n  ${theme.brand('$')} npm install -g @agile-vibe-coding/avc\n`);
-        console.error(`  Learn more: ${theme.info('https://agilevibecoding.org')}\n`);
-        process.exit(1);
+        console.log(theme.brand('\n📦 AVC CLI not found — installing @agile-vibe-coding/avc...\n'));
+        try {
+          execFileSync('npm', ['install', '-g', '@agile-vibe-coding/avc'], { stdio: 'inherit' });
+          console.log(theme.success('\n✔ AVC installed successfully. Launching...\n'));
+          execFileSync('avc', { stdio: 'inherit', cwd: process.cwd() });
+        } catch (installError) {
+          console.error(theme.error('\n💥 Failed to install AVC.'));
+          console.error(`\n  Try manually:\n\n  ${theme.brand('$')} npm install -g @agile-vibe-coding/avc\n`);
+          console.error(`  Learn more: ${theme.info('https://agilevibecoding.org')}\n`);
+          process.exit(1);
+        }
+        return;
       }
       // Non-zero exit from avc — just forward the exit code
       const exitCode = error instanceof Error && 'status' in error ? (error as { status: number }).status : 1;
