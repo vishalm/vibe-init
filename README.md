@@ -99,6 +99,7 @@ npm install -g vibe-init-cli
 | **Claude CLI** | AI commands (`init`, `build`, `run`, `ask`) | For AI features |
 | **ANTHROPIC_API_KEY** | Faster batch generation (falls back to Claude CLI) | Optional |
 | **@agile-vibe-coding/avc** | Agile ceremonies (epics, stories, sprint planning) | Optional |
+| **@colbymchenry/codegraph** | Semantic code intelligence — 94% fewer Explore calls | Optional |
 
 ---
 
@@ -143,7 +144,7 @@ mkdir my-app && cd my-app
 vibe init
 ```
 
-Generates: CLAUDE.md + `.vibe/policies/` (59 YAML policies) + `.claude/commands/` (auto-detected skills) + ADR template + .gitignore
+Generates: CLAUDE.md (with CodeGraph guidance) + `.vibe/policies/` (59 YAML policies) + `.claude/commands/` (auto-detected skills + codegraph skill) + `.claude/settings.json` (with codegraph MCP allow-list) + ADR template + .gitignore (excludes `.codegraph/`)
 
 ### Step 2: Build from your idea
 
@@ -183,6 +184,7 @@ vibe audit    # or: vibe doctor
 | `vibe add <feature>` | Inject features: docker, ci, testing, logging, validation, health, hooks, auth, db |
 | `vibe run <task>` | Code with Claude using project context |
 | `vibe ask <question>` | Read-only advisory from Claude |
+| `vibe codegraph [args...]` | Semantic code intelligence (wraps `@colbymchenry/codegraph`, auto-installs) |
 
 ---
 
@@ -265,6 +267,52 @@ vibe build
 | **Sprint Planning** | Break epics into stories, estimate complexity | Sprint backlog with traceability |
 
 Every epic, story, and task created by AVC links back to a requirement — making governance auditable end-to-end.
+
+---
+
+## Semantic Code Intelligence (CodeGraph)
+
+`vibe init` wires up [CodeGraph](https://www.npmjs.com/package/@colbymchenry/codegraph) so Claude Code's Explore agents can answer "how does X work?" with **one MCP call instead of dozens of grep/read calls** — 94% fewer tool calls and 77% faster on average across real-world codebases.
+
+```mermaid
+graph LR
+    Init["vibe init"] --> CG["CodeGraph<br/>guidance in CLAUDE.md"]
+    Init --> Skill[".claude/commands/codegraph.md<br/>(when to use which tool)"]
+    Init --> Perms[".claude/settings.json<br/>MCP allow-list"]
+
+    User["vibe codegraph init -i"] --> Index[".codegraph/<br/>SQLite knowledge graph"]
+    Index --> MCP["mcp__codegraph__*<br/>search · callers · impact · ..."]
+    MCP --> CC["Claude Code Explore agent"]
+
+    style Init fill:#FF6B35,color:#fff
+    style User fill:#06B6D4,color:#fff
+    style CC fill:#22C55E,color:#fff
+```
+
+What `vibe init` adds for CodeGraph:
+
+- **CLAUDE.md** gets a marker-fenced `## CodeGraph` section telling Claude when to use `codegraph_*` tools vs. grep/read.
+- **`.claude/commands/codegraph.md`** — a skill describing each MCP tool and when to reach for it.
+- **`.claude/settings.json`** — pre-allowed `mcp__codegraph__*` permissions so there are no permission prompts.
+- **`.gitignore`** — `.codegraph/` excluded (regenerable local cache).
+- **Optional prompt** at the end of `vibe init` to run `codegraph init -i` immediately — declined gracefully if CodeGraph isn't installed.
+
+### Quick start
+
+```bash
+# Run anywhere — auto-installs @colbymchenry/codegraph globally on first use
+vibe codegraph
+
+# In a project: build the index
+vibe codegraph init -i
+
+# Status / search / sync — args pass through to the codegraph CLI
+vibe codegraph status
+vibe codegraph query UserService
+vibe codegraph sync
+```
+
+CodeGraph supports 19+ languages (TypeScript, JavaScript, Python, Go, Rust, Java, C/C++, Swift, Kotlin, Ruby, PHP, Dart, Svelte, Pascal/Delphi). All processing is 100% local — no API keys, no external services.
 
 ---
 

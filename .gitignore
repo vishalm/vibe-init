@@ -7,3 +7,6 @@ coverage/
 .env.local
 .DS_Store
 *.log
+
+# CodeGraph (semantic index — local cache, regenerable)
+.codegraph/

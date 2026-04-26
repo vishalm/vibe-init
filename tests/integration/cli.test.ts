@@ -56,6 +56,7 @@ describe('CLI: vibe --help', () => {
     expect(output).toContain('doctor');
     expect(output).toContain('audit');
     expect(output).toContain('anchor');
+    expect(output).toContain('codegraph');
   });
 
   it('should mention the vibe coding workflow', () => {

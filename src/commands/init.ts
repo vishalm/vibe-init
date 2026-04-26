@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process';
+import { confirm } from '@inquirer/prompts';
 import { generateFramework, detectProjectType } from '../phases/framework.js';
 import { generatePolicyYamlFiles } from '../governance/yaml-generator.js';
 import { installAutoSkills, detectProjectSkills } from '../skills/autoskills.js';
@@ -9,6 +11,7 @@ import { VibeError } from '../utils/errors.js';
 import type { CLIConfig } from '../types/config.js';
 import { VERSION } from '../version.js';
 import { promptText } from '../ui/prompts.js';
+import { isCodegraphInstalled } from './codegraph.js';
 
 export async function initCommand(config: CLIConfig): Promise<void> {
   try {
@@ -90,12 +93,19 @@ export async function initCommand(config: CLIConfig): Promise<void> {
       }
     }
 
+    // Optional: offer to initialize CodeGraph for the project. Treat as fully
+    // optional — never fail init if codegraph isn't installed.
+    if (!config.dryRun) {
+      await maybeInitCodegraph(projectDir);
+    }
+
     console.log(
       theme.label('\n  Next steps:\n') +
         theme.value('  1. Review CLAUDE.md and .vibe/policies/ for your project\n') +
         theme.value('  2. Run `vibe anchor "feature name"` to track feature decisions\n') +
         theme.value('  3. Run `vibe build` to build your project with Claude\n') +
-        theme.value('  4. Run `vibe audit` to check governance compliance\n')
+        theme.value('  4. Run `vibe audit` to check governance compliance\n') +
+        theme.value('  5. Run `vibe codegraph init -i` for semantic code intelligence\n')
     );
   } catch (error) {
     if (error instanceof VibeError) {
@@ -106,5 +116,49 @@ export async function initCommand(config: CLIConfig): Promise<void> {
       process.exit(1);
     }
     throw error;
+  }
+}
+
+/**
+ * Optionally run `codegraph init -i` for the current project. CodeGraph is a
+ * fully optional integration — if the binary isn't installed we just print
+ * an install hint and move on. If it is installed, we ask before running
+ * because indexing larger brownfield repos can take a few minutes.
+ */
+async function maybeInitCodegraph(projectDir: string): Promise<void> {
+  if (!isCodegraphInstalled()) {
+    console.log(
+      theme.dim('\n  Tip: install CodeGraph for semantic code intelligence:\n') +
+        theme.dim('    npm install -g @colbymchenry/codegraph\n') +
+        theme.dim('    vibe codegraph init -i\n')
+    );
+    return;
+  }
+
+  let proceed: boolean;
+  try {
+    proceed = await confirm({
+      message: 'Initialize CodeGraph (semantic code index) for this project now?',
+      default: true,
+    });
+  } catch {
+    // User pressed Ctrl+C / non-interactive shell — skip silently.
+    return;
+  }
+
+  if (!proceed) return;
+
+  console.log(theme.heading('\n🧠 Initializing CodeGraph...\n'));
+  try {
+    execFileSync('codegraph', ['init', '-i'], { stdio: 'inherit', cwd: projectDir });
+  } catch (error) {
+    // Don't fail the whole init — CodeGraph is optional.
+    console.warn(
+      theme.warning('\n  CodeGraph init failed. You can re-run it later with: ') +
+        theme.brand('vibe codegraph init -i\n')
+    );
+    if (error instanceof Error && error.message) {
+      console.warn(theme.dim(`  ${error.message}\n`));
+    }
   }
 }

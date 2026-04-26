@@ -8,6 +8,7 @@ import { scanCommand } from './commands/scan.js';
 import { addCommand } from './commands/add.js';
 import { doctorCommand } from './commands/doctor.js';
 import { anchorCommand } from './commands/anchor.js';
+import { codegraphCommand } from './commands/codegraph.js';
 import { theme } from './ui/theme.js';
 import type { CLIConfig } from './types/config.js';
 import { VERSION } from './version.js';
@@ -30,6 +31,7 @@ ${theme.heading('COMMANDS')}
   ${theme.brand('add')} <feature>         Inject features (docker, ci, testing, logging, health, hooks, etc.)
   ${theme.brand('run')} <task>            Execute coding task with Claude + project context
   ${theme.brand('ask')} <question>        Ask Claude about your project (read-only)
+  ${theme.brand('codegraph')} [args...]   Semantic code intelligence (wraps @colbymchenry/codegraph)
 
 ${theme.heading('THE GOVERNANCE WORKFLOW')}
 
@@ -63,10 +65,10 @@ ${theme.heading('QUICKSTART')}
 
 ${theme.heading('WHAT vibe init CREATES')}
 
-  ${theme.success('✔')} CLAUDE.md                   AI coding instructions + conventions
+  ${theme.success('✔')} CLAUDE.md                   AI coding instructions + conventions (incl. CodeGraph block)
   ${theme.success('✔')} .vibe/policies/*.yaml       59 governance policies (Agent Governance Toolkit format)
-  ${theme.success('✔')} .claude/commands/*.md        Auto-detected skills (React, Next.js, Prisma, etc.)
-  ${theme.success('✔')} .claude/settings.json        Permission guardrails
+  ${theme.success('✔')} .claude/commands/*.md        Auto-detected skills (React, Next.js, Prisma, codegraph, etc.)
+  ${theme.success('✔')} .claude/settings.json        Permission guardrails (incl. codegraph MCP allow-list)
   ${theme.success('✔')} docs/adr/000-template.md     Architecture Decision Record template
 
 ${theme.heading('GOVERNANCE CATEGORIES')} ${theme.dim('(59 policies)')}
@@ -82,6 +84,7 @@ ${theme.heading('PREREQUISITES')}
   ${theme.label('2.')} Node.js 20+    ${theme.dim('https://nodejs.org')}
   ${theme.label('3.')} API key        ${theme.dim('Optional — falls back to Claude CLI')}
   ${theme.label('4.')} AVC            ${theme.dim('npm install -g @agile-vibe-coding/avc  (optional — agile ceremonies)')}
+  ${theme.label('5.')} CodeGraph      ${theme.dim('npm install -g @colbymchenry/codegraph  (optional — semantic code intelligence)')}
 
 ${theme.heading('LEARN MORE')}
 
@@ -520,6 +523,19 @@ ${theme.heading('INSTALL')}
 
   ${theme.brand('$')} npm install -g @agile-vibe-coding/avc
 `;
+
+// `vibe codegraph [...args]` — pass-through wrapper around @colbymchenry/codegraph.
+// All args (including --help) are forwarded verbatim to the underlying CLI so
+// users see the canonical codegraph help. If the CLI is missing, the wrapper
+// auto-installs it globally (mirrors the `vibe avc` behavior).
+program
+  .command('codegraph [args...]')
+  .description('Semantic code intelligence — wraps @colbymchenry/codegraph (auto-installs)')
+  .allowUnknownOption(true)
+  .helpOption(false)
+  .action((args: string[] = []) => {
+    codegraphCommand(args);
+  });
 
 program
   .command('avc')

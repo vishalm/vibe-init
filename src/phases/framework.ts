@@ -3,6 +3,11 @@ import { analyzeProject } from '../analyzers/detector.js';
 import { callAnthropicApi } from '../claude/api.js';
 import { withSpinner } from '../ui/spinner.js';
 import { theme } from '../ui/theme.js';
+import {
+  CODEGRAPH_MCP_PERMISSIONS,
+  CODEGRAPH_SKILL,
+  injectCodegraphSection,
+} from '../skills/codegraph.js';
 import type { RenderedFile } from '../types/template.js';
 import type { ProjectAnalysis } from '../types/analysis.js';
 
@@ -44,10 +49,13 @@ export async function generateFramework(options: FrameworkOptions): Promise<Rend
   }
 
   // Generate CLAUDE.md via Claude (context-aware for brownfield, stack-specific for greenfield)
-  const claudeMd = await withSpinner('Generating CLAUDE.md...', async () => {
+  const claudeMdBase = await withSpinner('Generating CLAUDE.md...', async () => {
     const prompt = buildClaudeMdFrameworkPrompt(projectName, stack, projectType, analysis);
     return callAnthropicApi(prompt, { maxTokens: 6000, temperature: 0.3 });
   });
+  // Always append the CodeGraph guidance block — deterministic, marker-fenced, and
+  // safe for `codegraph init` to update later (idempotent).
+  const claudeMd = injectCodegraphSection(claudeMdBase);
 
   // Generate project skills for Claude Code
   const skills = generateSkills(stack);
@@ -67,6 +75,7 @@ export async function generateFramework(options: FrameworkOptions): Promise<Rend
     { path: '.claude/commands/commit.md', content: skills.commit },
     { path: '.claude/commands/review.md', content: skills.review },
     { path: '.claude/commands/add-feature.md', content: skills.addFeature },
+    { path: '.claude/commands/codegraph.md', content: CODEGRAPH_SKILL },
     { path: '.claude/settings.json', content: settings },
     { path: 'docs/adr/000-template.md', content: adrTemplate },
   ];
@@ -359,6 +368,7 @@ function generateSettings(): string {
           'Bash(git status)',
           'Bash(git diff*)',
           'Bash(git log*)',
+          ...CODEGRAPH_MCP_PERMISSIONS,
         ],
         deny: [
           'Bash(rm -rf *)',
@@ -461,6 +471,9 @@ coverage/
 
 # Docker
 docker-compose.override.yml
+
+# CodeGraph (semantic index — local cache, regenerable)
+.codegraph/
 `;
 
   if (stack.toLowerCase().includes('go')) {

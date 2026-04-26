@@ -1,8 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git reset:*)",
-      "Bash(git add:*)"
-    ]
+      "Bash(*)",
+      "Bash(git add:*)",
+      "Bash(npm run:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "*",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__codegraph__codegraph_search",
+      "mcp__codegraph__codegraph_context",
+      "mcp__codegraph__codegraph_callers",
+      "mcp__codegraph__codegraph_callees",
+      "mcp__codegraph__codegraph_impact",
+      "mcp__codegraph__codegraph_node",
+      "mcp__codegraph__codegraph_status",
+      "mcp__codegraph__codegraph_files"
+    ],
+    "defaultMode": "bypassPermissions"
   }
 }
