@@ -274,6 +274,10 @@ describe('CLI: vibe build (no CLAUDE.md)', () => {
   it('should fail if CLAUDE.md does not exist', () => {
     const result = runAllowFail('build', { cwd: tempDir });
     expect(result.code).not.toBe(0);
-    expect(result.stdout + result.stderr).toMatch(/CLAUDE\.md|vibe init/i);
+    // On dev machines with Claude CLI installed, fails on missing CLAUDE.md.
+    // On CI without Claude CLI, fails earlier on the Claude CLI prerequisite
+    // check. Both are valid failure modes — we just want to confirm `vibe
+    // build` refuses to run in this empty directory.
+    expect(result.stdout + result.stderr).toMatch(/CLAUDE\.md|vibe init|Claude CLI/i);
   });
 });
