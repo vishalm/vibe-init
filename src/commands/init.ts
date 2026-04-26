@@ -105,7 +105,8 @@ export async function initCommand(config: CLIConfig): Promise<void> {
         theme.value('  2. Run `vibe anchor "feature name"` to track feature decisions\n') +
         theme.value('  3. Run `vibe build` to build your project with Claude\n') +
         theme.value('  4. Run `vibe audit` to check governance compliance\n') +
-        theme.value('  5. Run `vibe codegraph init -i` for semantic code intelligence\n')
+        theme.value('  5. Run `vibe codegraph init -i` for semantic code intelligence\n') +
+        theme.value('  6. Run `vibe graphify .` for a multi-modal knowledge graph\n')
     );
   } catch (error) {
     if (error instanceof VibeError) {

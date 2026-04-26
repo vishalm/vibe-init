@@ -188,7 +188,7 @@
 <div class="hero">
   <div class="badge">
     <span class="badge-dot"></span>
-    v0.6.1 — Agile Vibe Coding + Governance
+    v0.7.0 — Multi-modal knowledge graphs (Graphify) + Governance
   </div>
   <h1>Software engineering<br><span>governance engine</span></h1>
   <p class="hero-sub">
@@ -335,7 +335,7 @@
 <!-- Agile Vibe Coding -->
 <section id="agile-vibe-coding">
   <div class="container">
-    <div class="section-label">New in v0.6.1</div>
+    <div class="section-label">In v0.6.x</div>
     <h2>Agile Vibe Coding<br>integration</h2>
     <p class="section-desc">Built on the <a href="https://agilevibecoding.org" target="_blank">Agile Vibe Coding Manifesto</a> — traceable intent, human accountability, and structured ceremonies for AI-assisted development.</p>
 
@@ -403,6 +403,84 @@
   </div>
 </section>
 
+<!-- Graphify -->
+<section id="graphify" style="background: var(--bg-secondary);">
+  <div class="container">
+    <div class="section-label">New in v0.7.0</div>
+    <h2>Multi-modal knowledge graphs<br>across your whole project</h2>
+    <p class="section-desc">
+      <code>vibe graphify</code> wraps <a href="https://github.com/safishamsi/graphify" target="_blank">ai-graphify</a> — a knowledge graph engine that spans code, docs, papers, images, audio, and video. Where CodeGraph indexes symbols, Graphify indexes <em>everything</em> — and emits a one-page audit, an interactive HTML graph, and a queryable JSON file your team commits to git.
+    </p>
+
+    <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))">
+      <div class="feature-card">
+        <div class="feature-icon" style="color: var(--brand)">
+          <svg><use href="#icon-brain"/></svg>
+        </div>
+        <h3>Cross-modal extraction</h3>
+        <p>Deterministic AST pass for code. Local Whisper transcription for audio/video. Claude subagents for docs, papers, images, and transcripts. Three passes, one merged graph.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="color: var(--info)">
+          <svg><use href="#icon-shield"/></svg>
+        </div>
+        <h3>Confidence-tagged edges</h3>
+        <p>Every relationship is tagged <code>EXTRACTED</code>, <code>INFERRED</code>, or <code>AMBIGUOUS</code>. You always know what was found vs. guessed — no silent hallucination.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="color: var(--success)">
+          <svg><use href="#icon-zap"/></svg>
+        </div>
+        <h3>Topology-based clustering</h3>
+        <p>Leiden community detection on extracted relationships — no embeddings, no vector DB. The graph structure <em>is</em> the similarity signal.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="color: var(--warning)">
+          <svg><use href="#icon-gitbranch"/></svg>
+        </div>
+        <h3>Pairs with CodeGraph</h3>
+        <p>Use Graphify for orientation and cross-modal questions. Use CodeGraph for callers, callees, and impact. Both can coexist — they are complementary.</p>
+      </div>
+    </div>
+
+    <div class="terminal" style="max-width: 720px; margin-top: 2rem;">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">Graphify workflow</span>
+      </div>
+      <div class="terminal-body">
+        <div class="comment"># Build the graph (auto-installs graphifyy via uv / pipx / pip)</div>
+        <div><span class="prompt">$</span> <span class="cmd">vibe graphify .</span></div>
+        <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> graphify-out/graph.html</div>
+        <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> graphify-out/GRAPH_REPORT.md</div>
+        <div class="success"><svg width="14" height="14" style="color:var(--success);flex-shrink:0"><use href="#icon-check"/></svg> graphify-out/graph.json</div>
+        <br>
+        <div class="comment"># Wire up always-on hooks for your AI assistant</div>
+        <div><span class="prompt">$</span> <span class="cmd">vibe graphify install</span></div>
+        <br>
+        <div class="comment"># Query the graph from the CLI or your AI assistant</div>
+        <div><span class="prompt">$</span> <span class="cmd">vibe graphify query "show the auth flow"</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">vibe graphify path DigestAuth Response</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">vibe graphify explain UserService</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">vibe graphify stats</span></div>
+        <br>
+        <div class="comment"># Cross-repo: clone &amp; merge graphs</div>
+        <div><span class="prompt">$</span> <span class="cmd">vibe graphify clone https://github.com/owner/repo</span></div>
+        <div class="info" style="display:flex;align-items:center;gap:0.5rem">
+          <svg width="14" height="14" style="color:var(--info);flex-shrink:0"><use href="#icon-sparkles"/></svg>
+          Indexed across code · docs · papers · audio · video
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-info" style="max-width:720px;margin:2rem auto 0">
+      <p><strong>Auto-wired by <code>vibe init</code>:</strong> CLAUDE.md gets a marker-fenced <code>## Graphify</code> section, <code>.claude/commands/graphify.md</code> teaches Claude when to query the graph, and <code>.gitignore</code> excludes the regenerable cache while keeping <code>graph.json</code> and <code>GRAPH_REPORT.md</code> committable for the team.</p>
+    </div>
+  </div>
+</section>
+
 <!-- Brownfield -->
 <section id="brownfield">
   <div class="container">
@@ -451,8 +529,8 @@
 <section id="commands" style="background: var(--bg-secondary);">
   <div class="container">
     <div class="section-label">CLI Reference</div>
-    <h2>Nine commands.<br>Full governance lifecycle.</h2>
-    <p class="section-desc">Prepare, build, anchor, audit, analyze, enhance, code, and advise.</p>
+    <h2>Eleven commands.<br>Full governance lifecycle.</h2>
+    <p class="section-desc">Prepare, build, anchor, audit, analyze, enhance, code, advise — and now graph your project across code, docs, papers, audio, and video.</p>
 
     <div class="command-ref">
       <div class="command-card">
@@ -578,6 +656,35 @@
         <div>
           <div class="command-desc">
             Ask Claude about your project in read-only advisory mode. No files are changed. Great for architecture decisions, security review, and trade-off analysis.
+          </div>
+        </div>
+      </div>
+
+      <div class="command-card">
+        <div>
+          <div class="command-name">vibe codegraph [args...]</div>
+          <div class="command-flags">
+            <span class="flag">auto-installs</span>
+          </div>
+        </div>
+        <div>
+          <div class="command-desc">
+            Pass-through wrapper around <code>@colbymchenry/codegraph</code>. Builds a local SQLite knowledge graph of your code so Claude's Explore agent can answer "how does X work?" with one MCP call instead of dozens of grep/read calls.
+          </div>
+        </div>
+      </div>
+
+      <div class="command-card">
+        <div>
+          <div class="command-name">vibe graphify [args...]</div>
+          <div class="command-flags">
+            <span class="flag">auto-installs</span>
+            <span class="flag">multi-modal</span>
+          </div>
+        </div>
+        <div>
+          <div class="command-desc">
+            Pass-through wrapper around <code>graphifyy</code> (PyPI). Builds a multi-modal knowledge graph spanning code, docs, papers, images, audio, and video. Outputs interactive HTML, queryable JSON, and a plain-language audit. Auto-installs via <code>uv</code>, <code>pipx</code>, or <code>pip</code>.
           </div>
         </div>
       </div>
@@ -969,7 +1076,7 @@ graph TB
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.6.1
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.7.0
   </p>
 </footer>
 

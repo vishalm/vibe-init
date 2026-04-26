@@ -8,6 +8,10 @@ import {
   CODEGRAPH_SKILL,
   injectCodegraphSection,
 } from '../skills/codegraph.js';
+import {
+  GRAPHIFY_SKILL,
+  injectGraphifySection,
+} from '../skills/graphify.js';
 import type { RenderedFile } from '../types/template.js';
 import type { ProjectAnalysis } from '../types/analysis.js';
 
@@ -53,9 +57,10 @@ export async function generateFramework(options: FrameworkOptions): Promise<Rend
     const prompt = buildClaudeMdFrameworkPrompt(projectName, stack, projectType, analysis);
     return callAnthropicApi(prompt, { maxTokens: 6000, temperature: 0.3 });
   });
-  // Always append the CodeGraph guidance block — deterministic, marker-fenced, and
-  // safe for `codegraph init` to update later (idempotent).
-  const claudeMd = injectCodegraphSection(claudeMdBase);
+  // Always append the CodeGraph and Graphify guidance blocks — deterministic,
+  // marker-fenced, and safe for the upstream installers to update later
+  // (idempotent on re-run).
+  const claudeMd = injectGraphifySection(injectCodegraphSection(claudeMdBase));
 
   // Generate project skills for Claude Code
   const skills = generateSkills(stack);
@@ -76,6 +81,7 @@ export async function generateFramework(options: FrameworkOptions): Promise<Rend
     { path: '.claude/commands/review.md', content: skills.review },
     { path: '.claude/commands/add-feature.md', content: skills.addFeature },
     { path: '.claude/commands/codegraph.md', content: CODEGRAPH_SKILL },
+    { path: '.claude/commands/graphify.md', content: GRAPHIFY_SKILL },
     { path: '.claude/settings.json', content: settings },
     { path: 'docs/adr/000-template.md', content: adrTemplate },
   ];
@@ -474,6 +480,11 @@ docker-compose.override.yml
 
 # CodeGraph (semantic index — local cache, regenerable)
 .codegraph/
+
+# Graphify (knowledge graph — local cache & manifest; commit graph.json/GRAPH_REPORT.md)
+graphify-out/cache/
+graphify-out/manifest.json
+graphify-out/cost.json
 `;
 
   if (stack.toLowerCase().includes('go')) {

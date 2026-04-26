@@ -9,6 +9,7 @@ import { addCommand } from './commands/add.js';
 import { doctorCommand } from './commands/doctor.js';
 import { anchorCommand } from './commands/anchor.js';
 import { codegraphCommand } from './commands/codegraph.js';
+import { graphifyCommand } from './commands/graphify.js';
 import { theme } from './ui/theme.js';
 import type { CLIConfig } from './types/config.js';
 import { VERSION } from './version.js';
@@ -32,6 +33,7 @@ ${theme.heading('COMMANDS')}
   ${theme.brand('run')} <task>            Execute coding task with Claude + project context
   ${theme.brand('ask')} <question>        Ask Claude about your project (read-only)
   ${theme.brand('codegraph')} [args...]   Semantic code intelligence (wraps @colbymchenry/codegraph)
+  ${theme.brand('graphify')} [args...]    Multi-modal knowledge graph (wraps ai-graphify / graphifyy)
 
 ${theme.heading('THE GOVERNANCE WORKFLOW')}
 
@@ -65,9 +67,9 @@ ${theme.heading('QUICKSTART')}
 
 ${theme.heading('WHAT vibe init CREATES')}
 
-  ${theme.success('✔')} CLAUDE.md                   AI coding instructions + conventions (incl. CodeGraph block)
+  ${theme.success('✔')} CLAUDE.md                   AI coding instructions + conventions (incl. CodeGraph + Graphify blocks)
   ${theme.success('✔')} .vibe/policies/*.yaml       59 governance policies (Agent Governance Toolkit format)
-  ${theme.success('✔')} .claude/commands/*.md        Auto-detected skills (React, Next.js, Prisma, codegraph, etc.)
+  ${theme.success('✔')} .claude/commands/*.md        Auto-detected skills (React, Next.js, Prisma, codegraph, graphify, etc.)
   ${theme.success('✔')} .claude/settings.json        Permission guardrails (incl. codegraph MCP allow-list)
   ${theme.success('✔')} docs/adr/000-template.md     Architecture Decision Record template
 
@@ -85,6 +87,7 @@ ${theme.heading('PREREQUISITES')}
   ${theme.label('3.')} API key        ${theme.dim('Optional — falls back to Claude CLI')}
   ${theme.label('4.')} AVC            ${theme.dim('npm install -g @agile-vibe-coding/avc  (optional — agile ceremonies)')}
   ${theme.label('5.')} CodeGraph      ${theme.dim('npm install -g @colbymchenry/codegraph  (optional — semantic code intelligence)')}
+  ${theme.label('6.')} Graphify       ${theme.dim('uv tool install graphifyy           (optional — multi-modal knowledge graph; auto-installed by `vibe graphify`)')}
 
 ${theme.heading('LEARN MORE')}
 
@@ -535,6 +538,65 @@ program
   .helpOption(false)
   .action((args: string[] = []) => {
     codegraphCommand(args);
+  });
+
+const GRAPHIFY_HELP = `
+${theme.brand('vibe graphify')} [args...] — Multi-modal knowledge graph (ai-graphify)
+
+${theme.heading('DESCRIPTION')}
+
+  Builds and queries a semantic knowledge graph of your project — code, docs,
+  papers, images, audio, and video — and exports it as interactive HTML, queryable
+  JSON, and a plain-language audit (${theme.info('graphify-out/GRAPH_REPORT.md')}).
+
+  Wraps the upstream ${theme.info('graphifyy')} Python CLI. Auto-installs via
+  ${theme.brand('uv')} → ${theme.brand('pipx')} → ${theme.brand('pip')} on first run.
+
+${theme.heading('USAGE')}
+
+  ${theme.brand('$')} vibe graphify .                          ${theme.dim('Build the graph for the current folder')}
+  ${theme.brand('$')} vibe graphify --update                   ${theme.dim('Incremental refresh after edits')}
+  ${theme.brand('$')} vibe graphify install                    ${theme.dim('Wire up always-on hooks for your AI assistant')}
+  ${theme.brand('$')} vibe graphify query "show the auth flow" ${theme.dim('Pull a focused subgraph')}
+  ${theme.brand('$')} vibe graphify path NodeA NodeB           ${theme.dim('Trace exact paths between two nodes')}
+  ${theme.brand('$')} vibe graphify explain DigestAuth         ${theme.dim('Plain-language node description')}
+  ${theme.brand('$')} vibe graphify stats                      ${theme.dim('One-glance summary of the graph')}
+  ${theme.brand('$')} vibe graphify clone <github-url>         ${theme.dim('Clone a public repo and graph it')}
+  ${theme.brand('$')} vibe graphify merge-graphs ...           ${theme.dim('Combine graphs across repos')}
+
+${theme.heading('OUTPUT')}
+
+  ${theme.success('+')} graphify-out/graph.html       ${theme.dim('Interactive graph (open in any browser)')}
+  ${theme.success('+')} graphify-out/GRAPH_REPORT.md  ${theme.dim('God nodes, surprising connections, suggested questions')}
+  ${theme.success('+')} graphify-out/graph.json       ${theme.dim('Persistent graph — query weeks later without re-reading')}
+  ${theme.success('+')} graphify-out/cache/           ${theme.dim('SHA256 cache — re-runs only process changed files')}
+
+${theme.heading('PAIRS WITH CODEGRAPH')}
+
+  ${theme.brand('codegraph')}  → pure code (callers, callees, impact)
+  ${theme.brand('graphify')}   → cross-modal (code + docs + papers + images + audio)
+
+  Both can coexist in the same project. Use ${theme.brand('vibe graphify install')} to
+  install always-on hooks so Claude reads ${theme.info('GRAPH_REPORT.md')} before searching files.
+
+${theme.heading('LEARN MORE')}
+
+  ${theme.info('https://github.com/safishamsi/graphify')}
+`;
+
+// `vibe graphify [...args]` — pass-through wrapper around the graphifyy PyPI CLI.
+// All args (including --help) are forwarded verbatim so users see the canonical
+// graphify help. If the binary is missing, the wrapper auto-installs via uv,
+// pipx, or pip in that order (mirrors the `vibe codegraph` and `vibe avc`
+// behavior).
+program
+  .command('graphify [args...]')
+  .description('Multi-modal knowledge graph — wraps ai-graphify / graphifyy (auto-installs)')
+  .allowUnknownOption(true)
+  .helpOption(false)
+  .addHelpText('after', GRAPHIFY_HELP)
+  .action((args: string[] = []) => {
+    graphifyCommand(args);
   });
 
 program

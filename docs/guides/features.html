@@ -189,6 +189,26 @@ vibe avc</code></pre>
     <p><strong>Manifesto Principle III — Traceable Intent:</strong> Every feature and generated code must link back to a requirement or decision. Without traceability, you can't audit, you can't maintain, and you can't scale.</p>
   </div>
 
+  <h2>Knowledge graph integrations (CodeGraph + Graphify)</h2>
+  <p>vibe-init wires up two complementary knowledge graph engines so Claude navigates by structure instead of grepping through every file:</p>
+
+  <h3 id="codegraph">@colbymchenry/codegraph (semantic code intelligence)</h3>
+  <pre><code>vibe codegraph init -i        # builds a local SQLite knowledge graph
+vibe codegraph status         # health check
+vibe codegraph query UserService</code></pre>
+  <p>Code-only. Auto-installed via <code>npm install -g @colbymchenry/codegraph</code> on first run. <code>vibe init</code> writes a marker-fenced <code>## CodeGraph</code> block in CLAUDE.md, a <code>.claude/commands/codegraph.md</code> skill, and pre-allows <code>mcp__codegraph__*</code> permissions in <code>.claude/settings.json</code>.</p>
+
+  <h3 id="graphify">graphifyy (multi-modal knowledge graph) — new in v0.7.0</h3>
+  <pre><code>vibe graphify .                        # build the graph
+vibe graphify install                  # always-on hooks
+vibe graphify query "show the auth flow"
+vibe graphify path NodeA NodeB
+vibe graphify explain UserService
+vibe graphify stats</code></pre>
+  <p>Cross-modal — code, docs, papers, images, audio, and video. Auto-installed via <code>uv tool install graphifyy</code> (or <code>pipx</code> / <code>pip</code>) on first run. <code>vibe init</code> writes a marker-fenced <code>## Graphify</code> block in CLAUDE.md and a <code>.claude/commands/graphify.md</code> skill that teaches Claude when to consult the graph.</p>
+
+  <p>Every Graphify edge is tagged <code>EXTRACTED</code>, <code>INFERRED</code>, or <code>AMBIGUOUS</code> so the AI cites the confidence level instead of presenting guesses as facts. The two engines are complementary — use Graphify for orientation and cross-modal questions, CodeGraph for callers/callees/impact.</p>
+
   <h2>Feature detection</h2>
   <p>Each feature module includes a <code>detect()</code> method that checks whether the feature is already present in your project. This is used by:</p>
   <ul>
@@ -215,7 +235,7 @@ vibe avc</code></pre>
   <p>
     Built by <a href="https://github.com/vishalm">Vishal Mishra</a> with Claude.
     <br>
-    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.6.1
+    MIT License &middot; <a href="https://github.com/vishalm/vibe-init">GitHub</a> &middot; <a href="https://www.npmjs.com/package/vibe-init-cli">npm</a> &middot; v0.7.0
   </p>
 </footer>
 

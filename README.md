@@ -100,6 +100,7 @@ npm install -g vibe-init-cli
 | **ANTHROPIC_API_KEY** | Faster batch generation (falls back to Claude CLI) | Optional |
 | **@agile-vibe-coding/avc** | Agile ceremonies (epics, stories, sprint planning) | Optional |
 | **@colbymchenry/codegraph** | Semantic code intelligence — 94% fewer Explore calls | Optional |
+| **graphifyy** (PyPI) | Multi-modal knowledge graph (code + docs + papers + audio + video) | Optional |
 
 ---
 
@@ -144,7 +145,7 @@ mkdir my-app && cd my-app
 vibe init
 ```
 
-Generates: CLAUDE.md (with CodeGraph guidance) + `.vibe/policies/` (59 YAML policies) + `.claude/commands/` (auto-detected skills + codegraph skill) + `.claude/settings.json` (with codegraph MCP allow-list) + ADR template + .gitignore (excludes `.codegraph/`)
+Generates: CLAUDE.md (with CodeGraph + Graphify guidance) + `.vibe/policies/` (59 YAML policies) + `.claude/commands/` (auto-detected skills + codegraph + graphify skills) + `.claude/settings.json` (with codegraph MCP allow-list) + ADR template + .gitignore (excludes `.codegraph/` and `graphify-out/cache/`)
 
 ### Step 2: Build from your idea
 
@@ -185,6 +186,7 @@ vibe audit    # or: vibe doctor
 | `vibe run <task>` | Code with Claude using project context |
 | `vibe ask <question>` | Read-only advisory from Claude |
 | `vibe codegraph [args...]` | Semantic code intelligence (wraps `@colbymchenry/codegraph`, auto-installs) |
+| `vibe graphify [args...]` | Multi-modal knowledge graph — code + docs + papers + audio + video (wraps `graphifyy`, auto-installs via `uv`/`pipx`/`pip`) |
 
 ---
 
@@ -313,6 +315,63 @@ vibe codegraph sync
 ```
 
 CodeGraph supports 19+ languages (TypeScript, JavaScript, Python, Go, Rust, Java, C/C++, Swift, Kotlin, Ruby, PHP, Dart, Svelte, Pascal/Delphi). All processing is 100% local — no API keys, no external services.
+
+---
+
+## Multi-Modal Knowledge Graph (Graphify)
+
+**New in v0.7.0** — `vibe init` also wires up [Graphify](https://github.com/safishamsi/graphify) (PyPI: `graphifyy`) so Claude can navigate your project by structure rather than by grep. Where CodeGraph indexes code symbols, **Graphify builds a cross-modal graph spanning code, docs, papers, images, audio, and video** — and emits a one-page audit (`graphify-out/GRAPH_REPORT.md`) plus a queryable JSON graph.
+
+```mermaid
+graph LR
+    Init["vibe init"] --> GFY["Graphify<br/>guidance in CLAUDE.md"]
+    Init --> Skill[".claude/commands/graphify.md<br/>(when to query the graph)"]
+
+    User["vibe graphify ."] --> Out["graphify-out/<br/>graph.html · GRAPH_REPORT.md · graph.json"]
+    Out --> Queries["vibe graphify query / path / explain / stats"]
+    Queries --> CC["Claude Code<br/>navigates by structure"]
+
+    style Init fill:#FF6B35,color:#fff
+    style User fill:#06B6D4,color:#fff
+    style CC fill:#22C55E,color:#fff
+```
+
+What `vibe init` adds for Graphify:
+
+- **CLAUDE.md** gets a marker-fenced `## Graphify` section telling Claude to read `GRAPH_REPORT.md` before broad exploration.
+- **`.claude/commands/graphify.md`** — a skill describing when Graphify beats CodeGraph (and vice versa), and which query commands to use.
+- **`.gitignore`** — excludes `graphify-out/cache/`, `manifest.json`, and `cost.json` (regenerable / local-only). The committed graph (`graph.json`, `GRAPH_REPORT.md`) is shared with the team.
+
+### Quick start
+
+```bash
+# Run anywhere — auto-installs graphifyy (uv → pipx → pip) on first use
+vibe graphify .
+
+# Wire up always-on hooks for your AI assistant
+vibe graphify install
+
+# Query the graph
+vibe graphify query "show the auth flow"
+vibe graphify path DigestAuth Response
+vibe graphify explain UserService
+vibe graphify stats
+
+# Cross-repo
+vibe graphify clone https://github.com/owner/repo
+vibe graphify merge-graphs a/graph.json b/graph.json --out merged.json
+```
+
+### Graphify vs CodeGraph — when to use which
+
+| Use Graphify | Use CodeGraph |
+|--------------|---------------|
+| Cross-modal questions (docs ↔ code ↔ papers) | Pure code questions (callers, callees, impact) |
+| "What is this project about?" / orientation | "What calls function X?" |
+| Surprising connections, design rationale | Symbol lookup / blast-radius analysis |
+| Mixed corpora (audio transcripts, images, PDFs) | Source-tree-only repos |
+
+Both can coexist in the same project — they are complementary, not exclusive. Every Graphify edge is tagged `EXTRACTED` (found directly in source), `INFERRED` (reasonable inference, with a confidence score), or `AMBIGUOUS` (flagged for review), so you always know what was found vs. guessed.
 
 ---
 
