@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+# vibe-init pre-commit hook
+# Keeps commits "always green": type-check, then unit tests.
+# Integration tests run in CI (they need a fresh build and are slower).
+
+set -e
+
+echo "▸ pre-commit: type check (npm run lint)"
+npm run lint --silent
+
+echo "▸ pre-commit: unit tests (npm run test:unit)"
+npm run test:unit --silent
+
+echo "  pre-commit checks passed."

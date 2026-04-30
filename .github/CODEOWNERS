@@ -1,0 +1,21 @@
+# vibe-init CODEOWNERS
+# Default: maintainer reviews everything.
+*                                   @vishalm
+
+# Governance is the load-bearing surface — extra eyes on policy changes.
+/src/governance/                    @vishalm
+/src/analyzers/                     @vishalm
+/.vibe/                             @vishalm
+
+# CLI entry point and command wrappers.
+/src/index.ts                       @vishalm
+/src/commands/                      @vishalm
+
+# Release surface.
+/package.json                       @vishalm
+/src/version.ts                     @vishalm
+/CHANGELOG.md                       @vishalm
+/scripts/pre-release.sh             @vishalm
+
+# CI / CD and security tooling.
+/.github/                           @vishalm

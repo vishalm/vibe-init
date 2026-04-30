@@ -23,6 +23,13 @@ jobs:
       - name: Type check
         run: npm run lint
 
+      - name: Biome lint
+        run: npm run lint:biome
+
+      - name: Audit (high severity)
+        run: npm run audit
+        continue-on-error: true
+
       - name: Unit tests
         run: npm run test:unit
 

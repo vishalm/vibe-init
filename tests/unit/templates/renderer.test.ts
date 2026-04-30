@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderTemplates, getStackTemplatesDir } from '../../../src/templates/renderer.js';
+import { renderTemplates, } from '../../../src/templates/renderer.js';
 import { getStack, getStackManifest } from '../../../src/templates/registry.js';
 import type { TemplateContext } from '../../../src/types/template.js';
 

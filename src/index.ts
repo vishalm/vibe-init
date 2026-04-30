@@ -720,7 +720,7 @@ program
           execFileSync('npm', ['install', '-g', '@agile-vibe-coding/avc'], { stdio: 'inherit' });
           console.log(theme.success('\n✔ AVC installed successfully. Launching...\n'));
           execFileSync('avc', { stdio: 'inherit', cwd: process.cwd() });
-        } catch (installError) {
+        } catch {
           console.error(theme.error('\n💥 Failed to install AVC.'));
           console.error(`\n  Try manually:\n\n  ${theme.brand('$')} npm install -g @agile-vibe-coding/avc\n`);
           console.error(`  Learn more: ${theme.info('https://agilevibecoding.org')}\n`);

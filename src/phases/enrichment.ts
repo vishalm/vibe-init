@@ -30,7 +30,7 @@ async function generateEnrichment(prompt: string): Promise<EnrichmentBrief> {
 
     try {
       return parseEnrichmentBrief(raw);
-    } catch (error) {
+    } catch {
       if (attempt === MAX_PARSE_RETRIES) {
         throw new EnrichmentParseError(lastRaw);
       }

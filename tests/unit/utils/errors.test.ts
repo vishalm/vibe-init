@@ -4,7 +4,6 @@ import {
   ClaudeCliError,
   ApiKeyMissingError,
   TemplateRenderError,
-  ValidationError,
   EnrichmentParseError,
 } from '../../../src/utils/errors.js';
 
