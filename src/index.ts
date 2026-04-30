@@ -618,25 +618,65 @@ ${theme.heading('DESCRIPTION')}
   if missing, falls back to ${theme.brand('uvx google-agents-cli')} (ephemeral, no global install).
   Requires ${theme.brand('uv')} on PATH for the fallback.
 
-${theme.heading('USAGE')}
+${theme.heading('SETUP')}
 
   ${theme.brand('$')} vibe agents-cli setup                ${theme.dim('Install agents-cli + skills into your coding agents')}
-  ${theme.brand('$')} vibe agents-cli scaffold my-agent    ${theme.dim('Create a new ADK agent project')}
+  ${theme.brand('$')} vibe agents-cli update               ${theme.dim('Force reinstall skills to all IDEs')}
+  ${theme.brand('$')} vibe agents-cli info                 ${theme.dim('Show project config and CLI version')}
+
+${theme.heading('AUTH')}
+
+  ${theme.brand('$')} vibe agents-cli login                ${theme.dim('Authenticate with Google Cloud or AI Studio')}
+  ${theme.brand('$')} vibe agents-cli login --status       ${theme.dim('Show authentication status')}
+
+${theme.heading('SCAFFOLD')}
+
+  ${theme.brand('$')} vibe agents-cli scaffold <name>      ${theme.dim('Create a new ADK agent project')}
   ${theme.brand('$')} vibe agents-cli scaffold enhance     ${theme.dim('Add deploy / CI/CD / RAG to an existing project')}
   ${theme.brand('$')} vibe agents-cli scaffold upgrade     ${theme.dim('Upgrade project to a newer agents-cli version')}
+
+${theme.heading('DEVELOP')}
+
   ${theme.brand('$')} vibe agents-cli run "prompt"         ${theme.dim('Run agent with a single prompt')}
+  ${theme.brand('$')} vibe agents-cli install              ${theme.dim('Install project dependencies')}
+  ${theme.brand('$')} vibe agents-cli lint                 ${theme.dim('Run code quality checks (Ruff)')}
+
+${theme.heading('EVALUATE')}
+
   ${theme.brand('$')} vibe agents-cli eval run             ${theme.dim('Run agent evaluations')}
   ${theme.brand('$')} vibe agents-cli eval compare a b     ${theme.dim('Compare two eval result files')}
-  ${theme.brand('$')} vibe agents-cli deploy               ${theme.dim('Deploy to Google Cloud (Agent Runtime / Cloud Run / GKE)')}
-  ${theme.brand('$')} vibe agents-cli publish gemini-enterprise   ${theme.dim('Register with Gemini Enterprise')}
-  ${theme.brand('$')} vibe agents-cli login --status       ${theme.dim('Show Google Cloud / AI Studio auth status')}
-  ${theme.brand('$')} vibe agents-cli info                 ${theme.dim('Show project config and CLI version')}
-  ${theme.brand('$')} vibe agents-cli --help               ${theme.dim('Full upstream help (passed through)')}
+
+${theme.heading('DEPLOY & PUBLISH')}
+
+  ${theme.brand('$')} vibe agents-cli deploy                       ${theme.dim('Deploy to Agent Runtime / Cloud Run / GKE')}
+  ${theme.brand('$')} vibe agents-cli publish gemini-enterprise    ${theme.dim('Register with Gemini Enterprise')}
+  ${theme.brand('$')} vibe agents-cli infra single-project         ${theme.dim('Provision single-project infrastructure')}
+  ${theme.brand('$')} vibe agents-cli infra cicd                   ${theme.dim('Set up CI/CD + staging/prod infrastructure')}
+
+${theme.heading('DATA / RAG')}
+
+  ${theme.brand('$')} vibe agents-cli infra datastore      ${theme.dim('Provision datastore infrastructure for RAG')}
+  ${theme.brand('$')} vibe agents-cli data-ingestion       ${theme.dim('Run data ingestion pipeline')}
+
+${theme.heading('SKILLS INSTALLED INTO YOUR CODING AGENT')}  ${theme.dim('(via `setup`)')}
+
+  ${theme.label('•')} ${theme.brand('google-agents-cli-workflow')}        ${theme.dim('Lifecycle, code preservation, model selection')}
+  ${theme.label('•')} ${theme.brand('google-agents-cli-adk-code')}        ${theme.dim('ADK Python API — agents, tools, callbacks, state')}
+  ${theme.label('•')} ${theme.brand('google-agents-cli-scaffold')}        ${theme.dim('create / enhance / upgrade')}
+  ${theme.label('•')} ${theme.brand('google-agents-cli-eval')}            ${theme.dim('Metrics, evalsets, LLM-as-judge, trajectory scoring')}
+  ${theme.label('•')} ${theme.brand('google-agents-cli-deploy')}          ${theme.dim('Agent Runtime, Cloud Run, GKE, CI/CD, secrets')}
+  ${theme.label('•')} ${theme.brand('google-agents-cli-publish')}         ${theme.dim('Gemini Enterprise registration')}
+  ${theme.label('•')} ${theme.brand('google-agents-cli-observability')}   ${theme.dim('Cloud Trace, logging, third-party integrations')}
+
+${theme.heading('PASS-THROUGH')}
+
+  ${theme.brand('$')} vibe agents-cli --help               ${theme.dim('Full upstream help (passed through verbatim)')}
+  ${theme.brand('$')} vibe agents-cli <anything>           ${theme.dim('All flags / subcommands forwarded as-is')}
 
 ${theme.heading('PAIRS WITH VIBE-INIT')}
 
-  ${theme.brand('vibe init')}        → governance framework, policies, CLAUDE.md
-  ${theme.brand('vibe agents-cli')}  → scaffold + deploy ADK agents under that governance
+  ${theme.brand('vibe init')}        → governance framework, 59 policies, CLAUDE.md
+  ${theme.brand('vibe agents-cli')}  → scaffold / eval / deploy ADK agents under that governance
 
 ${theme.heading('PREREQUISITES')}
 
@@ -648,6 +688,7 @@ ${theme.heading('LEARN MORE')}
 
   ${theme.info('https://github.com/google/agents-cli')}
   ${theme.info('https://google.github.io/agents-cli/')}
+  ${theme.info('https://pypi.org/project/google-agents-cli/')}
 `;
 
 // `vibe agents-cli [...args]` — pass-through wrapper around google-agents-cli.

@@ -378,18 +378,54 @@ Both can coexist in the same project — they are complementary, not exclusive. 
 
 ## Google Agents CLI Bridge
 
-**New in v0.7.1** — `vibe agents-cli` is a thin pass-through wrapper around [`google/agents-cli`](https://github.com/google/agents-cli) (the Python CLI for building, evaluating, and deploying [ADK](https://adk.dev) agents on Google Cloud). All flags pass through verbatim; if the `agents-cli` binary isn't installed, vibe-init runs it ephemerally via `uvx google-agents-cli` — no global Python install required, only [`uv`](https://docs.astral.sh/uv/getting-started/installation/) on PATH.
+**New in v0.7.1** — `vibe agents-cli` is a thin pass-through wrapper around [`google/agents-cli`](https://github.com/google/agents-cli) (the Python CLI for building, evaluating, and deploying [ADK](https://adk.dev) agents on Google Cloud). All flags pass through verbatim; if the `agents-cli` binary isn't installed, vibe-init runs it ephemerally via `uvx google-agents-cli` — no global Python install required, only [`uv`](https://docs.astral.sh/uv/getting-started/installation/) on PATH. Run `vibe help agents-cli` for the full vibe-side surface, or `vibe agents-cli --help` for the canonical upstream help.
 
 ```bash
-vibe agents-cli setup                  # Install agents-cli + skills into your coding agents
-vibe agents-cli scaffold my-agent      # Create a new ADK agent project
-vibe agents-cli scaffold enhance       # Add deploy / CI/CD / RAG to an existing project
-vibe agents-cli eval run               # Run agent evaluations
-vibe agents-cli eval compare a b       # Compare two eval result files
-vibe agents-cli deploy                 # Deploy to Agent Runtime / Cloud Run / GKE
-vibe agents-cli login --status         # Show Google Cloud / AI Studio auth status
-vibe agents-cli --help                 # Full upstream help (passed through)
+# Setup
+vibe agents-cli setup                          # Install agents-cli + skills into your coding agents
+vibe agents-cli update                         # Force reinstall skills to all IDEs
+vibe agents-cli info                           # Show project config and CLI version
+
+# Auth
+vibe agents-cli login                          # Authenticate with Google Cloud or AI Studio
+vibe agents-cli login --status                 # Show authentication status
+
+# Scaffold
+vibe agents-cli scaffold my-agent              # Create a new ADK agent project
+vibe agents-cli scaffold enhance               # Add deploy / CI/CD / RAG to an existing project
+vibe agents-cli scaffold upgrade               # Upgrade project to a newer agents-cli version
+
+# Develop
+vibe agents-cli run "prompt"                   # Run agent with a single prompt
+vibe agents-cli install                        # Install project dependencies
+vibe agents-cli lint                           # Run code quality checks (Ruff)
+
+# Evaluate
+vibe agents-cli eval run                       # Run agent evaluations
+vibe agents-cli eval compare a.json b.json     # Compare two eval result files
+
+# Deploy & Publish
+vibe agents-cli deploy                         # Deploy to Agent Runtime / Cloud Run / GKE
+vibe agents-cli publish gemini-enterprise      # Register with Gemini Enterprise
+vibe agents-cli infra single-project           # Provision single-project infrastructure
+vibe agents-cli infra cicd                     # Set up CI/CD + staging/prod infrastructure
+
+# Data / RAG
+vibe agents-cli infra datastore                # Provision datastore infrastructure for RAG
+vibe agents-cli data-ingestion                 # Run data ingestion pipeline
 ```
+
+`agents-cli setup` installs seven coding-agent skills that work alongside vibe-init's governance:
+
+| Skill | What your coding agent learns |
+|-------|-------------------------------|
+| `google-agents-cli-workflow` | Development lifecycle, code preservation rules, model selection |
+| `google-agents-cli-adk-code` | ADK Python API — agents, tools, orchestration, callbacks, state |
+| `google-agents-cli-scaffold` | Project scaffolding — `create`, `enhance`, `upgrade` |
+| `google-agents-cli-eval` | Evaluation methodology — metrics, evalsets, LLM-as-judge, trajectory scoring |
+| `google-agents-cli-deploy` | Deployment — Agent Runtime, Cloud Run, GKE, CI/CD, secrets |
+| `google-agents-cli-publish` | Gemini Enterprise registration |
+| `google-agents-cli-observability` | Observability — Cloud Trace, logging, third-party integrations |
 
 Why bridge rather than rebuild?
 
@@ -399,7 +435,7 @@ Why bridge rather than rebuild?
 | Coding-assistant-agnostic skills wiring | Coding-assistant-agnostic skills wiring |
 | Layered on top of any project | Layered on top of any project |
 
-The two are complementary: `vibe init` lays down governance, then `vibe agents-cli scaffold` creates ADK agents that inherit that governance, and `vibe agents-cli deploy` ships them.
+The two are complementary: `vibe init` lays down governance; `vibe agents-cli scaffold` then creates ADK agents that inherit it; `vibe agents-cli eval` and `vibe agents-cli deploy` evaluate and ship them under the same policies.
 
 ---
 
