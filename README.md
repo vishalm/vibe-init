@@ -187,6 +187,7 @@ vibe audit    # or: vibe doctor
 | `vibe ask <question>` | Read-only advisory from Claude |
 | `vibe codegraph [args...]` | Semantic code intelligence (wraps `@colbymchenry/codegraph`, auto-installs) |
 | `vibe graphify [args...]` | Multi-modal knowledge graph — code + docs + papers + audio + video (wraps `graphifyy`, auto-installs via `uv`/`pipx`/`pip`) |
+| `vibe agents-cli [args...]` | Build / eval / deploy ADK agents on Google Cloud (wraps [`google-agents-cli`](https://github.com/google/agents-cli), runs via `uvx`) |
 
 ---
 
@@ -372,6 +373,33 @@ vibe graphify merge-graphs a/graph.json b/graph.json --out merged.json
 | Mixed corpora (audio transcripts, images, PDFs) | Source-tree-only repos |
 
 Both can coexist in the same project — they are complementary, not exclusive. Every Graphify edge is tagged `EXTRACTED` (found directly in source), `INFERRED` (reasonable inference, with a confidence score), or `AMBIGUOUS` (flagged for review), so you always know what was found vs. guessed.
+
+---
+
+## Google Agents CLI Bridge
+
+**New in v0.7.1** — `vibe agents-cli` is a thin pass-through wrapper around [`google/agents-cli`](https://github.com/google/agents-cli) (the Python CLI for building, evaluating, and deploying [ADK](https://adk.dev) agents on Google Cloud). All flags pass through verbatim; if the `agents-cli` binary isn't installed, vibe-init runs it ephemerally via `uvx google-agents-cli` — no global Python install required, only [`uv`](https://docs.astral.sh/uv/getting-started/installation/) on PATH.
+
+```bash
+vibe agents-cli setup                  # Install agents-cli + skills into your coding agents
+vibe agents-cli scaffold my-agent      # Create a new ADK agent project
+vibe agents-cli scaffold enhance       # Add deploy / CI/CD / RAG to an existing project
+vibe agents-cli eval run               # Run agent evaluations
+vibe agents-cli eval compare a b       # Compare two eval result files
+vibe agents-cli deploy                 # Deploy to Agent Runtime / Cloud Run / GKE
+vibe agents-cli login --status         # Show Google Cloud / AI Studio auth status
+vibe agents-cli --help                 # Full upstream help (passed through)
+```
+
+Why bridge rather than rebuild?
+
+| `vibe-init` | `agents-cli` |
+|-------------|--------------|
+| Governance framework (59 policies, 10 categories, ADRs, context anchors) | ADK agent scaffolding, evaluation, and Google Cloud deployment |
+| Coding-assistant-agnostic skills wiring | Coding-assistant-agnostic skills wiring |
+| Layered on top of any project | Layered on top of any project |
+
+The two are complementary: `vibe init` lays down governance, then `vibe agents-cli scaffold` creates ADK agents that inherit that governance, and `vibe agents-cli deploy` ships them.
 
 ---
 

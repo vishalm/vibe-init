@@ -10,6 +10,7 @@ import { doctorCommand } from './commands/doctor.js';
 import { anchorCommand } from './commands/anchor.js';
 import { codegraphCommand } from './commands/codegraph.js';
 import { graphifyCommand } from './commands/graphify.js';
+import { agentsCliCommand } from './commands/agents-cli.js';
 import { theme } from './ui/theme.js';
 import type { CLIConfig } from './types/config.js';
 import { VERSION } from './version.js';
@@ -34,6 +35,7 @@ ${theme.heading('COMMANDS')}
   ${theme.brand('ask')} <question>        Ask Claude about your project (read-only)
   ${theme.brand('codegraph')} [args...]   Semantic code intelligence (wraps @colbymchenry/codegraph)
   ${theme.brand('graphify')} [args...]    Multi-modal knowledge graph (wraps ai-graphify / graphifyy)
+  ${theme.brand('agents-cli')} [args...]  Build/eval/deploy ADK agents on Google Cloud (wraps google-agents-cli)
 
 ${theme.heading('THE GOVERNANCE WORKFLOW')}
 
@@ -88,6 +90,7 @@ ${theme.heading('PREREQUISITES')}
   ${theme.label('4.')} AVC            ${theme.dim('npm install -g @agile-vibe-coding/avc  (optional — agile ceremonies)')}
   ${theme.label('5.')} CodeGraph      ${theme.dim('npm install -g @colbymchenry/codegraph  (optional — semantic code intelligence)')}
   ${theme.label('6.')} Graphify       ${theme.dim('uv tool install graphifyy           (optional — multi-modal knowledge graph; auto-installed by `vibe graphify`)')}
+  ${theme.label('7.')} agents-cli     ${theme.dim('uvx google-agents-cli setup        (optional — Google ADK agents; auto-run via uvx by `vibe agents-cli`)')}
 
 ${theme.heading('LEARN MORE')}
 
@@ -597,6 +600,68 @@ program
   .addHelpText('after', GRAPHIFY_HELP)
   .action((args: string[] = []) => {
     graphifyCommand(args);
+  });
+
+const AGENTS_CLI_HELP = `
+${theme.brand('vibe agents-cli')} [args...] — Google Agents CLI (ADK on Google Cloud)
+
+${theme.heading('DESCRIPTION')}
+
+  Pass-through wrapper around ${theme.info('google-agents-cli')}, the Python CLI
+  that turns any coding assistant into an expert at creating, evaluating, and
+  deploying ADK agents on Google Cloud (Gemini Enterprise Agent Platform).
+
+  All args (including ${theme.brand('--help')}) are forwarded verbatim, so you
+  always see the canonical agents-cli help and behavior.
+
+  ${theme.bold('How it runs:')} prefers a globally installed ${theme.brand('agents-cli')} binary;
+  if missing, falls back to ${theme.brand('uvx google-agents-cli')} (ephemeral, no global install).
+  Requires ${theme.brand('uv')} on PATH for the fallback.
+
+${theme.heading('USAGE')}
+
+  ${theme.brand('$')} vibe agents-cli setup                ${theme.dim('Install agents-cli + skills into your coding agents')}
+  ${theme.brand('$')} vibe agents-cli scaffold my-agent    ${theme.dim('Create a new ADK agent project')}
+  ${theme.brand('$')} vibe agents-cli scaffold enhance     ${theme.dim('Add deploy / CI/CD / RAG to an existing project')}
+  ${theme.brand('$')} vibe agents-cli scaffold upgrade     ${theme.dim('Upgrade project to a newer agents-cli version')}
+  ${theme.brand('$')} vibe agents-cli run "prompt"         ${theme.dim('Run agent with a single prompt')}
+  ${theme.brand('$')} vibe agents-cli eval run             ${theme.dim('Run agent evaluations')}
+  ${theme.brand('$')} vibe agents-cli eval compare a b     ${theme.dim('Compare two eval result files')}
+  ${theme.brand('$')} vibe agents-cli deploy               ${theme.dim('Deploy to Google Cloud (Agent Runtime / Cloud Run / GKE)')}
+  ${theme.brand('$')} vibe agents-cli publish gemini-enterprise   ${theme.dim('Register with Gemini Enterprise')}
+  ${theme.brand('$')} vibe agents-cli login --status       ${theme.dim('Show Google Cloud / AI Studio auth status')}
+  ${theme.brand('$')} vibe agents-cli info                 ${theme.dim('Show project config and CLI version')}
+  ${theme.brand('$')} vibe agents-cli --help               ${theme.dim('Full upstream help (passed through)')}
+
+${theme.heading('PAIRS WITH VIBE-INIT')}
+
+  ${theme.brand('vibe init')}        → governance framework, policies, CLAUDE.md
+  ${theme.brand('vibe agents-cli')}  → scaffold + deploy ADK agents under that governance
+
+${theme.heading('PREREQUISITES')}
+
+  ${theme.label('•')} ${theme.brand('uv')}        ${theme.dim('curl -LsSf https://astral.sh/uv/install.sh | sh')}
+  ${theme.label('•')} Python 3.11+, Node.js (for some agents-cli flows)
+  ${theme.label('•')} Google Cloud project (for deploy / publish flows)
+
+${theme.heading('LEARN MORE')}
+
+  ${theme.info('https://github.com/google/agents-cli')}
+  ${theme.info('https://google.github.io/agents-cli/')}
+`;
+
+// `vibe agents-cli [...args]` — pass-through wrapper around google-agents-cli.
+// All args (including --help) are forwarded verbatim so users see the canonical
+// agents-cli help. If the binary is missing, the wrapper falls back to
+// `uvx google-agents-cli` (mirrors the upstream's recommended invocation).
+program
+  .command('agents-cli [args...]')
+  .description('Google Agents CLI — wraps google-agents-cli (uvx fallback)')
+  .allowUnknownOption(true)
+  .helpOption(false)
+  .addHelpText('after', AGENTS_CLI_HELP)
+  .action((args: string[] = []) => {
+    agentsCliCommand(args);
   });
 
 program
