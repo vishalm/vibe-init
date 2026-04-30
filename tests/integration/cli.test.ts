@@ -37,6 +37,26 @@ function runAllowFail(args: string, opts: { cwd?: string } = {}): { stdout: stri
   }
 }
 
+// Like runAllowFail but with a fully replaced environment. Used to simulate
+// missing binaries on PATH (e.g. agents-cli / uv / uvx absent).
+function runWithEnv(
+  args: string,
+  env: NodeJS.ProcessEnv
+): { stdout: string; stderr: string; code: number } {
+  try {
+    const stdout = execSync(`${process.execPath} ${CLI} ${args}`, {
+      encoding: 'utf-8',
+      timeout: 30_000,
+      env,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    return { stdout: stdout.trim(), stderr: '', code: 0 };
+  } catch (error) {
+    const e = error as { stdout?: string; stderr?: string; status?: number };
+    return { stdout: e.stdout ?? '', stderr: e.stderr ?? '', code: e.status ?? 1 };
+  }
+}
+
 describe('CLI: vibe --version', () => {
   it('should print the version number', () => {
     const output = run('--version');
@@ -58,6 +78,7 @@ describe('CLI: vibe --help', () => {
     expect(output).toContain('anchor');
     expect(output).toContain('codegraph');
     expect(output).toContain('graphify');
+    expect(output).toContain('agents-cli');
   });
 
   it('should mention the vibe coding workflow', () => {
@@ -257,6 +278,62 @@ describe('CLI: vibe add', () => {
     // Should not throw
     run('add docker --force', { cwd: tempDir });
     expect(existsSync(join(tempDir, 'Dockerfile'))).toBe(true);
+  });
+});
+
+describe('CLI: vibe agents-cli', () => {
+  it('vibe help agents-cli prints the enriched upstream surface', () => {
+    const output = run('help agents-cli');
+    // Section headings (mirrors the upstream agents-cli command groups)
+    expect(output).toContain('SETUP');
+    expect(output).toContain('AUTH');
+    expect(output).toContain('SCAFFOLD');
+    expect(output).toContain('DEVELOP');
+    expect(output).toContain('EVALUATE');
+    expect(output).toContain('DEPLOY');
+    expect(output).toContain('SKILLS');
+    // Concrete commands & flags users will look for
+    expect(output).toContain('agents-cli setup');
+    expect(output).toContain('agents-cli login --status');
+    expect(output).toContain('agents-cli scaffold enhance');
+    expect(output).toContain('agents-cli eval compare');
+    expect(output).toContain('agents-cli infra cicd');
+    // Skill names from the upstream registry
+    expect(output).toContain('google-agents-cli-workflow');
+    expect(output).toContain('google-agents-cli-eval');
+    expect(output).toContain('google-agents-cli-deploy');
+    // Fallback runner is documented
+    expect(output).toContain('uvx');
+    expect(output).toContain('google-agents-cli');
+  });
+
+  it('main --help advertises agents-cli alongside codegraph and graphify', () => {
+    const output = run('--help');
+    expect(output).toContain('agents-cli');
+    expect(output).toContain('google-agents-cli');
+  });
+
+  it('falls back with a helpful uv install hint when no runner is on PATH', () => {
+    // Simulate a machine where neither agents-cli nor uv/uvx resolves.
+    // PATH is empty so spawnSync(AGENTS_CLI_BIN) and the subsequent uv/uvx
+    // probes all fail with ENOENT — the wrapper should print actionable hints.
+    const emptyDir = mkdtempSync(join(tmpdir(), 'vibe-empty-path-'));
+    try {
+      const r = runWithEnv('agents-cli setup', {
+        PATH: emptyDir,
+        HOME: process.env.HOME,
+        NO_COLOR: '1',
+      });
+      expect(r.code).not.toBe(0);
+      const combined = r.stdout + r.stderr;
+      // Mentions the fallback runner and how to install it
+      expect(combined).toMatch(/uv/i);
+      expect(combined).toContain('google-agents-cli');
+      // Not a Commander parse crash — the wrapper got the chance to print its hint
+      expect(combined).not.toMatch(/unknown option|unknown command/i);
+    } finally {
+      rmSync(emptyDir, { recursive: true, force: true });
+    }
   });
 });
 
